@@ -1,1 +1,1285 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI융합 간호정보학 · 생성형 AI 학술 활용 실습 도구</title>
+<meta name="description" content="청암대학교 간호학과 3학년 AI융합 간호정보학 교육용 단일 HTML 실습 도구">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Noto+Serif+KR:wght@600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* =========================================================
+   디자인 시스템 (교수님 기존 도구와 통일)
+   주색 Care Green #065F46 / Noto Sans KR · Noto Serif KR · JetBrains Mono
+   ========================================================= */
+:root{
+  --care-green:#065F46;
+  --care-green-dark:#044534;
+  --care-green-light:#0d8a66;
+  --care-green-bg:#ecf6f1;
+  --accent-blue:#1d4ed8;
+  --accent-amber:#b45309;
+  --accent-purple:#6d28d9;
+  --accent-rose:#be123c;
+  --accent-teal:#0e7490;
+  --accent-slate:#475569;
+  --ink:#1f2937;
+  --ink-soft:#4b5563;
+  --line:#d8e0db;
+  --bg:#f7faf8;
+  --card:#ffffff;
+  --warn-bg:#fff4e5;
+  --warn-line:#f59e0b;
+  --warn-ink:#92400e;
+  --good:#047857;
+  --bad:#b91c1c;
+  --radius:14px;
+  --shadow:0 1px 3px rgba(6,95,70,.08),0 6px 18px rgba(6,95,70,.06);
+  --serif:'Noto Serif KR',serif;
+  --sans:'Noto Sans KR',sans-serif;
+  --mono:'JetBrains Mono',monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;font-family:var(--sans);color:var(--ink);background:var(--bg);
+  line-height:1.65;font-size:16px;-webkit-text-size-adjust:100%;
+}
+h1,h2,h3,h4{font-family:var(--serif);color:var(--care-green-dark);line-height:1.35;margin:0 0 .4em}
+a{color:var(--care-green-light)}
+code,.mono{font-family:var(--mono)}
+.wrap{max-width:1160px;margin:0 auto;padding:0 18px}
+.muted{color:var(--ink-soft)}
+.hidden{display:none !important}
+button{font-family:var(--sans);cursor:pointer}
+:focus-visible{outline:3px solid var(--care-green-light);outline-offset:2px;border-radius:4px}
 
+/* ---------- 진입 동의 모달 ---------- */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(4,69,52,.72);backdrop-filter:blur(3px);
+  display:flex;align-items:center;justify-content:center;z-index:1000;padding:18px;
+}
+.modal{
+  background:var(--card);border-radius:var(--radius);max-width:600px;width:100%;
+  padding:30px 26px;box-shadow:0 24px 60px rgba(0,0,0,.35);max-height:92vh;overflow:auto;
+}
+.modal h2{font-size:1.45rem;margin-bottom:.5em}
+.modal .seal{display:inline-block;background:var(--care-green);color:#fff;font-size:.78rem;
+  padding:4px 12px;border-radius:999px;letter-spacing:.04em;margin-bottom:14px;font-weight:700}
+.principle{
+  background:var(--warn-bg);border:1px solid var(--warn-line);border-left:5px solid var(--warn-line);
+  border-radius:10px;padding:16px 18px;margin:18px 0;color:var(--warn-ink);
+}
+.principle strong{color:#7c2d12}
+.principle ul{margin:.6em 0 0;padding-left:1.2em}
+.consent-row{display:flex;gap:12px;align-items:flex-start;margin:18px 0 22px;
+  background:var(--care-green-bg);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+.consent-row input{width:22px;height:22px;margin-top:2px;accent-color:var(--care-green);flex:0 0 auto;cursor:pointer}
+.consent-row label{font-weight:500;cursor:pointer}
+.btn{
+  background:var(--care-green);color:#fff;border:none;border-radius:10px;
+  padding:13px 22px;font-size:1rem;font-weight:700;transition:.15s;
+}
+.btn:hover{background:var(--care-green-dark)}
+.btn:disabled{background:#9db8ae;cursor:not-allowed}
+.btn-ghost{background:transparent;color:var(--care-green);border:1.5px solid var(--care-green)}
+.btn-ghost:hover{background:var(--care-green-bg)}
+.btn-amber{background:var(--accent-amber)}
+.btn-amber:hover{background:#92400e}
+.btn-sm{padding:8px 14px;font-size:.86rem;border-radius:8px}
+
+/* ---------- 헤더 ---------- */
+header.site{
+  background:linear-gradient(135deg,var(--care-green) 0%,var(--care-green-dark) 100%);
+  color:#fff;padding:26px 0 22px;position:relative;
+}
+header.site h1{color:#fff;font-size:1.7rem;margin-bottom:.25em}
+header.site .sub{color:#c7e7db;font-size:.96rem;font-weight:500}
+.course-chip{display:inline-block;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.3);
+  color:#eafaf3;font-size:.76rem;padding:3px 11px;border-radius:999px;margin-bottom:10px;letter-spacing:.03em}
+
+/* ---------- 트랙 토글 ---------- */
+.track-toggle{display:inline-flex;background:rgba(255,255,255,.14);border-radius:999px;padding:4px;margin-top:16px;gap:4px}
+.track-toggle button{
+  background:transparent;color:#d8f0e7;border:none;padding:9px 20px;border-radius:999px;
+  font-weight:700;font-size:.92rem;transition:.15s;
+}
+.track-toggle button.active{background:#fff;color:var(--care-green-dark)}
+.track-note{font-size:.82rem;color:#bfe3d6;margin-top:8px}
+
+/* ---------- 네비 ---------- */
+nav.toc{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:50;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+nav.toc .wrap{display:flex;gap:6px;overflow-x:auto;padding:10px 18px}
+nav.toc a{white-space:nowrap;color:var(--ink-soft);text-decoration:none;font-weight:600;font-size:.86rem;
+  padding:7px 13px;border-radius:8px}
+nav.toc a:hover{background:var(--care-green-bg);color:var(--care-green-dark)}
+
+/* ---------- 상시 경고 배너 ---------- */
+.guard-banner{
+  background:var(--warn-bg);border:1px solid var(--warn-line);border-radius:10px;
+  padding:11px 16px;margin:16px 0;display:flex;gap:11px;align-items:flex-start;font-size:.9rem;color:var(--warn-ink);
+}
+.guard-banner .ico{font-size:1.2rem;line-height:1.2;flex:0 0 auto}
+.guard-banner.sticky-top{position:sticky;top:54px;z-index:40;box-shadow:var(--shadow)}
+
+/* ---------- 섹션 ---------- */
+section.block{padding:40px 0 14px}
+section.block:nth-of-type(even){background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.sec-head{margin-bottom:8px}
+.sec-head .kicker{font-family:var(--mono);font-size:.78rem;color:var(--care-green-light);font-weight:600;letter-spacing:.08em;text-transform:uppercase}
+.sec-head h2{font-size:1.5rem}
+.sec-head p{color:var(--ink-soft);margin:.2em 0 0;max-width:760px}
+
+/* ---------- 카테고리 ---------- */
+.cat{margin-top:26px}
+.cat-title{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:4px}
+.cat-num{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:8px;
+  background:var(--care-green);color:#fff;font-family:var(--mono);font-weight:600;font-size:.92rem;flex:0 0 auto}
+.cat-title h3{margin:0;font-size:1.18rem}
+.cat-desc{color:var(--ink-soft);font-size:.9rem;margin:2px 0 16px}
+.cat-warn{background:#fdecef;border:1px solid #f4b8c4;border-left:5px solid var(--accent-rose);border-radius:10px;
+  padding:14px 16px;margin:6px 0 18px;font-size:.9rem;color:#7f1d2e}
+.cat-warn strong{color:#9f1239}
+
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px;
+  box-shadow:var(--shadow);display:flex;flex-direction:column;border-top:4px solid var(--catc,var(--care-green))}
+.card h4{font-size:1.1rem;margin-bottom:2px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.tag{font-size:.68rem;font-family:var(--mono);padding:2px 8px;border-radius:999px;font-weight:600;white-space:nowrap}
+.tag-free{background:#dcfce7;color:#166534}
+.tag-paid{background:#fee2e2;color:#991b1b}
+.tag-freemium{background:#fef3c7;color:#92400e}
+.tag-verify{background:#e5e7eb;color:#374151}
+.card .def{font-size:.92rem;color:var(--ink);font-weight:500;margin:6px 0 12px}
+.card dl{margin:0;font-size:.86rem}
+.card dt{font-weight:700;color:var(--care-green-dark);margin-top:9px;font-size:.8rem;letter-spacing:.02em}
+.card dd{margin:1px 0 0;color:var(--ink-soft)}
+.fit{margin:12px 0 4px;font-size:.84rem;display:flex;align-items:center;gap:8px}
+.stars{color:#d1a000;letter-spacing:1px;font-size:1rem}
+.card .src{margin-top:auto;padding-top:12px}
+.card .src a{font-family:var(--mono);font-size:.78rem;word-break:break-all}
+
+/* ---------- 비교표 ---------- */
+.table-controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:18px 0 14px}
+.table-controls select{font-family:var(--sans);padding:8px 12px;border:1px solid var(--line);border-radius:8px;background:#fff;font-size:.88rem}
+.table-controls label{font-size:.84rem;font-weight:600;color:var(--ink-soft)}
+.cmp-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--radius);background:#fff}
+table.cmp{border-collapse:collapse;width:100%;min-width:880px;font-size:.84rem}
+table.cmp th,table.cmp td{padding:11px 12px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+table.cmp thead th{background:var(--care-green);color:#fff;position:sticky;top:0;font-family:var(--sans);font-weight:600;cursor:pointer;white-space:nowrap}
+table.cmp thead th:hover{background:var(--care-green-light)}
+table.cmp tbody tr:hover{background:var(--care-green-bg)}
+table.cmp td.name{font-weight:700;color:var(--care-green-dark)}
+table.cmp .cat-pill{font-size:.7rem;font-family:var(--mono);color:var(--ink-soft);display:block;font-weight:400}
+.cmp-cards{display:grid;gap:12px}
+.cmp-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px;box-shadow:var(--shadow);border-left:4px solid var(--care-green)}
+.cmp-card h4{font-size:1rem;margin-bottom:6px}
+.cmp-card dl{display:grid;grid-template-columns:auto 1fr;gap:3px 10px;font-size:.82rem;margin:0}
+.cmp-card dt{font-weight:700;color:var(--care-green-dark)}
+.cmp-card dd{margin:0;color:var(--ink-soft)}
+
+/* ---------- 시나리오 ---------- */
+.scn{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:20px;margin-top:18px;box-shadow:var(--shadow)}
+.scn-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:4px}
+.scn-id{font-family:var(--mono);font-weight:600;background:var(--care-green);color:#fff;padding:3px 10px;border-radius:7px;font-size:.82rem}
+.scn-id.research{background:var(--accent-purple)}
+.scn h4{margin:0;font-size:1.12rem}
+.scn .scn-goal{color:var(--ink-soft);font-size:.9rem;margin:6px 0 14px}
+.steps{list-style:none;margin:0;padding:0}
+.steps li{display:flex;gap:11px;align-items:flex-start;padding:9px 0;border-bottom:1px dashed var(--line)}
+.steps li:last-child{border-bottom:none}
+.steps input{width:20px;height:20px;margin-top:2px;accent-color:var(--care-green);flex:0 0 auto;cursor:pointer}
+.steps label{font-size:.92rem;cursor:pointer}
+.steps .tool-ref{font-family:var(--mono);font-size:.74rem;background:var(--care-green-bg);color:var(--care-green-dark);padding:1px 7px;border-radius:5px;margin-left:4px}
+.scn-progress{margin-top:12px;font-size:.84rem;color:var(--ink-soft);display:flex;align-items:center;gap:10px}
+.bar{flex:1;height:8px;background:#e5ece8;border-radius:999px;overflow:hidden}
+.bar > span{display:block;height:100%;background:var(--care-green);width:0;transition:.3s}
+.verify-box{background:#eef2ff;border:1px solid #c7d2fe;border-left:5px solid var(--accent-blue);
+  border-radius:10px;padding:13px 15px;margin-top:14px;font-size:.86rem;color:#1e3a8a}
+.verify-box strong{color:#1e40af}
+.verify-box ul{margin:.5em 0 0;padding-left:1.2em}
+
+/* ---------- 거짓 인용 실습 ---------- */
+.fc-item{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:18px;margin-top:16px;box-shadow:var(--shadow)}
+.fc-prompt{font-size:.86rem;color:var(--care-green-dark);font-weight:700;margin-bottom:6px}
+.fc-answer{background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:14px;font-size:.92rem;line-height:1.8}
+.cite{display:inline;border-bottom:2px dotted var(--accent-slate);cursor:pointer;padding:1px 3px;border-radius:4px;transition:.12s;background:#eef2f7;font-family:var(--mono);font-size:.82rem}
+.cite:hover{background:#e0e7ef}
+.cite.flagged{background:#fde68a;border-bottom:2px solid var(--accent-amber);font-weight:600}
+.cite.reveal-fake{background:#fecaca;border-bottom:2px solid var(--bad)}
+.cite.reveal-real{background:#bbf7d0;border-bottom:2px solid var(--good)}
+.fc-method{margin-top:12px;font-size:.86rem}
+.fc-method legend{font-weight:700;color:var(--care-green-dark);font-size:.84rem;margin-bottom:5px;padding:0}
+.fc-method label{display:flex;gap:8px;align-items:flex-start;padding:4px 0;cursor:pointer;font-weight:400}
+.fc-method input{margin-top:3px;accent-color:var(--care-green)}
+.fc-hint{font-size:.8rem;color:var(--ink-soft);margin-top:8px}
+.fc-explain{margin-top:12px;border-radius:10px;padding:13px 15px;font-size:.86rem;display:none}
+.fc-explain.show{display:block}
+.fc-explain.ok{background:#ecfdf5;border:1px solid #a7f3d0;color:#065f46}
+.fc-explain.no{background:#fef2f2;border:1px solid #fecaca;color:#7f1d1d}
+.fc-explain h5{margin:0 0 6px;font-family:var(--sans);font-size:.9rem}
+.fc-explain ul{margin:.4em 0 0;padding-left:1.2em}
+.fc-score{margin-top:18px;background:var(--care-green-bg);border:1px solid var(--line);border-radius:12px;padding:16px;display:none}
+.fc-score.show{display:block}
+.fc-score .big{font-family:var(--mono);font-size:2rem;font-weight:600;color:var(--care-green-dark)}
+
+/* ---------- 윤리 체크리스트 / 퀴즈 ---------- */
+.ethics{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:20px;margin-top:16px;box-shadow:var(--shadow)}
+.ethics .steps label{font-weight:500}
+.quiz-q{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px;margin-top:14px;box-shadow:var(--shadow)}
+.quiz-q .q{font-weight:700;color:var(--care-green-dark);margin-bottom:9px;font-size:.96rem}
+.quiz-q .opt{display:flex;gap:9px;align-items:flex-start;padding:7px 10px;border:1px solid var(--line);border-radius:9px;margin:6px 0;cursor:pointer;transition:.12s}
+.quiz-q .opt:hover{background:var(--care-green-bg)}
+.quiz-q .opt input{margin-top:3px;accent-color:var(--care-green)}
+.quiz-q .opt.correct{background:#ecfdf5;border-color:#6ee7b7}
+.quiz-q .opt.wrong{background:#fef2f2;border-color:#fca5a5}
+.quiz-fb{margin-top:8px;font-size:.85rem;padding:9px 12px;border-radius:8px;display:none}
+.quiz-fb.show{display:block}
+.quiz-fb.ok{background:#ecfdf5;color:#065f46}
+.quiz-fb.no{background:#fef2f2;color:#7f1d1d}
+
+/* ---------- 결과 제출 ---------- */
+.submit-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-top:18px}
+.submit-card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+.field{margin:10px 0}
+.field label{display:block;font-size:.82rem;font-weight:700;color:var(--care-green-dark);margin-bottom:4px}
+.field input{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font-family:var(--sans);font-size:.92rem}
+.summary-box{font-family:var(--mono);font-size:.82rem;background:#0b3b2d;color:#d7f5ea;padding:14px;border-radius:10px;overflow:auto;line-height:1.7;white-space:pre-wrap}
+.config-note{background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;padding:12px 14px;font-size:.82rem;color:var(--accent-amber);margin-top:10px}
+.config-note code{background:#fde9d2;padding:1px 5px;border-radius:4px}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+
+/* ---------- 푸터 ---------- */
+footer.site{background:var(--care-green-dark);color:#cdeae0;text-align:center;padding:22px 18px;font-size:.88rem;margin-top:30px}
+footer.site strong{color:#fff;font-family:var(--serif)}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--care-green-dark);
+  color:#fff;padding:12px 20px;border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.3);opacity:0;transition:.25s;z-index:900;font-size:.9rem;max-width:90vw;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media (max-width:640px){
+  body{font-size:15px}
+  header.site h1{font-size:1.35rem}
+  .sec-head h2{font-size:1.3rem}
+  .cards{grid-template-columns:1fr}
+  .track-toggle{display:flex;width:100%}
+  .track-toggle button{flex:1}
+  .modal{padding:22px 18px}
+  .guard-banner.sticky-top{top:50px}
+}
+@media print{nav.toc,.modal-overlay,.track-toggle{display:none}}
+</style>
+</head>
+<body>
+
+<!-- ===================== 0. CONFIG (교수자 설정 영역) ===================== -->
+<script>
+/* =========================================================================
+   교수자 설정 영역 — 여기만 수정하면 Google Forms 결과 수합이 동작합니다.
+   1) Google Form 만들기 → "사전 채워진 링크 받기"로 각 항목의 entry ID 확인
+   2) 아래 formBaseUrl 과 entry ID 5개를 채워 넣으세요.
+   3) 미설정 시 '결과 제출' 버튼은 안내 후 JSON 백업 내보내기를 권장합니다.
+   ※ 폼에 직접 POST 하지 않고, 사전채움(prefill) URL을 새 탭으로 엽니다(구조 변경에 견고).
+   ========================================================================= */
+const CONFIG = {
+  // 예: "https://docs.google.com/forms/d/e/1FAIpQLSxxxxxxxxxxxxxxxx/viewform"
+  formBaseUrl: "",
+  entry: {
+    name:           "",  // 이름        예) "entry.111111111"
+    studentId:      "",  // 학번        예) "entry.222222222"
+    scenarioRate:   "",  // 시나리오 완료율(%)
+    falseCiteScore: "",  // 거짓인용 실습 점수
+    quizScore:      ""   // 자가퀴즈 점수
+  }
+};
+</script>
+
+<!-- ===================== 1. 진입 동의 모달 ===================== -->
+<div class="modal-overlay" id="consentModal" role="dialog" aria-modal="true" aria-labelledby="cmTitle">
+  <div class="modal">
+    <span class="seal">실습 시작 전 필수 동의</span>
+    <h2 id="cmTitle">환자정보 미입력 서약</h2>
+    <p class="muted">본 도구는 청암대학교 간호학과 3학년 <strong>AI융합 간호정보학</strong> 교육·연구용 실습 환경입니다.
+       생성형 AI 서비스에 입력한 내용은 외부 서버로 전송되어 학습·저장될 수 있습니다.</p>
+    <div class="principle">
+      <strong>⚠ 핵심 원칙</strong>
+      <ul>
+        <li>본 실습에서 <strong>실제 환자 식별정보·의무기록(EMR)</strong>을 어떤 AI 서비스에도 입력하지 않습니다.</li>
+        <li>이름·생년월일·등록번호·진단·검사수치 등 재식별 가능한 정보는 <strong>가상 사례</strong>로만 다룹니다.</li>
+        <li>이는 「개인정보 보호법」·「의료법」 및 간호 윤리강령상의 비밀유지 의무에 따른 것입니다.</li>
+      </ul>
+    </div>
+    <div class="consent-row">
+      <input type="checkbox" id="consentChk" aria-describedby="cmTitle">
+      <label for="consentChk">위 원칙을 이해했으며, 본 실습 전 과정에서 실제 환자 식별정보·의무기록을 어떤 AI 서비스에도 입력하지 않을 것에 동의합니다.</label>
+    </div>
+    <button class="btn" id="consentBtn" disabled style="width:100%">동의하고 실습 시작</button>
+    <p class="muted" style="font-size:.78rem;margin:.8em 0 0">동의 사실과 일시는 이 브라우저(localStorage)에만 기록되며 외부로 전송되지 않습니다.</p>
+  </div>
+</div>
+
+<!-- ===================== 2. 헤더 + 트랙 토글 ===================== -->
+<header class="site">
+  <div class="wrap">
+    <span class="course-chip">청암대학교 간호학과 · 3학년 심화</span>
+    <h1>생성형 AI 학술 활용 실습 도구</h1>
+    <p class="sub">연구·교육용 생성형 AI 서비스를 카테고리별로 비교 학습하고 직접 실습합니다.</p>
+    <div class="track-toggle" role="tablist" aria-label="학습 트랙 선택">
+      <button id="trackEdu" role="tab" class="active" aria-selected="true">🎓 교육 트랙</button>
+      <button id="trackRes" role="tab" aria-selected="false">🔬 연구 트랙</button>
+    </div>
+    <p class="track-note" id="trackNote">교육 트랙: 개념 학습·시뮬레이션·자가점검 중심 (1학년 디지털리터러시와 차별화된 3학년 심화 활용)</p>
+  </div>
+</header>
+
+<!-- ===================== 네비 ===================== -->
+<nav class="toc" aria-label="섹션 바로가기">
+  <div class="wrap">
+    <a href="#secA">A. 카테고리별 서비스</a>
+    <a href="#secB">B. 비교표</a>
+    <a href="#secC">C. 실습 시나리오</a>
+    <a href="#secD">D. 거짓 인용 교정</a>
+    <a href="#secE">E. 윤리·자가퀴즈</a>
+    <a href="#secF">F. 결과 제출</a>
+  </div>
+</nav>
+
+<!-- 상시 경고 (스티키) -->
+<div class="wrap">
+  <div class="guard-banner sticky-top" role="note">
+    <span class="ico">🛡️</span>
+    <span><strong>상시 경고 —</strong> 모든 AI 서비스에 실제 환자 식별정보·의무기록을 입력하지 마세요. 가상 사례·공개 문헌만 사용합니다.</span>
+  </div>
+</div>
+
+<main>
+
+<!-- ===================== A. 카테고리별 서비스 분류 ===================== -->
+<section class="block" id="secA">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="kicker">Section A</span>
+      <h2>카테고리별 서비스 분류</h2>
+      <p>6개 카테고리 · 서비스별 핵심 기능과 한계, 간호·연구 적합성(★1~5), 검증된 공식 출처를 카드로 정리했습니다.
+         사양·요금은 <strong>2026년 6월 기준</strong> 웹 검증값이며, 변동 가능하므로 각 카드의 공식 URL에서 재확인하세요.</p>
+    </div>
+    <div id="catContainer"></div>
+  </div>
+</section>
+
+<!-- ===================== B. 비교표 ===================== -->
+<section class="block" id="secB">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="kicker">Section B</span>
+      <h2>서비스 비교표</h2>
+      <p>데이터베이스 규모·출처 추적성(인용 그라운딩·환각 위험)·핵심 기능·비용·한국어/국내문헌 지원·간호의학 적합성을 한눈에 비교합니다.
+         정렬·카테고리 필터가 가능하며, 모바일에서는 카드형으로 자동 전환됩니다.</p>
+    </div>
+    <div class="table-controls">
+      <label for="catFilter">카테고리 필터</label>
+      <select id="catFilter"><option value="all">전체 보기</option></select>
+      <label for="sortSel">정렬</label>
+      <select id="sortSel">
+        <option value="cat">카테고리순</option>
+        <option value="fit">간호·의학 적합성 높은순</option>
+        <option value="name">이름순</option>
+      </select>
+    </div>
+    <div class="cmp-wrap" id="cmpTableWrap"><table class="cmp" id="cmpTable"></table></div>
+    <div class="cmp-cards hidden" id="cmpCards"></div>
+  </div>
+</section>
+
+<!-- ===================== C. 실습 시나리오 ===================== -->
+<section class="block" id="secC">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="kicker">Section C</span>
+      <h2>실습 시나리오 <span id="trackBadgeC" class="tag tag-freemium" style="font-size:.7rem;vertical-align:middle"></span></h2>
+      <p>간호 맥락의 단계별 체크리스트입니다. 체크 상태는 자동 저장(localStorage)되며, 트랙 토글에 따라 시나리오가 전환됩니다.</p>
+    </div>
+    <div class="guard-banner" role="note">
+      <span class="ico">🛡️</span>
+      <span>아래 모든 시나리오는 <strong>가상 사례</strong>로 진행합니다. 실제 환자 정보를 어떤 도구에도 입력하지 마세요.</span>
+    </div>
+    <div id="scnContainer"></div>
+  </div>
+</section>
+
+<!-- ===================== D. 거짓 인용 교정 실습 ===================== -->
+<section class="block" id="secD">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="kicker">Section D · 핵심 평가</span>
+      <h2>거짓 인용(환각) 교정 실습</h2>
+      <p>AI가 생성했다고 가정한 답변 3개입니다. 각 답변에는 <strong>실재하지 않거나 주장을 왜곡한 가짜 인용</strong>이 1~2개 의도적으로 심어져 있습니다.
+         의심되는 인용을 <strong>클릭해 표시</strong>하고, 적절한 <strong>검증 방법</strong>을 선택한 뒤 채점하세요. 이 모듈은 비판적 평가 역량을 직접 측정합니다.</p>
+    </div>
+    <div id="fcContainer"></div>
+    <div class="btn-row">
+      <button class="btn" id="fcSubmit">채점하고 해설 보기</button>
+      <button class="btn btn-ghost" id="fcReset">다시 풀기</button>
+    </div>
+    <div class="fc-score" id="fcScore"></div>
+  </div>
+</section>
+
+<!-- ===================== E. 학습 마무리 ===================== -->
+<section class="block" id="secE">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="kicker">Section E</span>
+      <h2>학습 마무리 — 윤리 체크리스트 &amp; 자가퀴즈</h2>
+      <p>생성형 AI 학술 활용의 윤리 원칙을 점검하고, 5문항 자가퀴즈로 즉시 피드백을 받습니다.</p>
+    </div>
+    <div class="ethics">
+      <h3 style="font-size:1.1rem">✅ 생성형 AI 학술 활용 윤리 체크리스트</h3>
+      <ul class="steps" id="ethicsList"></ul>
+      <div class="scn-progress"><span>준수 항목</span><div class="bar"><span id="ethicsBar"></span></div><span id="ethicsCount" class="mono">0/0</span></div>
+    </div>
+    <h3 style="font-size:1.15rem;margin-top:26px">📝 5문항 자가퀴즈</h3>
+    <div id="quizContainer"></div>
+    <div class="btn-row">
+      <button class="btn" id="quizSubmit">채점하기</button>
+      <button class="btn btn-ghost" id="quizReset">다시 풀기</button>
+    </div>
+    <div class="fc-score" id="quizScoreBox"></div>
+  </div>
+</section>
+
+<!-- ===================== F. 결과 수합 ===================== -->
+<section class="block" id="secF">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="kicker">Section F</span>
+      <h2>결과 제출 — Google Forms 연동 &amp; JSON 백업</h2>
+      <p>실습 데이터(시나리오 완료율·거짓인용 점수·자가퀴즈 점수)로 사전 채움된 Google Form을 새 탭으로 엽니다. 폼 미설정·오프라인 대비 JSON 백업도 제공합니다.</p>
+    </div>
+    <div class="submit-grid">
+      <div class="submit-card">
+        <h3 style="font-size:1.05rem">학생 정보</h3>
+        <div class="field"><label for="stuName">이름</label><input id="stuName" type="text" placeholder="홍길동" autocomplete="off"></div>
+        <div class="field"><label for="stuId">학번</label><input id="stuId" type="text" placeholder="2024xxxxx" autocomplete="off" inputmode="numeric"></div>
+        <div class="config-note" id="configNote"></div>
+        <div class="btn-row">
+          <button class="btn" id="submitForm">📤 결과 제출(Google Form)</button>
+          <button class="btn btn-amber" id="exportJson">💾 JSON 백업 내보내기</button>
+        </div>
+      </div>
+      <div class="submit-card">
+        <h3 style="font-size:1.05rem">현재 집계 미리보기</h3>
+        <div class="summary-box" id="summaryBox">불러오는 중…</div>
+        <div class="btn-row">
+          <button class="btn btn-ghost btn-sm" id="refreshSummary">↻ 새로고침</button>
+          <button class="btn btn-ghost btn-sm" id="resetAll">⟲ 전체 초기화</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="site">
+  <p><strong>청암대학교 간호학과 · AI융합 간호정보학 · 제프리 교수(정종필)</strong></p>
+  <p style="font-size:.8rem;margin:.4em 0 0;opacity:.85">교육·연구 목적 도구 · 모든 사양은 공식 출처에서 재확인 권장 · 실제 환자정보 입력 금지</p>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<!-- ===================== 데이터 & 로직 ===================== -->
+<script>
+/* ---------- localStorage 키 ---------- */
+const LS = {
+  consent:'nai_consent', track:'nai_track', scn:'nai_scenarios',
+  fc:'nai_falsecite', quiz:'nai_quiz', ethics:'nai_ethics', stu:'nai_student'
+};
+const store = {
+  get:(k,d)=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},
+  set:(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+};
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2600);}
+
+/* ===================================================================
+   서비스 데이터 (2026-06 웹 검증, 각 항목 공식 URL 출처 명시)
+   fit = 간호·연구 적합성 ★(1~5)
+   =================================================================== */
+const CATEGORIES = [
+  {n:1, key:'search', name:'근거 검색 엔진', color:'#065F46',
+   desc:'질문에 대한 학술적 근거를 합성·요약하는 AI 검색 엔진.'},
+  {n:2, key:'network', name:'인용 네트워크·비판적 평가', color:'#1d4ed8',
+   desc:'논문 간 인용 관계를 시각화하고, 인용이 지지/반대인지 맥락을 평가.'},
+  {n:3, key:'synth', name:'다중소스 종합·학습', color:'#6d28d9',
+   desc:'여러 자료를 업로드해 요약·플래시카드·오디오 등 학습물로 변환.'},
+  {n:4, key:'writing', name:'학술 글쓰기·인용 관리', color:'#0e7490',
+   desc:'학술 영어 교정·저널 형식·인용/참고문헌 관리.'},
+  {n:5, key:'general', name:'범용 추론·딥리서치', color:'#b45309',
+   desc:'범용 LLM의 추론·딥리서치 기능. 그라운딩 없으면 환각 위험 큼.'},
+  {n:6, key:'korea', name:'국내 학술 DB·연계 한계', color:'#be123c',
+   desc:'국내 학술지·한국어 문헌 색인. 영문 AI 도구의 사각지대를 보완.',
+   warn:'<strong>왜 국내 DB를 병행해야 하나:</strong> 위 1~5의 영문 기반 AI 도구는 한국어 학술지와 국내 등재지(KCI)를 충분히 색인하지 못합니다. '
+       +'국내 간호학회지 등에 투고를 준비하거나 국내 임상 맥락(국내 가이드라인·수가·제도)을 다룰 때는 RISS·KISS·DBpia·ScienceON을 반드시 병행해 누락을 보완해야 합니다.'},
+];
+
+const SERVICES = [
+  /* 1. 근거 검색 엔진 */
+  {cat:'search', name:'Consensus', price:'freemium', fit:5,
+   def:'2억2천만+ 동료심사 논문에서 질문에 대한 과학적 합의를 합성해 보여주는 AI 검색엔진.',
+   feat:'Consensus Meter(연구 간 합의도), Pro Analysis, Study Snapshots, Deep Search(다수 논문 정독 후 구조화 보고서).',
+   strength:'모든 주장에 출처 링크를 달아 그라운딩이 강함. 임상 질문의 근거 방향을 빠르게 파악.',
+   limit:'합의 표시가 단순화될 수 있어 1차 출처 확인 필요. 한국어 문헌 색인 약함.',
+   priceTxt:'무료(Pro Analysis·Snapshot 각 월 10회) / Premium $8.99·월, Pro $15·월(Deep Search 15회)',
+   db:'2억2천만+ 동료심사 논문', ground:'높음 — 모든 주장에 출처 링크', kr:'약함(영문 중심)', med:'★★★★★',
+   url:'https://consensus.app'},
+  {cat:'search', name:'Elicit', price:'freemium', fit:5,
+   def:'1억3천8백만+ 논문에서 검색·요약·구조화 추출을 수행하는 연구 보조 AI(체계적 문헌고찰 특화).',
+   feat:'PICO/RCT 데이터 구조화 추출, 논문 비교표(개입·결과·표본) 자동 생성, Research Agents(다단계 자율 조사).',
+   strength:'Cochrane 994개 리뷰 대비 추출 96%·전문 스크리닝 99% 등 SR 워크플로 정확도 높음.',
+   limit:'고급 추출은 유료 크레딧 소모. 추출 결과도 1차 원문 대조 필요.',
+   priceTxt:'무료(Basic) / Plus $12·월, Pro $49·월',
+   db:'1억3천8백만+ 논문', ground:'높음 — 셀 단위 출처 추적', kr:'약함(영문 중심)', med:'★★★★★',
+   url:'https://elicit.com'},
+  {cat:'search', name:'Semantic Scholar', price:'free', fit:4,
+   def:'Allen Institute for AI의 비영리 무료 학술 검색엔진. 2억+ 논문과 인용 그래프 제공.',
+   feat:'영향력 있는 인용(Highly Influential) 식별, 인용 그래프, 자동 요약, 무료 공개 API.',
+   strength:'완전 무료·API 개방으로 다른 도구의 백본 데이터로 활용. 비영리 운영 안정성.',
+   limit:'합성·대화형 답변보다는 검색·메타데이터 중심. 한국어 문헌 색인 제한.',
+   priceTxt:'완전 무료(구독·사용량 제한 없음), API 무료(5분당 100요청)',
+   db:'2억+ 논문(약 2.14억)', ground:'높음 — 원문 메타데이터·인용 링크', kr:'제한적', med:'★★★★☆',
+   url:'https://www.semanticscholar.org'},
+
+  /* 2. 인용 네트워크·비판적 평가 */
+  {cat:'network', name:'Research Rabbit', price:'free', fit:4,
+   def:'논문 간 인용·공저 네트워크를 시각적으로 탐색하는 무료 문헌 발견 도구.',
+   feat:'시드 논문 기반 스마트 추천, 저자 추적·알림, Zotero 가져오기, 다중 논문 동시 탐색.',
+   strength:'완전 무료. 여러 핵심 논문에서 출발해 관련 연구를 넓게 발굴하기 좋음.',
+   limit:'비판적 평가(인용 맥락)는 제공 안 함. 발견 도구이지 평가 도구는 아님.',
+   priceTxt:'완전 무료(프리미엄 없음)',
+   db:'PubMed·Semantic Scholar·arXiv 등 연계', ground:'중간 — 메타데이터 기반', kr:'제한적', med:'★★★★☆',
+   url:'https://www.researchrabbit.ai'},
+  {cat:'network', name:'Connected Papers', price:'freemium', fit:3,
+   def:'한 논문의 인용 이웃(유사도 기반 그래프)을 시각화해 연구 지형을 보여주는 도구.',
+   feat:'시드 논문 1편 기준 유사 논문 그래프, Prior/Derivative works, 시간축 색상.',
+   strength:'단일 논문의 학문적 맥락·선후 관계를 직관적으로 파악.',
+   limit:'무료는 그래프 생성 횟수 제한. 인용의 지지/반대 맥락은 제공 안 함.',
+   priceTxt:'무료(월 그래프 횟수 제한) / 유료 구독으로 무제한',
+   db:'Semantic Scholar 기반', ground:'중간 — 유사도 그래프', kr:'제한적', med:'★★★☆☆',
+   url:'https://www.connectedpapers.com'},
+  {cat:'network', name:'scite', price:'paid', fit:5,
+   def:'인용을 지지(supporting)·반대(contrasting)·언급(mentioning)으로 분류하는 Smart Citations 도구.',
+   feat:'Smart Citations(13억+ 인용문 분석), 논문 신뢰도 대시보드, 철회 경고, Assistant(2.8억+ 전문 기반).',
+   strength:'단순 피인용 수가 아닌 "어떻게 인용되었는가"를 보여줘 근거 강도 판단에 핵심.',
+   limit:'유료 중심(무료는 매우 제한적). 분류 정확도도 사람 검토 필요.',
+   priceTxt:'개인 $20·월(연 결제 시 $12·월) / 기관 별도',
+   db:'2.8억+ 문헌·13억+ 인용문', ground:'매우 높음 — 인용 맥락 분류', kr:'제한적', med:'★★★★★',
+   url:'https://scite.ai'},
+
+  /* 3. 다중소스 종합·학습 */
+  {cat:'synth', name:'NotebookLM', price:'freemium', fit:5,
+   def:'업로드한 자료에만 근거(RAG)해 답하는 Google의 소스 그라운디드 AI(Gemini 기반).',
+   feat:'오디오·비디오 개요, 플래시카드·퀴즈·마인드맵·학습가이드 생성, 자료 내 인용 표시, 인터랙티브 음성.',
+   strength:'업로드 자료 밖으로 환각이 적고 답변마다 출처 위치를 표시. 강의 PDF 학습에 최적.',
+   limit:'업로드 자료의 정확성에 종속(자료가 틀리면 답도 틀림). 무료는 일일 한도.',
+   priceTxt:'무료(노트북 100·소스 50개·일 질문 50) / Plus $7.99·월, Pro $19.99·월',
+   db:'사용자 업로드 자료(RAG)', ground:'높음 — 업로드 소스 내 인용', kr:'한국어 자료 처리 양호', med:'★★★★★',
+   url:'https://notebooklm.google'},
+  {cat:'synth', name:'SciSpace', price:'freemium', fit:4,
+   def:'논문 PDF와 대화하며 방법·결과를 추출하는 Copilot, Deep Review, 4만+ 저널 템플릿 제공.',
+   feat:'PDF Chat(Copilot), Deep Review(고급 문헌검색), Biomedical Agent, 인용 추출, 4만+ 저널 형식.',
+   strength:'PDF 정독·요약·표 추출과 글쓰기 보조를 한 곳에서. 의생명 에이전트 보유.',
+   limit:'무료는 크레딧 제한. 요약·추출 결과 원문 대조 필요.',
+   priceTxt:'무료(월 100크레딧) / Premium $12·월, Advanced $70·월, Max $160·월',
+   db:'2억+ 논문 색인 + 업로드', ground:'중간~높음 — 출처 인용 제공', kr:'제한적', med:'★★★★☆',
+   url:'https://scispace.com'},
+  {cat:'synth', name:'Scholarcy', price:'freemium', fit:3,
+   def:'논문을 플래시카드·요약·하이라이트로 변환해 빠른 문헌 검토를 돕는 도구.',
+   feat:'섹션 분리(서론·방법·결과), 자동 참고문헌 추출, 플래시카드, Zotero/Obsidian/Notion 연계.',
+   strength:'긴 논문을 구조화 카드로 빠르게 요약. 문헌 매트릭스 작성에 유용.',
+   limit:'능동적 개발 둔화(성숙·정체 단계). 요약 깊이는 제한적.',
+   priceTxt:'7일 무료체험 / Plus $9.99·월(연 결제 $7.99·월)',
+   db:'업로드 문서 처리', ground:'중간 — 원문 추출 기반', kr:'제한적', med:'★★★☆☆',
+   url:'https://www.scholarcy.com'},
+
+  /* 4. 학술 글쓰기·인용 관리 */
+  {cat:'writing', name:'Paperpal', price:'freemium', fit:4,
+   def:'연구자용 학술 영어 교정·편집 AI. 1만+ 인용 스타일과 2.5억+ 논문 연계.',
+   feat:'학술 문장 교정·리라이트, 1만+ 인용 스타일 생성, 표절 검사, 검증된 출처 링크.',
+   strength:'저널 투고 직전 영어 교정과 인용 형식 정리에 강함.',
+   limit:'생성·교정 결과의 사실성은 보장 안 됨(언어 교정 도구). 무료는 일일 한도.',
+   priceTxt:'무료(월 200제안·일 5회 AI) / Prime $25·월(연 결제 시 저렴)',
+   db:'2.5억+ 논문 연계', ground:'중간 — 인용 출처 링크', kr:'영어 교정 특화', med:'★★★★☆',
+   url:'https://paperpal.com'},
+  {cat:'writing', name:'Writefull', price:'freemium', fit:3,
+   def:'연구 논문 코퍼스로 학습한 학술 영어 교정 AI. LaTeX/Overleaf 특화.',
+   feat:'학술 어조 교정, Overleaf 내 LaTeX 피드백, TeXGPT(코드 생성), Full Edit 문장 재작성.',
+   strength:'LaTeX 환경에 최적화. 입력 텍스트를 저장·학습에 사용하지 않음(프라이버시).',
+   limit:'인용 관리 기능은 제한적. 간호학(주로 Word/APA) 환경엔 LaTeX 특화가 덜 맞을 수 있음.',
+   priceTxt:'무료(기능별 일일 한도) / 약 $7.21·월(연 결제 더 저렴)',
+   db:'영어 연구논문 코퍼스', ground:'해당 없음 — 언어 교정', kr:'영어 교정 특화', med:'★★★☆☆',
+   url:'https://www.writefull.com'},
+  {cat:'writing', name:'Zotero', price:'free', fit:5,
+   def:'무료·오픈소스 참고문헌 관리자. 9천+ 인용 스타일과 워드프로세서 통합.',
+   feat:'브라우저 저장, Word·Google Docs·LibreOffice 연동, 인용/참고문헌 자동 생성, 철회 논문 경고, PDF 주석.',
+   strength:'완전 무료·오픈소스. APA 등 9천+ 스타일. 위 AI 도구로 찾은 문헌의 최종 인용 관리 허브.',
+   limit:'AI 검색·요약 기능은 아님(순수 관리). 동기화 대용량은 유료 스토리지.',
+   priceTxt:'무료(오픈소스), 대용량 클라우드 동기화만 유료',
+   db:'사용자 라이브러리', ground:'높음 — 원문 메타데이터 보존', kr:'한국어 문헌 메타데이터 저장 가능', med:'★★★★★',
+   url:'https://www.zotero.org'},
+
+  /* 5. 범용 추론·딥리서치 */
+  {cat:'general', name:'Claude', price:'freemium', fit:4,
+   def:'Anthropic의 범용 추론 AI. 무료에도 웹검색·확장적 사고 포함, 딥리서치 지원.',
+   feat:'장문 추론·요약, 웹검색·코드 실행, 확장적 사고(extended thinking), 파일 분석.',
+   strength:'복잡한 추론·긴 문서 종합·신중한 답변에 강함. 무료 티어에 웹검색 포함.',
+   limit:'학술 DB 그라운딩이 없으면 인용 환각 위험. 인용은 반드시 1차 출처로 검증.',
+   priceTxt:'무료(웹검색·코드·메모리 포함) / Pro $20·월, Max $100·$200·월',
+   db:'미공개(웹검색 시 실시간)', ground:'낮음~중간 — 명시 안 하면 환각 위험', kr:'한국어 우수', med:'★★★★☆',
+   url:'https://claude.ai'},
+  {cat:'general', name:'ChatGPT', price:'freemium', fit:4,
+   def:'OpenAI의 범용 대화 AI(GPT-5.5 계열 플래그십). Deep Research 모드 제공.',
+   feat:'범용 추론·작문, Deep Research(다수 출처 종합 보고서), 파일·이미지 분석, 코드.',
+   strength:'폭넓은 작업 범용성과 빠른 초안 작성. Deep Research로 출처 종합.',
+   limit:'기본 모드는 출처 미표기 시 환각 위험 큼. 의학 사실은 반드시 교차검증.',
+   priceTxt:'무료 / Plus $20·월(Deep Research 약 월 10회), Pro $100·$200·월',
+   db:'미공개(웹검색 시 실시간)', ground:'낮음~중간 — Deep Research 외 환각 위험', kr:'한국어 우수', med:'★★★★☆',
+   url:'https://chatgpt.com'},
+  {cat:'general', name:'Gemini', price:'freemium', fit:4,
+   def:'Google의 범용 AI(Gemini 2.5/3.1 Pro). 100만 토큰 컨텍스트와 Deep Research.',
+   feat:'초장문 컨텍스트(1M 토큰), Deep Research, Workspace 통합, NotebookLM 백본.',
+   strength:'대용량 문서·다수 PDF 동시 처리에 유리. 구글 생태계 연동.',
+   limit:'그라운딩 없이는 환각 위험. 인용 정확성은 별도 검증 필요.',
+   priceTxt:'무료 / Google AI Pro $19.99·월(Deep Research·1M 컨텍스트)',
+   db:'미공개(웹검색 시 실시간)', ground:'낮음~중간 — 출처 명시 필요', kr:'한국어 우수', med:'★★★★☆',
+   url:'https://gemini.google.com'},
+  {cat:'general', name:'Perplexity', price:'freemium', fit:5,
+   def:'답변에 출처를 기본 표기하는 답변 엔진. Deep Research·Academic 모드 보유.',
+   feat:'실시간 출처 인용, Deep Research(수백 출처 종합), Academic 포커스, 다중모델.',
+   strength:'범용 도구 중 출처 그라운딩이 가장 일관적. 학술·임상 탐색의 1차 관문에 적합.',
+   limit:'출처가 1차 논문이 아닌 2차 웹일 수 있음 — 원문 추적 필수.',
+   priceTxt:'무료(Deep Research 일 5회) / Pro $20·월, 학생 Education $10·월',
+   db:'실시간 웹+학술 색인', ground:'중간~높음 — 답변마다 출처 표기', kr:'한국어 양호', med:'★★★★★',
+   url:'https://www.perplexity.ai'},
+
+  /* 6. 국내 학술 DB */
+  {cat:'korea', name:'RISS', price:'freemium', fit:5,
+   def:'KERIS(한국교육학술정보원)가 운영하는 국내외 학술정보 대국민 통합 서비스.',
+   feat:'국내 학위논문·학술지논문·단행본 통합 검색, 원문/상호대차, 해외 DB 연계.',
+   strength:'국내 학위논문·학회지 포괄. 영문 AI가 놓치는 한국어 문헌 발굴의 1차 관문.',
+   limit:'AI 합성·요약 기능 없음(검색 중심). 일부 원문은 기관 구독·유료.',
+   priceTxt:'검색 무료 / 일부 원문 기관 인증·유료',
+   db:'국내 학위·학술지·단행본', ground:'높음 — 원문 서지', kr:'매우 강함(국내 핵심)', med:'★★★★★',
+   url:'https://www.riss.kr'},
+  {cat:'korea', name:'KISS', price:'paid', fit:4,
+   def:'한국학술정보(주)가 제공하는 국내 학회·연구기관 학술지 원문 DB.',
+   feat:'국내 학회지 원문 검색·열람, 간호·보건 분야 등재지 다수 수록.',
+   strength:'국내 간호학회지 등 등재지 원문 접근. 국내 투고 준비 시 선행연구 확보.',
+   limit:'기관 구독 기반(개인은 유료). AI 기능 제한적.',
+   priceTxt:'기관 구독(개인 결제·소속기관 인증)',
+   db:'국내 학회지 원문', ground:'높음 — 원문 서지', kr:'매우 강함(국내 핵심)', med:'★★★★☆',
+   url:'https://kiss.kstudy.com'},
+  {cat:'korea', name:'DBpia', price:'paid', fit:4,
+   def:'국내 논문·학술지를 제공하는 학술 플랫폼(국내 등재지 광범위 수록).',
+   feat:'국내 학술지 원문, 주제·저자 검색, 최근 AI 추천·요약 기능 도입.',
+   strength:'국내 간호·보건 등재지 폭넓게 수록. 국내 임상·정책 맥락 연구 확보에 유용.',
+   limit:'기관 구독 기반(개인 유료). 해외 문헌 색인은 제한적.',
+   priceTxt:'기관 구독(개인 결제·소속기관 인증)',
+   db:'국내 학술지·논문', ground:'높음 — 원문 서지', kr:'매우 강함(국내 핵심)', med:'★★★★☆',
+   url:'https://www.dbpia.co.kr'},
+  {cat:'korea', name:'ScienceON (KISTI)', price:'free', fit:4,
+   def:'KISTI가 운영하는 국가 과학기술 정보 통합 서비스.',
+   feat:'국내외 논문·특허·보고서·연구데이터 통합 검색, NTIS·국가R&D 연계, 무료 원문 다수.',
+   strength:'과학기술·보건의료 국가 정보 통합. 무료 접근 원문 폭넓음.',
+   limit:'간호 임상보다 과학기술 일반에 강점. AI 합성 기능은 제한.',
+   priceTxt:'무료(회원가입), 일부 외부 DB는 기관 인증',
+   db:'국내외 논문·특허·연구데이터', ground:'높음 — 원문 서지', kr:'매우 강함(국가 정보)', med:'★★★★☆',
+   url:'https://scienceon.kisti.re.kr'},
+];
+
+/* ---------- 별점 렌더 ---------- */
+function stars(n){return '★★★★★☆☆☆☆☆'.slice(5-n,10-n);}
+function priceTag(p){
+  if(p==='free') return '<span class="tag tag-free">무료</span>';
+  if(p==='paid') return '<span class="tag tag-paid">유료</span>';
+  if(p==='freemium') return '<span class="tag tag-freemium">부분무료</span>';
+  return '<span class="tag tag-verify">검증 필요</span>';
+}
+function catColor(key){return (CATEGORIES.find(c=>c.key===key)||{}).color || '#065F46';}
+function catName(key){return (CATEGORIES.find(c=>c.key===key)||{}).name || '';}
+
+/* ---------- A. 카테고리 카드 렌더 ---------- */
+function renderCategories(){
+  const wrap=document.getElementById('catContainer');
+  wrap.innerHTML = CATEGORIES.map(cat=>{
+    const svs = SERVICES.filter(s=>s.cat===cat.key);
+    const cards = svs.map(s=>`
+      <div class="card" style="--catc:${cat.color}">
+        <h4>${s.name} ${priceTag(s.price)}</h4>
+        <p class="def">${s.def}</p>
+        <dl>
+          <dt>핵심 기능</dt><dd>${s.feat}</dd>
+          <dt>강점</dt><dd>${s.strength}</dd>
+          <dt>한계</dt><dd>${s.limit}</dd>
+          <dt>무료·유료</dt><dd>${s.priceTxt}</dd>
+        </dl>
+        <div class="fit"><strong>간호·연구 적합성</strong> <span class="stars" title="${s.fit}/5">${stars(s.fit)}</span> <span class="muted">${s.fit}/5</span></div>
+        <div class="src"><strong style="font-size:.74rem;color:var(--care-green-dark)">공식 출처 ▸ </strong>
+          <a href="${s.url}" target="_blank" rel="noopener">${s.url.replace('https://','')}</a></div>
+      </div>`).join('');
+    return `
+      <div class="cat">
+        <div class="cat-title"><span class="cat-num" style="background:${cat.color}">${cat.n}</span><h3>${cat.name}</h3></div>
+        <p class="cat-desc">${cat.desc}</p>
+        ${cat.warn?`<div class="cat-warn">${cat.warn}</div>`:''}
+        <div class="cards">${cards}</div>
+      </div>`;
+  }).join('');
+}
+
+/* ---------- B. 비교표 ---------- */
+const CMP_COLS=[
+  {k:'name',label:'서비스'},
+  {k:'db',label:'DB 규모·출처'},
+  {k:'ground',label:'출처 추적성(환각 위험)'},
+  {k:'feat',label:'핵심 기능'},
+  {k:'priceTxt',label:'비용'},
+  {k:'kr',label:'한국어·국내문헌'},
+  {k:'med',label:'간호·의학 적합성'},
+];
+function buildCatFilter(){
+  const sel=document.getElementById('catFilter');
+  CATEGORIES.forEach(c=>{const o=document.createElement('option');o.value=c.key;o.textContent=`${c.n}. ${c.name}`;sel.appendChild(o);});
+}
+function getCmpRows(){
+  const f=document.getElementById('catFilter').value;
+  let rows=SERVICES.slice();
+  if(f!=='all') rows=rows.filter(s=>s.cat===f);
+  const s=document.getElementById('sortSel').value;
+  if(s==='fit') rows.sort((a,b)=>b.fit-a.fit);
+  else if(s==='name') rows.sort((a,b)=>a.name.localeCompare(b.name));
+  else rows.sort((a,b)=>CATEGORIES.findIndex(c=>c.key===a.cat)-CATEGORIES.findIndex(c=>c.key===b.cat));
+  return rows;
+}
+function renderCmp(){
+  const rows=getCmpRows();
+  const t=document.getElementById('cmpTable');
+  t.innerHTML='<thead><tr>'+CMP_COLS.map(c=>`<th data-k="${c.k}">${c.label}</th>`).join('')+'</tr></thead><tbody>'+
+    rows.map(s=>`<tr>
+      <td class="name">${s.name}<span class="cat-pill">${catName(s.cat)}</span></td>
+      <td>${s.db}</td><td>${s.ground}</td><td>${s.feat}</td>
+      <td>${s.priceTxt}</td><td>${s.kr}</td>
+      <td>${s.med} <span class="muted">(${s.fit}/5)</span></td>
+    </tr>`).join('')+'</tbody>';
+  const cc=document.getElementById('cmpCards');
+  cc.innerHTML=rows.map(s=>`
+    <div class="cmp-card" style="border-left-color:${catColor(s.cat)}">
+      <h4>${s.name} ${priceTag(s.price)}</h4>
+      <dl>
+        <dt>분류</dt><dd>${catName(s.cat)}</dd>
+        <dt>DB 규모</dt><dd>${s.db}</dd>
+        <dt>출처 추적성</dt><dd>${s.ground}</dd>
+        <dt>핵심 기능</dt><dd>${s.feat}</dd>
+        <dt>비용</dt><dd>${s.priceTxt}</dd>
+        <dt>한국어·국내</dt><dd>${s.kr}</dd>
+        <dt>간호·의학</dt><dd>${s.med} (${s.fit}/5)</dd>
+      </dl>
+    </div>`).join('');
+}
+function setupCmpHeaderSort(){
+  document.getElementById('cmpTable').addEventListener('click',e=>{
+    const th=e.target.closest('th'); if(!th)return;
+    const k=th.dataset.k;
+    if(k==='med'){document.getElementById('sortSel').value='fit';renderCmp();}
+    else if(k==='name'){document.getElementById('sortSel').value='name';renderCmp();}
+  });
+}
+function syncCmpView(){
+  const mobile=window.matchMedia('(max-width:760px)').matches;
+  document.getElementById('cmpTableWrap').classList.toggle('hidden',mobile);
+  document.getElementById('cmpCards').classList.toggle('hidden',!mobile);
+}
+
+/* ---------- C. 시나리오 데이터 (트랙별) ---------- */
+const SCENARIOS={
+  edu:[
+    {id:'E1',title:'개념 학습 — NotebookLM으로 강의자료 소화',
+     goal:'강의 PDF를 업로드해 학습가이드·플래시카드·오디오 개요를 만들고 핵심 개념을 자가점검한다.',
+     steps:[
+       ['강의 PDF(가상/공개 자료)를 NotebookLM에 업로드한다.','NotebookLM'],
+       ['학습가이드(Study Guide)와 핵심 용어 요약을 생성한다.','NotebookLM'],
+       ['플래시카드와 퀴즈를 생성해 개념을 자가점검한다.','NotebookLM'],
+       ['오디오 개요(Audio Overview)를 만들어 이동 중 복습한다.','NotebookLM'],
+       ['답변마다 표시된 소스 인용 위치를 원문에서 직접 확인한다.','출처확인'],
+     ],
+     verify:['AI 요약이 원문을 왜곡하지 않았는지 인용 위치를 직접 대조한다.',
+             '플래시카드의 정의가 교재·강의와 일치하는지 1차 확인한다.',
+             '업로드 자료가 틀리면 답도 틀린다 — 자료의 신뢰성부터 점검한다.']},
+    {id:'E2',title:'임상 개념 시뮬레이션 — 사례 기반 설명의 근거 확인',
+     goal:'범용 AI로 가상 사례 기반 개념 설명을 받되, 출력의 근거를 1차 출처로 직접 확인한다.',
+     steps:[
+       ['가상 사례(실제 환자정보 금지)로 임상 개념 설명을 요청한다.','범용 AI'],
+       ['AI가 제시한 기전·근거에 대해 "출처를 제시하라"고 추가 질문한다.','범용 AI'],
+       ['제시된 출처를 Semantic Scholar/Consensus에서 실재 여부 확인한다.','Semantic Scholar'],
+       ['핵심 수치·가이드라인은 1차 출처(원문·학회 지침)로 대조한다.','출처확인'],
+       ['검증된 내용만 학습노트에 정리하고 미검증은 표시해 남긴다.','자가점검'],
+     ],
+     verify:['범용 AI는 그럴듯한 가짜 출처를 만들 수 있다(환각).',
+             '단일 도구 답변을 그대로 신뢰하지 말고 교차확인한다.',
+             '실제 환자 사례·식별정보를 절대 입력하지 않는다.']},
+  ],
+  research:[
+    {id:'R1',title:'PICO 근거 검색 — 입원 노인 낙상 예방 중재',
+     goal:'"입원 노인 환자의 낙상 예방 중재 효과"를 PICO로 구조화하고 Consensus·Elicit로 근거를 확보한다.',
+     steps:[
+       ['질문을 PICO로 구조화한다 (P: 입원 노인, I: 낙상예방 중재, C: 통상간호, O: 낙상 발생률).','PICO'],
+       ['Consensus에 PICO 질문을 입력해 근거 방향(합의도)을 확인한다.','Consensus'],
+       ['Elicit로 관련 RCT를 검색하고 개입·표본·결과 비교표를 추출한다.','Elicit'],
+       ['추출된 표의 각 수치를 원문 PDF에서 직접 대조한다.','출처확인'],
+       ['근거 요약을 Zotero에 서지로 저장해 인용 관리한다.','Zotero'],
+     ],
+     verify:['Consensus의 합의 표시는 단순화일 수 있어 1차 원문 확인 필수.',
+             'Elicit 추출 표의 수치도 원문 대조 없이는 신뢰 금지.',
+             '단일 검색엔진 의존 금지 — 최소 2개 도구로 교차확인.']},
+    {id:'R2',title:'비판적 평가 — scite로 근거 강도 판단',
+     goal:'R1의 핵심 논문을 scite로 검색해 지지/반대 인용 맥락을 보고 근거 강도를 판단한다.',
+     steps:[
+       ['R1에서 찾은 핵심 RCT를 scite에서 검색한다.','scite'],
+       ['Supporting(지지)·Contrasting(반대) 인용 탭을 각각 확인한다.','scite'],
+       ['반대 인용의 맥락을 읽고 결과가 도전받은 지점을 파악한다.','scite'],
+       ['철회(retraction)·정정 여부를 확인한다.','scite'],
+       ['지지/반대 비율과 맥락을 근거 강도 평가에 반영해 기록한다.','자가점검'],
+     ],
+     verify:['피인용 수(횟수)와 인용 맥락(질)은 다르다 — 맥락을 본다.',
+             'scite 분류도 100%는 아니므로 핵심 인용은 직접 읽는다.',
+             '하나의 RCT가 아닌 근거 총체(body of evidence)로 판단한다.']},
+    {id:'R3',title:'국내문헌 병행 — RISS·DBpia로 사각지대 보완',
+     goal:'동일 주제를 국내 DB에서 검색해 영문 AI 도구가 놓친 국내 연구를 보완한다.',
+     steps:[
+       ['동일 PICO 주제를 RISS에서 한국어로 검색한다.','RISS'],
+       ['DBpia에서 국내 간호학회지 등재 논문을 추가 검색한다.','DBpia'],
+       ['영문 AI 도구 결과와 비교해 누락된 국내 연구를 식별한다.','비교'],
+       ['국내 임상 맥락(국내 지침·제도) 반영 연구를 별도 표시한다.','자가점검'],
+       ['국내+해외 문헌을 Zotero에 통합해 투고 준비 서지를 만든다.','Zotero'],
+     ],
+     verify:['영문 AI 도구는 KCI 등재지·한국어 문헌을 충분히 색인하지 못한다.',
+             '국내 학회지 투고 시 국내 선행연구 누락은 치명적 — 반드시 병행.',
+             '국내 DB 원문은 기관 인증이 필요할 수 있다.']},
+  ]
+};
+
+function renderScenarios(){
+  const track=store.get(LS.track,'edu');
+  document.getElementById('trackBadgeC').textContent = track==='edu'?'교육 트랙':'연구 트랙';
+  const list=SCENARIOS[track];
+  const saved=store.get(LS.scn,{});
+  const wrap=document.getElementById('scnContainer');
+  wrap.innerHTML=list.map(s=>{
+    const cls = s.id[0]==='R'?'research':'';
+    const steps=s.steps.map((st,i)=>{
+      const key=`${s.id}_${i}`;
+      const ck=saved[key]?'checked':'';
+      return `<li><input type="checkbox" id="st_${key}" data-scn="${key}" ${ck}>
+        <label for="st_${key}">${st[0]} <span class="tool-ref">${st[1]}</span></label></li>`;
+    }).join('');
+    return `<div class="scn">
+      <div class="scn-head"><span class="scn-id ${cls}">${s.id}</span><h4>${s.title}</h4></div>
+      <p class="scn-goal">${s.goal}</p>
+      <ul class="steps">${steps}</ul>
+      <div class="scn-progress"><span>진행</span><div class="bar"><span id="bar_${s.id}"></span></div><span class="mono" id="cnt_${s.id}">0/${s.steps.length}</span></div>
+      <div class="verify-box"><strong>🔎 검증 포인트</strong><ul>${s.verify.map(v=>`<li>${v}</li>`).join('')}</ul></div>
+    </div>`;
+  }).join('');
+  list.forEach(s=>updateScnBar(s));
+  wrap.querySelectorAll('input[data-scn]').forEach(inp=>{
+    inp.addEventListener('change',()=>{
+      const sv=store.get(LS.scn,{});
+      sv[inp.dataset.scn]=inp.checked;
+      store.set(LS.scn,sv);
+      const id=inp.dataset.scn.split('_')[0];
+      updateScnBar(list.find(x=>x.id===id));
+      refreshSummary();
+    });
+  });
+}
+function updateScnBar(s){
+  if(!s)return;
+  const saved=store.get(LS.scn,{});
+  let done=0; s.steps.forEach((_,i)=>{if(saved[`${s.id}_${i}`])done++;});
+  const pct=Math.round(done/s.steps.length*100);
+  const bar=document.getElementById('bar_'+s.id); if(bar)bar.style.width=pct+'%';
+  const cnt=document.getElementById('cnt_'+s.id); if(cnt)cnt.textContent=`${done}/${s.steps.length}`;
+}
+function scenarioCompletionRate(){
+  const saved=store.get(LS.scn,{});
+  let total=0,done=0;
+  ['edu','research'].forEach(tr=>SCENARIOS[tr].forEach(s=>s.steps.forEach((_,i)=>{total++;if(saved[`${s.id}_${i}`])done++;})));
+  return total?Math.round(done/total*100):0;
+}
+
+/* ---------- D. 거짓 인용 교정 실습 ----------
+   각 답변: answer 배열의 'fake' 키를 가진 조각이 인용. fake=true 가 정답(거짓).
+   methods: correct=true 가 올바른 검증 방법.                                  */
+const FC_ITEMS=[
+  {
+    id:'FC1',
+    prompt:'질문: "입원 노인의 낙상 예방을 위한 다요인 중재의 효과 근거는?" (AI 생성 답변 가정)',
+    answer:[
+      {t:'다요인 낙상예방 중재는 입원 노인의 낙상률을 유의하게 감소시킨다는 보고가 있다 '},
+      {t:'(Hendrich, 2019, Journal of Advanced Nursing, DOI:10.1111/jan.13901)',fake:false},
+      {t:'. 또한 한 메타분석은 다요인 중재가 낙상을 73% 감소시켰다고 단언했다',fake:true},
+      {t:' '},
+      {t:'(Kim & Park, 2023, New England Journal of Nursing, DOI:10.9999/nejn.2023.077)',fake:true},
+      {t:'.'},
+    ],
+    methods:[
+      {t:'각 DOI를 doi.org에서 조회해 실제 등록·해당 논문 여부 확인',correct:true},
+      {t:'저널명이 실재하는지 Semantic Scholar·출판사에서 확인',correct:true},
+      {t:'scite·Consensus로 주장(73% 감소)이 실제 문헌과 일치하는지 교차확인',correct:true},
+      {t:'답변이 자연스럽고 길면 신뢰할 수 있다',correct:false},
+    ],
+    expl:'심어진 거짓: ① "73% 감소를 단언"한 과장 주장 — 실제 근거는 효과크기가 중재·세팅별로 다르고 그렇게 단정하지 않습니다. ② "New England Journal of Nursing"은 실재하지 않는 저널명(NEJM 모방)이며 DOI 접두 10.9999는 비정상입니다. 검증: DOI 조회·저널 실재 확인·주장↔문헌 교차확인.'
+  },
+  {
+    id:'FC2',
+    prompt:'질문: "수술 후 통증관리에서 비약물적 중재의 근거는?" (AI 생성 답변 가정)',
+    answer:[
+      {t:'음악요법·이완요법 등 비약물적 중재는 보조적으로 통증·불안 완화에 도움이 될 수 있다 '},
+      {t:'(Cochrane Database Syst Rev, 2020, DOI:10.1002/14651858.CD012268)',fake:false},
+      {t:'. Smith 등(2018)은 음악요법이 모르핀 요구량을 완전히 대체했다고 결론지었다',fake:true},
+      {t:'. 나아가 '},
+      {t:'세계보건기구(WHO)는 2021년 모든 수술 후 환자에게 약물 대신 명상을 1차로 권고했다',fake:true},
+      {t:'.'},
+    ],
+    methods:[
+      {t:'Cochrane DOI를 조회해 실제 리뷰 제목·결론이 인용과 일치하는지 확인',correct:true},
+      {t:'WHO 가이드라인 원문을 공식 사이트에서 직접 확인',correct:true},
+      {t:'"완전히 대체/1차 권고" 같은 단정적 표현을 1차 출처로 대조',correct:true},
+      {t:'유명 기관(WHO) 이름이 있으면 사실로 간주',correct:false},
+    ],
+    expl:'심어진 거짓: ① "음악요법이 모르핀을 완전히 대체"는 보조요법을 대체요법으로 왜곡한 과장입니다. ② "WHO가 명상을 1차 권고"는 존재하지 않는 권위 인용(허위 권고)입니다. 기관·저널 이름이 붙어도 반드시 원문을 직접 확인해야 합니다.'
+  },
+  {
+    id:'FC3',
+    prompt:'질문: "당뇨 환자 교육에서 모바일 자가관리 앱의 효과는?" (AI 생성 답변 가정)',
+    answer:[
+      {t:'모바일 자가관리 앱은 일부 연구에서 당화혈색소(HbA1c) 개선과 연관되었다 '},
+      {t:'(Lee et al., 2022, Diabetes Care, DOI:10.2337/dc21-1234)',fake:false},
+      {t:'. 한 RCT는 '},
+      {t:'(Johnson, 2021)에서 앱 사용군의 HbA1c가 평균 5.0%p 감소했다고 보고했다',fake:true},
+      {t:'.'},
+    ],
+    methods:[
+      {t:'보고된 효과크기(HbA1c 5.0%p 감소)가 임상적으로 타당한지 검토',correct:true},
+      {t:'Johnson(2021) RCT가 실재하는지 Semantic Scholar에서 검색',correct:true},
+      {t:'Diabetes Care DOI를 조회해 수치가 원문과 일치하는지 대조',correct:true},
+      {t:'구체적 수치가 있으면 정확한 것이다',correct:false},
+    ],
+    expl:'심어진 거짓: "HbA1c 평균 5.0%p 감소"는 임상적으로 비현실적인 과장입니다(실제 메타분석 수준은 보통 0.3~0.6%p). 구체적인 숫자가 오히려 환각을 그럴듯하게 만듭니다 — 임상적 타당성과 원문 수치를 반드시 대조하세요.'
+  },
+];
+
+function renderFalseCite(){
+  const wrap=document.getElementById('fcContainer');
+  wrap.innerHTML=FC_ITEMS.map(item=>{
+    const cites=item.answer.map((c,i)=>{
+      if(!('fake' in c)) return c.t;
+      return `<span class="cite" data-fc="${item.id}" data-i="${i}" data-fake="${c.fake}" role="button" tabindex="0" title="의심되면 클릭해 표시">${c.t}</span>`;
+    }).join('');
+    const methods=item.methods.map((m,i)=>`
+      <label><input type="checkbox" data-fcm="${item.id}" data-mi="${i}" data-correct="${m.correct}"> ${m.t}</label>`).join('');
+    return `<div class="fc-item" data-item="${item.id}">
+      <p class="fc-prompt">${item.prompt}</p>
+      <div class="fc-answer">${cites}</div>
+      <fieldset class="fc-method" style="border:none;padding:0;margin:0">
+        <legend>이 답변을 어떻게 검증하겠습니까? (해당되는 방법 모두 선택)</legend>
+        ${methods}
+      </fieldset>
+      <p class="fc-hint">💡 의심되는 인용·주장을 <strong>클릭</strong>해 노란색으로 표시하세요. 가짜는 1~2개 있습니다.</p>
+      <div class="fc-explain" id="exp_${item.id}"></div>
+    </div>`;
+  }).join('');
+  wrap.querySelectorAll('.cite').forEach(c=>{
+    const toggle=()=>c.classList.toggle('flagged');
+    c.addEventListener('click',toggle);
+    c.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle();}});
+  });
+}
+
+function gradeFalseCite(){
+  let totalPts=0, gotPts=0;
+  FC_ITEMS.forEach(item=>{
+    const root=document.querySelector(`.fc-item[data-item="${item.id}"]`);
+    let fakeCount=0, fakeFlagged=0, wrongFlagged=0;
+    item.answer.forEach((c,i)=>{
+      if(!('fake' in c))return;
+      const span=root.querySelector(`.cite[data-i="${i}"]`);
+      const flagged=span.classList.contains('flagged');
+      if(c.fake){fakeCount++; if(flagged)fakeFlagged++; span.classList.add('reveal-fake');}
+      else{if(flagged)wrongFlagged++; span.classList.add('reveal-real');}
+    });
+    let mCorrect=0,mTotal=0,mWrong=0;
+    item.methods.forEach((m,i)=>{
+      const cb=root.querySelector(`input[data-mi="${i}"]`);
+      if(m.correct){mTotal++; if(cb.checked)mCorrect++;}
+      else{if(cb.checked)mWrong++;}
+    });
+    const idScore = Math.max(0, (fakeFlagged - wrongFlagged*0.5) / fakeCount) * 6;
+    const mScore  = Math.max(0, (mCorrect - mWrong) / mTotal) * 4;
+    const pts = Math.round((idScore+mScore)*10)/10;
+    totalPts += 10; gotPts += Math.max(0,pts);
+    const exp=document.getElementById('exp_'+item.id);
+    const ok = (fakeFlagged===fakeCount && wrongFlagged===0 && mCorrect===mTotal && mWrong===0);
+    exp.className='fc-explain show '+(ok?'ok':'no');
+    exp.innerHTML=`<h5>${ok?'✅ 정확히 식별했습니다':'⚠ 다시 확인하세요'} — 항목 점수 ${pts}/10</h5>
+      <p>${item.expl}</p>
+      <ul>
+        <li>가짜 인용 식별: ${fakeFlagged}/${fakeCount} ${wrongFlagged?`(오표시 ${wrongFlagged}개)`:''}</li>
+        <li>올바른 검증 방법: ${mCorrect}/${mTotal} ${mWrong?`(부적절 선택 ${mWrong}개)`:''}</li>
+      </ul>`;
+  });
+  const score100=Math.round(gotPts/totalPts*100);
+  store.set(LS.fc,{score:score100, done:true, ts:Date.now()});
+  const box=document.getElementById('fcScore');
+  box.className='fc-score show';
+  box.innerHTML=`<div class="big">${score100}점</div>
+    <p>거짓 인용 식별·검증 역량 점수입니다(가중 채점, 100점 만점). 빨강=가짜 인용, 초록=정상 인용으로 위에 표시했습니다.</p>
+    <p class="muted" style="font-size:.84rem">핵심: <strong>구체적 수치·유명 기관·정상적 DOI 형식</strong>도 환각일 수 있습니다. 반드시 DOI 조회·저널 실재 확인·주장↔문헌 교차확인을 거치세요.</p>`;
+  refreshSummary();
+  box.scrollIntoView({behavior:'smooth',block:'center'});
+}
+function resetFalseCite(){
+  store.set(LS.fc,{});
+  document.getElementById('fcScore').className='fc-score';
+  renderFalseCite();
+  refreshSummary();
+  toast('거짓 인용 실습을 초기화했습니다.');
+}
+
+/* ---------- E. 윤리 체크리스트 ---------- */
+const ETHICS=[
+  '출처 검증: AI가 제시한 모든 인용·수치를 1차 출처(원문·DOI)에서 직접 확인했다.',
+  '인용 표기: AI 활용 사실과 범위를 과제·논문에 정직하게 명시했다.',
+  '환자정보 보호: 실제 환자 식별정보·의무기록을 어떤 AI에도 입력하지 않았다.',
+  '학술 진실성: AI 생성물을 그대로 베끼지 않고 내 이해로 재구성·검증했다.',
+  '단일 도구 비의존: 최소 2개 이상 도구·출처로 교차확인했다.',
+  '국내문헌 병행: 국내 주제·투고 시 RISS·DBpia 등 국내 DB를 함께 검색했다.',
+];
+function renderEthics(){
+  const saved=store.get(LS.ethics,{});
+  const ul=document.getElementById('ethicsList');
+  ul.innerHTML=ETHICS.map((e,i)=>`<li><input type="checkbox" id="eth_${i}" data-eth="${i}" ${saved[i]?'checked':''}><label for="eth_${i}">${e}</label></li>`).join('');
+  ul.querySelectorAll('input').forEach(inp=>inp.addEventListener('change',()=>{
+    const s=store.get(LS.ethics,{}); s[inp.dataset.eth]=inp.checked; store.set(LS.ethics,s); updateEthicsBar();
+  }));
+  updateEthicsBar();
+}
+function updateEthicsBar(){
+  const s=store.get(LS.ethics,{}); let n=0; ETHICS.forEach((_,i)=>{if(s[i])n++;});
+  document.getElementById('ethicsBar').style.width=Math.round(n/ETHICS.length*100)+'%';
+  document.getElementById('ethicsCount').textContent=`${n}/${ETHICS.length}`;
+}
+
+/* ---------- E. 자가퀴즈 ---------- */
+const QUIZ=[
+  {q:'1. 생성형 AI가 만든 "그럴듯하지만 실재하지 않는 인용"을 가리키는 말은?',
+   opts:['환각(hallucination)','그라운딩','메타분석','체계적 문헌고찰'],a:0,
+   fb:'정답: 환각(hallucination). AI가 존재하지 않는 출처·사실을 생성하는 현상으로, 1차 출처 검증이 필수입니다.'},
+  {q:'2. 다음 중 "출처 추적성(그라운딩)"이 가장 강해 임상 근거 확인에 적합한 유형은?',
+   opts:['출처를 표기하지 않는 범용 챗봇 기본 모드','업로드 자료에만 근거하거나 인용을 표기하는 도구(NotebookLM·Consensus·scite)','문법 교정 도구','이미지 생성 도구'],a:1,
+   fb:'정답: 그라운딩된 도구. 답변마다 출처를 표기·추적할 수 있어야 환각 위험이 낮습니다.'},
+  {q:'3. 영문 기반 AI 도구의 한계를 보완하기 위해 국내 학술지·KCI 문헌을 찾을 때 가장 적절한 것은?',
+   opts:['Connected Papers','Writefull','RISS·DBpia·KISS','Scholarcy'],a:2,
+   fb:'정답: RISS·DBpia·KISS. 영문 AI 도구는 한국어 등재지를 충분히 색인하지 못해 국내 DB 병행이 필요합니다.'},
+  {q:'4. scite의 Smart Citations가 제공하는 핵심 정보는?',
+   opts:['논문의 표절 여부','인용이 지지/반대/언급 중 무엇인지(인용 맥락)','저자의 소속 기관','논문의 판매 가격'],a:1,
+   fb:'정답: 인용 맥락(지지·반대·언급). 단순 피인용 수가 아닌 "어떻게 인용되었는가"로 근거 강도를 판단합니다.'},
+  {q:'5. AI 도구로 실습할 때 반드시 지켜야 할 환자정보 원칙은?',
+   opts:['익명화하면 의무기록 전체를 입력해도 된다','실제 환자 식별정보·의무기록을 어떤 AI에도 입력하지 않는다','유료 도구에는 입력해도 안전하다','교수 허락이 있으면 입력 가능하다'],a:1,
+   fb:'정답: 실제 환자 식별정보·의무기록은 어떤 AI에도 입력하지 않습니다. 가상 사례만 사용합니다.'},
+];
+function renderQuiz(){
+  const wrap=document.getElementById('quizContainer');
+  wrap.innerHTML=QUIZ.map((item,qi)=>`
+    <div class="quiz-q" data-q="${qi}">
+      <div class="q">${item.q}</div>
+      ${item.opts.map((o,oi)=>`<label class="opt"><input type="radio" name="q${qi}" value="${oi}"> <span>${o}</span></label>`).join('')}
+      <div class="quiz-fb" id="qfb_${qi}"></div>
+    </div>`).join('');
+}
+function gradeQuiz(){
+  let correct=0;
+  QUIZ.forEach((item,qi)=>{
+    const sel=document.querySelector(`input[name="q${qi}"]:checked`);
+    const fb=document.getElementById('qfb_'+qi);
+    const opts=document.querySelectorAll(`.quiz-q[data-q="${qi}"] .opt`);
+    opts.forEach(o=>o.classList.remove('correct','wrong'));
+    if(sel){
+      const v=+sel.value;
+      opts[item.a].classList.add('correct');
+      if(v===item.a){correct++;fb.className='quiz-fb show ok';}
+      else{opts[v].classList.add('wrong');fb.className='quiz-fb show no';}
+      fb.textContent=item.fb;
+    }else{
+      fb.className='quiz-fb show no'; fb.textContent='미응답 — '+item.fb;
+    }
+  });
+  const score=Math.round(correct/QUIZ.length*100);
+  store.set(LS.quiz,{score,correct,total:QUIZ.length,done:true,ts:Date.now()});
+  const box=document.getElementById('quizScoreBox');
+  box.className='fc-score show';
+  box.innerHTML=`<div class="big">${correct}/${QUIZ.length} (${score}점)</div><p>각 문항 아래 즉시 피드백을 확인하세요.</p>`;
+  refreshSummary();
+  box.scrollIntoView({behavior:'smooth',block:'center'});
+}
+function resetQuiz(){
+  store.set(LS.quiz,{});
+  document.getElementById('quizScoreBox').className='fc-score';
+  renderQuiz(); refreshSummary(); toast('자가퀴즈를 초기화했습니다.');
+}
+
+/* ---------- F. 결과 수합 ---------- */
+function gatherData(){
+  const stu=store.get(LS.stu,{});
+  return {
+    name: document.getElementById('stuName').value || stu.name || '',
+    studentId: document.getElementById('stuId').value || stu.studentId || '',
+    scenarioRate: scenarioCompletionRate(),
+    falseCiteScore: (store.get(LS.fc,{}).score ?? '미응시'),
+    quizScore: (store.get(LS.quiz,{}).score ?? '미응시'),
+    track: store.get(LS.track,'edu')==='edu'?'교육':'연구',
+    timestamp: new Date().toISOString()
+  };
+}
+function refreshSummary(){
+  const d=gatherData();
+  document.getElementById('summaryBox').textContent=
+`이름            : ${d.name||'(미입력)'}
+학번            : ${d.studentId||'(미입력)'}
+현재 트랙       : ${d.track}
+시나리오 완료율 : ${d.scenarioRate}%
+거짓인용 점수   : ${d.falseCiteScore}${typeof d.falseCiteScore==='number'?'점':''}
+자가퀴즈 점수   : ${d.quizScore}${typeof d.quizScore==='number'?'점':''}
+집계 시각       : ${new Date().toLocaleString('ko-KR')}`;
+}
+function isFormConfigured(){
+  return !!(CONFIG.formBaseUrl && CONFIG.entry.scenarioRate);
+}
+function renderConfigNote(){
+  const el=document.getElementById('configNote');
+  if(isFormConfigured()){
+    el.innerHTML='✅ Google Form이 설정되어 있습니다. "결과 제출"을 누르면 사전 채움된 폼이 새 탭으로 열립니다.';
+    el.style.color='var(--good)';el.style.background='#ecfdf5';el.style.borderColor='#a7f3d0';
+  }else{
+    el.innerHTML='⚙ <strong>교수자 설정 필요:</strong> 파일 상단 <code>CONFIG</code> 객체에 <code>formBaseUrl</code>과 각 항목 <code>entry</code> ID를 입력하면 결과 제출이 활성화됩니다. 미설정 시에는 <strong>JSON 백업</strong>을 이용하세요.';
+  }
+}
+function submitForm(){
+  const d=gatherData();
+  saveStudent();
+  if(!isFormConfigured()){
+    toast('Google Form 미설정 — CONFIG를 입력하거나 JSON 백업을 사용하세요.');
+    document.getElementById('configNote').scrollIntoView({behavior:'smooth',block:'center'});
+    return;
+  }
+  const e=CONFIG.entry;
+  const p=new URLSearchParams(); p.set('usp','pp_url');
+  const add=(id,val)=>{if(id)p.set(id,val);};
+  add(e.name,d.name); add(e.studentId,d.studentId);
+  add(e.scenarioRate,String(d.scenarioRate));
+  add(e.falseCiteScore,String(d.falseCiteScore));
+  add(e.quizScore,String(d.quizScore));
+  const sep=CONFIG.formBaseUrl.includes('?')?'&':'?';
+  const url=CONFIG.formBaseUrl+sep+p.toString();
+  window.open(url,'_blank','noopener');
+  toast('사전 채움된 Google Form을 새 탭으로 열었습니다.');
+}
+function exportJson(){
+  const d=gatherData(); saveStudent();
+  const detail={...d, scenarios:store.get(LS.scn,{}), ethics:store.get(LS.ethics,{}),
+    falseCiteDetail:store.get(LS.fc,{}), quizDetail:store.get(LS.quiz,{}),
+    course:'청암대학교 간호학과 · AI융합 간호정보학'};
+  const blob=new Blob([JSON.stringify(detail,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  const fn=`간호정보학_실습결과_${(d.studentId||'학번미입력')}_${new Date().toISOString().slice(0,10)}.json`;
+  a.href=URL.createObjectURL(blob); a.download=fn; a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+  toast('JSON 백업을 내보냈습니다.');
+}
+function saveStudent(){
+  store.set(LS.stu,{name:document.getElementById('stuName').value,studentId:document.getElementById('stuId').value});
+}
+
+/* ---------- 트랙 토글 ---------- */
+function setTrack(track){
+  store.set(LS.track,track);
+  const edu=track==='edu';
+  document.getElementById('trackEdu').classList.toggle('active',edu);
+  document.getElementById('trackRes').classList.toggle('active',!edu);
+  document.getElementById('trackEdu').setAttribute('aria-selected',edu);
+  document.getElementById('trackRes').setAttribute('aria-selected',!edu);
+  document.getElementById('trackNote').textContent = edu
+    ? '교육 트랙: 개념 학습·시뮬레이션·자가점검 중심 (1학년 디지털리터러시와 차별화된 3학년 심화 활용)'
+    : '연구 트랙: 체계적 문헌고찰·메타분석 준비·구조화 추출·인용 검증 중심 (3학년 심화 연구 역량)';
+  renderScenarios();
+  refreshSummary();
+}
+
+/* ---------- 동의 모달 ---------- */
+function initConsent(){
+  const consent=store.get(LS.consent,null);
+  const modal=document.getElementById('consentModal');
+  if(consent && consent.agreed){ modal.classList.add('hidden'); return; }
+  const chk=document.getElementById('consentChk');
+  const btn=document.getElementById('consentBtn');
+  chk.addEventListener('change',()=>{btn.disabled=!chk.checked;});
+  btn.addEventListener('click',()=>{
+    if(!chk.checked)return;
+    store.set(LS.consent,{agreed:true,ts:new Date().toISOString()});
+    modal.classList.add('hidden');
+    toast('동의가 기록되었습니다. 실습을 시작합니다.');
+  });
+}
+
+/* ---------- 초기화 ---------- */
+function init(){
+  initConsent();
+  renderCategories();
+  buildCatFilter();
+  renderCmp(); setupCmpHeaderSort(); syncCmpView();
+  setTrack(store.get(LS.track,'edu'));
+  renderFalseCite();
+  renderEthics();
+  renderQuiz();
+  const stu=store.get(LS.stu,{});
+  document.getElementById('stuName').value=stu.name||'';
+  document.getElementById('stuId').value=stu.studentId||'';
+  if(store.get(LS.fc,{}).done){const s=store.get(LS.fc,{});const b=document.getElementById('fcScore');b.className='fc-score show';b.innerHTML=`<div class="big">${s.score}점</div><p>이전 응시 점수입니다. "다시 풀기"로 재응시할 수 있습니다.</p>`;}
+  if(store.get(LS.quiz,{}).done){const q=store.get(LS.quiz,{});const b=document.getElementById('quizScoreBox');b.className='fc-score show';b.innerHTML=`<div class="big">${q.correct}/${q.total} (${q.score}점)</div><p>이전 응시 점수입니다. "다시 풀기"로 재응시할 수 있습니다.</p>`;}
+  renderConfigNote();
+  refreshSummary();
+
+  document.getElementById('trackEdu').addEventListener('click',()=>setTrack('edu'));
+  document.getElementById('trackRes').addEventListener('click',()=>setTrack('research'));
+  document.getElementById('catFilter').addEventListener('change',renderCmp);
+  document.getElementById('sortSel').addEventListener('change',renderCmp);
+  window.addEventListener('resize',syncCmpView);
+  document.getElementById('fcSubmit').addEventListener('click',gradeFalseCite);
+  document.getElementById('fcReset').addEventListener('click',resetFalseCite);
+  document.getElementById('quizSubmit').addEventListener('click',gradeQuiz);
+  document.getElementById('quizReset').addEventListener('click',resetQuiz);
+  document.getElementById('submitForm').addEventListener('click',submitForm);
+  document.getElementById('exportJson').addEventListener('click',exportJson);
+  document.getElementById('refreshSummary').addEventListener('click',refreshSummary);
+  document.getElementById('stuName').addEventListener('input',saveStudent);
+  document.getElementById('stuId').addEventListener('input',()=>{saveStudent();refreshSummary();});
+  document.getElementById('resetAll').addEventListener('click',()=>{
+    if(confirm('모든 진행상황(시나리오·점수·체크 등)을 초기화할까요? (동의 기록 포함)')){
+      [LS.scn,LS.fc,LS.quiz,LS.ethics,LS.stu,LS.consent,LS.track].forEach(k=>localStorage.removeItem(k));
+      location.reload();
+    }
+  });
+}
+document.addEventListener('DOMContentLoaded',init);
+</script>
+</body>
+</html>
