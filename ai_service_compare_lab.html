@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>연구·교육용 생성형 AI 비교·실습 랩 · AI융합 간호정보학</title>
+<meta name="description" content="청암대학교 간호학과 3학년 AI융합 간호정보학 — 생성형 AI 서비스 비교 학습 및 직접 실습 교육 도구">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Noto+Serif+KR:wght@600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* ===== 디자인 시스템 — Care Green ===== */
+:root{
+  --green:#065F46; --green-d:#044534; --green-l:#0d8a66; --green-bg:#ecf6f1;
+  --ink:#1f2937; --ink-soft:#4b5563; --line:#dbe3de; --bg:#f6f9f7; --card:#fff;
+  --warn-bg:#fff4e5; --warn-line:#f59e0b; --warn-ink:#92400e;
+  --good:#047857; --bad:#b91c1c; --mid:#b45309;
+  --radius:14px; --shadow:0 1px 3px rgba(6,95,70,.08),0 6px 18px rgba(6,95,70,.05);
+  --serif:'Noto Serif KR',serif; --sans:'Noto Sans KR',sans-serif; --mono:'JetBrains Mono',monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:var(--sans);color:var(--ink);background:var(--bg);line-height:1.65;font-size:16px;-webkit-text-size-adjust:100%}
+h1,h2,h3,h4{font-family:var(--serif);color:var(--green-d);line-height:1.35;margin:0 0 .4em}
+a{color:var(--green-l)}
+code,.mono{font-family:var(--mono)}
+.wrap{max-width:1180px;margin:0 auto;padding:0 18px}
+.muted{color:var(--ink-soft)}
+.hidden{display:none !important}
+button{font-family:var(--sans);cursor:pointer}
+:focus-visible{outline:3px solid var(--green-l);outline-offset:2px;border-radius:5px}
+
+/* ===== 헤더 ===== */
+header.site{background:linear-gradient(135deg,var(--green),var(--green-d));color:#fff;padding:28px 0 24px}
+header.site h1{color:#fff;font-size:1.65rem;margin-bottom:.2em}
+header.site .sub{color:#c7e7db;font-size:.95rem;font-weight:500}
+.chip{display:inline-block;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.3);color:#eafaf3;font-size:.75rem;padding:3px 11px;border-radius:999px;margin-bottom:10px;letter-spacing:.03em}
+.goals{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:18px}
+.goal{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:12px;padding:12px 14px}
+.goal .lvl{font-family:var(--mono);font-size:.72rem;color:#9fe0cb;letter-spacing:.05em;text-transform:uppercase}
+.goal .txt{color:#fff;font-weight:500;font-size:.92rem;margin-top:2px}
+.datestamp{margin-top:16px;font-size:.8rem;color:#bfe3d6}
+
+/* ===== 네비 ===== */
+nav.toc{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:50;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+nav.toc .wrap{display:flex;gap:6px;overflow-x:auto;padding:9px 18px}
+nav.toc a{white-space:nowrap;color:var(--ink-soft);text-decoration:none;font-weight:600;font-size:.85rem;padding:7px 12px;border-radius:8px}
+nav.toc a:hover{background:var(--green-bg);color:var(--green-d)}
+
+/* ===== 경고 배너 ===== */
+.guard{background:var(--warn-bg);border:1px solid var(--warn-line);border-radius:10px;padding:11px 16px;margin:16px 0;display:flex;gap:11px;align-items:flex-start;font-size:.9rem;color:var(--warn-ink)}
+.guard .ico{font-size:1.2rem;flex:0 0 auto}
+
+/* ===== 섹션 ===== */
+section.block{padding:38px 0 14px}
+.sec-head{margin-bottom:8px}
+.sec-head .kick{font-family:var(--mono);font-size:.76rem;color:var(--green-l);font-weight:600;letter-spacing:.08em;text-transform:uppercase}
+.sec-head h2{font-size:1.45rem}
+.sec-head p{color:var(--ink-soft);margin:.2em 0 0;max-width:780px}
+
+/* ===== 카테고리 탭 ===== */
+.tabs{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 6px}
+.tab{background:#fff;border:1.5px solid var(--line);color:var(--ink-soft);padding:9px 16px;border-radius:999px;font-weight:600;font-size:.88rem;transition:.15s}
+.tab:hover{border-color:var(--green-l)}
+.tab.active{background:var(--green);color:#fff;border-color:var(--green)}
+.tab .n{font-family:var(--mono);opacity:.7;font-size:.78rem;margin-left:4px}
+
+/* ===== 서비스 카드 ===== */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px;margin-top:8px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);display:flex;flex-direction:column;border-top:4px solid var(--cc,var(--green))}
+.card h3{font-size:1.18rem;margin-bottom:0;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.card .provider{font-size:.8rem;color:var(--ink-soft);font-weight:500;margin-bottom:8px}
+.tag{font-size:.66rem;font-family:var(--mono);padding:2px 8px;border-radius:999px;font-weight:600;white-space:nowrap}
+.tag-free{background:#dcfce7;color:#166534}
+.tag-paid{background:#fee2e2;color:#991b1b}
+.tag-freemium{background:#fef3c7;color:#92400e}
+.card .feat{font-size:.92rem;font-weight:500;margin:2px 0 12px}
+.meta{display:grid;grid-template-columns:auto 1fr;gap:5px 10px;font-size:.83rem;margin:0 0 10px}
+.meta dt{font-weight:700;color:var(--green-d);font-size:.78rem}
+.meta dd{margin:0;color:var(--ink-soft)}
+.risk{font-family:var(--mono);font-weight:600;font-size:.78rem;padding:1px 7px;border-radius:5px}
+.risk.h{background:#fee2e2;color:#991b1b}
+.risk.m{background:#fef3c7;color:#92400e}
+.risk.l{background:#dcfce7;color:#166534}
+.sw{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:4px 0 10px}
+.sw div{font-size:.8rem}
+.sw h5{margin:0 0 3px;font-family:var(--sans);font-size:.76rem;letter-spacing:.02em}
+.sw .s h5{color:var(--good)} .sw .w h5{color:var(--bad)}
+.sw ul{margin:0;padding-left:1.1em;color:var(--ink-soft)}
+.scn{background:var(--green-bg);border-radius:9px;padding:9px 12px;font-size:.82rem;margin-bottom:10px}
+.scn b{color:var(--green-d)}
+.scn ul{margin:4px 0 0;padding-left:1.1em}
+.card-actions{margin-top:auto;display:flex;gap:8px;flex-wrap:wrap;padding-top:8px}
+.btn{background:var(--green);color:#fff;border:none;border-radius:9px;padding:10px 16px;font-size:.9rem;font-weight:700;transition:.15s}
+.btn:hover{background:var(--green-d)}
+.btn-ghost{background:transparent;color:var(--green);border:1.5px solid var(--green)}
+.btn-ghost:hover{background:var(--green-bg)}
+.btn-sm{padding:7px 12px;font-size:.82rem;border-radius:8px}
+.btn-amber{background:var(--mid)} .btn-amber:hover{background:#92400e}
+.src-link{font-family:var(--mono);font-size:.76rem;word-break:break-all}
+.no-link{font-family:var(--mono);font-size:.76rem;color:var(--mid)}
+
+/* ===== 실습 영역(카드 내) ===== */
+.lab{margin-top:12px;border-top:1px dashed var(--line);padding-top:12px;display:none}
+.lab.open{display:block}
+.lab h4{font-size:.92rem;margin-bottom:6px}
+.prompt-ex{background:#0b3b2d;color:#d7f5ea;font-family:var(--mono);font-size:.78rem;border-radius:8px;padding:10px 12px;margin:6px 0;line-height:1.6;position:relative}
+.prompt-ex .copy{position:absolute;top:7px;right:7px;background:rgba(255,255,255,.15);color:#fff;border:none;border-radius:6px;padding:3px 8px;font-size:.7rem;cursor:pointer}
+.lab-form label{display:block;font-size:.8rem;font-weight:700;color:var(--green-d);margin:9px 0 3px}
+.lab-form textarea,.lab-form select,.lab-form input[type=text]{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:8px;font-family:var(--sans);font-size:.86rem;resize:vertical}
+.lab-form .row{display:flex;gap:10px;flex-wrap:wrap}
+.lab-form .row > div{flex:1;min-width:130px}
+.radiogrp{display:flex;gap:6px;flex-wrap:wrap}
+.radiogrp label{display:inline-flex;align-items:center;gap:5px;font-weight:400;font-size:.83rem;background:#fff;border:1px solid var(--line);border-radius:8px;padding:6px 10px;margin:0;cursor:pointer}
+.radiogrp input{accent-color:var(--green);margin:0}
+.saved-note{font-size:.78rem;color:var(--good);margin-top:6px;display:none}
+.saved-note.show{display:block}
+
+/* ===== 비교 모드 ===== */
+.cmp-pick{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
+.cmp-pick label{display:inline-flex;align-items:center;gap:6px;background:#fff;border:1.5px solid var(--line);border-radius:9px;padding:7px 12px;font-size:.84rem;cursor:pointer}
+.cmp-pick input{accent-color:var(--green)}
+.cmp-pick label.sel{border-color:var(--green);background:var(--green-bg)}
+.cmp-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--radius);background:#fff;margin-top:12px}
+table.cmp{border-collapse:collapse;width:100%;min-width:560px;font-size:.84rem}
+table.cmp th,table.cmp td{padding:11px 13px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+table.cmp thead th{background:var(--green);color:#fff;font-family:var(--sans);font-weight:600;white-space:nowrap}
+table.cmp tbody th{background:var(--green-bg);color:var(--green-d);font-weight:700;white-space:nowrap;position:sticky;left:0}
+.cmp-empty{color:var(--ink-soft);font-size:.9rem;padding:14px;background:#fff;border:1px dashed var(--line);border-radius:12px;margin-top:12px}
+
+/* ===== 대시보드 ===== */
+.dash-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--radius);background:#fff;margin-top:14px}
+table.dash{border-collapse:collapse;width:100%;min-width:760px;font-size:.83rem}
+table.dash th,table.dash td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+table.dash thead th{background:var(--green);color:#fff;font-family:var(--sans);font-weight:600;white-space:nowrap}
+table.dash tbody tr:hover{background:var(--green-bg)}
+.pill{font-family:var(--mono);font-size:.72rem;padding:1px 7px;border-radius:5px}
+.pill.y{background:#dcfce7;color:#166534}.pill.n{background:#fee2e2;color:#991b1b}.pill.warn{background:#fef3c7;color:#92400e}
+.dash-empty{color:var(--ink-soft);padding:16px;text-align:center}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+
+/* ===== 유의사항 ===== */
+.notice-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:16px}
+.notice{background:#fff;border:1px solid var(--line);border-left:5px solid var(--warn-line);border-radius:12px;padding:15px 16px}
+.notice h4{font-size:1rem;margin-bottom:5px}
+.notice p{font-size:.86rem;color:var(--ink-soft);margin:0}
+
+/* ===== 푸터 / 토스트 ===== */
+footer.site{background:var(--green-d);color:#cdeae0;text-align:center;padding:22px 18px;font-size:.88rem;margin-top:32px}
+footer.site strong{color:#fff;font-family:var(--serif)}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--green-d);color:#fff;padding:12px 20px;border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.3);opacity:0;transition:.25s;z-index:900;font-size:.9rem;max-width:90vw;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media (max-width:640px){
+  body{font-size:15px}
+  header.site h1{font-size:1.35rem}
+  .sec-head h2{font-size:1.25rem}
+  .cards{grid-template-columns:1fr}
+  .sw{grid-template-columns:1fr}
+}
+@media print{nav.toc,.card-actions,.tabs{display:none}}
+</style>
+</head>
+<body>
+
+<!-- ===== 헤더 ===== -->
+<header class="site">
+  <div class="wrap">
+    <span class="chip">청암대학교 간호학과 · 3학년 · AI융합 간호정보학</span>
+    <h1>연구·교육용 생성형 AI 비교·실습 랩</h1>
+    <p class="sub">5개 카테고리의 생성형 AI를 비교 학습하고, 직접 실습한 뒤 결과를 기록·성찰합니다.</p>
+    <div class="goals" aria-label="학습 목표">
+      <div class="goal"><div class="lvl">이해 · Understand</div><div class="txt">① 생성형 AI 서비스를 용도별로 <b>분류</b>한다</div></div>
+      <div class="goal"><div class="lvl">분석 · Analyze</div><div class="txt">② 8개 축으로 서비스를 <b>비교</b>한다</div></div>
+      <div class="goal"><div class="lvl">평가 · Evaluate</div><div class="txt">③ 과제 맥락에 맞는 도구를 <b>평가·선택</b>한다</div></div>
+    </div>
+    <p class="datestamp">📅 정보 기준일: <strong id="infoDate">2026-06-26</strong> · 요금·기능은 변동될 수 있으니 최신 정보는 각 공식 사이트에서 확인하세요.</p>
+  </div>
+</header>
+
+<nav class="toc" aria-label="섹션 바로가기">
+  <div class="wrap">
+    <a href="#explore">① 카테고리별 서비스</a>
+    <a href="#compare">② 비교 모드</a>
+    <a href="#dashboard">③ 내 실습 기록</a>
+    <a href="#notice">④ 유의사항</a>
+  </div>
+</nav>
+
+<div class="wrap">
+  <div class="guard" role="note">
+    <span class="ico">🛡️</span>
+    <span><strong>상시 경고 —</strong> 어떤 AI 서비스에도 <strong>실제 환자 식별정보·의무기록</strong>을 입력하지 마세요. 실습은 가상 사례·공개 자료로만 진행합니다.</span>
+  </div>
+</div>
+
+<main>
+
+<!-- ===== ① 카테고리별 서비스 + 실습 ===== -->
+<section class="block" id="explore">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="kick">Explore &amp; Practice</span>
+      <h2>① 카테고리별 서비스 탐색 &amp; 직접 실습</h2>
+      <p>카테고리 탭으로 서비스를 분류해 보고, 각 카드의 <strong>실습하기</strong>를 눌러 검증된 프롬프트로 직접 실습한 뒤 결과를 기록하세요. 기록은 이 브라우저(localStorage)에 자동 저장됩니다.</p>
+    </div>
+    <div class="tabs" id="tabs" role="tablist"></div>
+    <div class="cards" id="cards"></div>
+  </div>
+</section>
+
+<!-- ===== ② 비교 모드 ===== -->
+<section class="block" id="compare" style="background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="kick">Compare</span>
+      <h2>② 비교 모드 — 2~3개 서비스 8축 대조</h2>
+      <p>비교할 서비스를 <strong>2~3개</strong> 선택하면 8개 비교 축을 나란히 표로 대조합니다. 모바일에서는 가로 스크롤됩니다.</p>
+    </div>
+    <div class="cmp-pick" id="cmpPick"></div>
+    <div id="cmpOut"></div>
+  </div>
+</section>
+
+<!-- ===== ③ 대시보드 ===== -->
+<section class="block" id="dashboard">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="kick">My Records</span>
+      <h2>③ 내 실습 기록 모아보기</h2>
+      <p>저장된 모든 실습 기록을 한눈에 보고 CSV로 내보낼 수 있습니다.</p>
+    </div>
+    <div class="dash-wrap"><table class="dash" id="dashTable"></table></div>
+    <div class="btn-row">
+      <button class="btn btn-amber" id="exportCsv">⬇ CSV로 내보내기</button>
+      <button class="btn btn-ghost" id="clearRecords">🗑 기록 전체 삭제</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===== ④ 유의사항 ===== -->
+<section class="block" id="notice" style="background:#fff;border-top:1px solid var(--line)">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="kick">Cautions</span>
+      <h2>④ 생성형 AI 활용 시 유의사항</h2>
+    </div>
+    <div class="notice-grid">
+      <div class="notice"><h4>🔒 개인·환자정보 보호</h4><p>실제 환자 식별정보·의무기록(EMR)을 어떤 AI에도 입력하지 않습니다. 입력 내용은 외부 서버로 전송·학습될 수 있습니다. 가상 사례만 사용하세요.</p></div>
+      <div class="notice"><h4>🔍 환각(hallucination) 검증</h4><p>AI는 그럴듯한 가짜 인용·수치를 생성할 수 있습니다. 모든 출처·DOI·수치는 1차 원문에서 반드시 교차확인하세요.</p></div>
+      <div class="notice"><h4>📑 학술적 인용 책임</h4><p>AI 활용 사실과 범위를 과제·논문에 정직하게 밝히고, 최종 인용의 정확성에 대한 책임은 학생 본인에게 있습니다.</p></div>
+      <div class="notice"><h4>⚖ 표절·연구윤리</h4><p>AI 생성물을 그대로 제출하지 말고 본인의 이해로 재구성·검증합니다. 학과·기관의 AI 활용 정책과 연구윤리를 준수하세요.</p></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="site">
+  <p><strong>청암대학교 간호학과 · AI융합 간호정보학 · 제프리 교수</strong></p>
+  <p style="font-size:.8rem;margin:.4em 0 0;opacity:.85">교육·연구 목적 도구 · 정보 기준일 2026-06-26 · 최신 사양은 각 공식 사이트 확인 · 실제 환자정보 입력 금지</p>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* ===== localStorage ===== */
+const LS_REC='aslab_records';
+const store={get:(k,d)=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set:(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2400);}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+
+/* ===========================================================
+   서비스 데이터 (정보 기준일 2026-06-26, 공식 링크 검증 완료)
+   risk: 환각 위험도 h/m/l · ko: 한국어 지원 상/중/하
+   url: null 이면 "공식 사이트에서 검색" 안내로 대체
+   =========================================================== */
+const CATS=[
+  {key:'chat',  n:1, name:'범용 대화형 AI', color:'#065F46'},
+  {key:'research',n:2,name:'학술 문헌검색·연구 지원', color:'#1d4ed8'},
+  {key:'rag',   n:3, name:'자료 학습·요약 (RAG)', color:'#6d28d9'},
+  {key:'present',n:4,name:'발표·문서 자동 생성', color:'#0e7490'},
+  {key:'image', n:5, name:'이미지·시각화 생성', color:'#be123c'},
+];
+
+const SERVICES=[
+  /* 1. 범용 대화형 AI */
+  {id:'chatgpt',cats:['chat'],name:'ChatGPT',provider:'OpenAI',price:'freemium',
+   feat:'범용 대화형 AI. 추론·작문·코드·파일/이미지 분석과 Deep Research(다수 출처 종합)를 제공.',
+   scn:['임상 개념을 가상 사례로 쉽게 풀어 설명받기','간호 학습 자료 초안·예상문제 작성 보조'],
+   ground:'기본 모드는 출처 미표기(웹검색·Deep Research 시 출처 제시)', risk:'h', ko:'상',
+   priceTxt:'무료 / Plus $20·월 / Pro $200·월 (정보 기준일 기준)',
+   strengths:['폭넓은 범용성·빠른 초안','파일/이미지 분석','Deep Research 출처 종합'],
+   weaknesses:['기본 모드 출처 미표기→환각 위험','의학 사실 교차검증 필수','최신성은 모드에 의존'],
+   prompts:['당뇨병 환자의 자가관리 교육이 HbA1c에 미치는 효과를 간호학생이 이해하기 쉽게 핵심 개념 위주로 설명해줘. (가상 학습용)','수술 후 통증 사정 도구(NRS, VAS)의 차이와 간호중재 적용 포인트를 표로 정리해줘.'],
+   url:'https://chatgpt.com'},
+  {id:'claude',cats:['chat'],name:'Claude',provider:'Anthropic',price:'freemium',
+   feat:'범용 추론 AI. 긴 문서 종합·신중한 추론에 강하며 무료 티어에도 웹검색·확장적 사고를 포함.',
+   scn:['긴 강의자료·논문 PDF 요약과 개념 구조화','간호 시나리오 기반 비판적 사고 질문 생성'],
+   ground:'기본은 출처 미표기(웹검색 사용 시 출처 제시)', risk:'h', ko:'상',
+   priceTxt:'무료(웹검색 포함) / Pro $20·월 / Max $100·$200·월',
+   strengths:['긴 맥락·문서 종합 우수','신중하고 구조적인 응답','무료에 웹검색 포함'],
+   weaknesses:['그라운딩 없으면 인용 환각','이미지 생성 미지원','실시간성은 웹검색 의존'],
+   prompts:['첨부한 간호 강의노트(가상)를 학습목표·핵심개념·예상 시험문제 5개로 구조화해줘.','노인 낙상 예방 중재의 개념을 PICO 형식으로 정리하고, 각 요소를 설명해줘.'],
+   url:'https://claude.ai'},
+  {id:'gemini',cats:['chat'],name:'Gemini',provider:'Google',price:'freemium',
+   feat:'Google의 범용 AI. 최대 100만 토큰 초장문 컨텍스트와 Deep Research, Workspace 연동.',
+   scn:['여러 PDF를 한 번에 넣어 비교·요약','구글 문서/슬라이드와 연계한 과제 작성'],
+   ground:'기본은 출처 미표기(Deep Research·검색 연동 시 출처 제시)', risk:'h', ko:'상',
+   priceTxt:'무료 / Google AI Pro $19.99·월',
+   strengths:['초장문 컨텍스트(다수 문서 동시)','Google 생태계 연동','Deep Research'],
+   weaknesses:['출처 명시 안 하면 환각 위험','응답 일관성 편차','의학 정확성 별도 검증'],
+   prompts:['첨부한 3편의 가상 요약본을 한 표로 비교해 공통점과 차이를 정리해줘.','지역사회 간호 사업계획서 목차 초안을 만들어줘. (학습용)'],
+   url:'https://gemini.google.com'},
+  {id:'copilot',cats:['chat'],name:'Copilot',provider:'Microsoft',price:'freemium',
+   feat:'Microsoft의 AI 비서. 무료 채팅과 Microsoft 365 Copilot(Word·Excel·PowerPoint·Teams 내장)을 제공.',
+   scn:['Word/PowerPoint 안에서 과제 문서·발표자료 작성','Excel로 실습 설문 데이터 정리·요약'],
+   ground:'웹 기반 답변에 출처(각주) 제시, 문서 내 작업은 조직 데이터 기반', risk:'m', ko:'상',
+   priceTxt:'무료(Copilot) / M365 Copilot 약 $30·user·월 (M365 구독 필요)',
+   strengths:['Office 앱에 직접 내장','웹 답변 출처 각주','한국어 지원 양호'],
+   weaknesses:['고급 기능은 M365 구독 필요','학술 전문 검색은 약함','환각 검증 필요'],
+   prompts:['이 발표 개요(가상)를 PowerPoint 슬라이드 초안으로 구성해줘.','간호 실습 일정 데이터를 요약 통계로 정리해줘. (Excel, 가상 데이터)'],
+   url:'https://copilot.microsoft.com'},
+
+  /* 2. 학술 문헌검색·연구 지원 */
+  {id:'perplexity',cats:['research'],name:'Perplexity',provider:'Perplexity AI',price:'freemium',
+   feat:'답변마다 출처를 기본 표기하는 답변 엔진. Deep Research·Academic 모드로 학술 탐색에 강함.',
+   scn:['주제의 근거를 출처와 함께 1차 탐색','PICO 질문의 초기 근거 방향 잡기'],
+   ground:'답변마다 인용 출처를 기본 표기(다만 2차 웹 출처 포함 가능)', risk:'m', ko:'상',
+   priceTxt:'무료(Deep Research 일 5회) / Pro $20·월 / 학생 Education $10·월',
+   strengths:['출처 그라운딩이 일관적','Academic/Deep Research','한국어 양호'],
+   weaknesses:['출처가 1차 논문 아닐 수 있음','심층 데이터 추출은 전용 도구가 우위','요금제별 한도'],
+   prompts:['당뇨병 환자의 자가관리 교육이 HbA1c에 미치는 효과에 대한 최근 5년 무작위대조연구를 찾아 핵심 결과를 출처와 함께 요약해줘.','입원 노인의 낙상 예방 중재 효과에 대한 체계적 문헌고찰을 출처와 함께 정리해줘.'],
+   url:'https://www.perplexity.ai'},
+  {id:'elicit',cats:['research'],name:'Elicit',provider:'Elicit (Ought)',price:'freemium',
+   feat:'1.38억+ 논문에서 검색·요약·구조화 추출을 수행하는 연구 보조 AI(체계적 문헌고찰 특화).',
+   scn:['RCT의 개입·표본·결과를 비교표로 추출','문헌 스크리닝·데이터 추출 1차 자동화'],
+   ground:'논문 코퍼스 기반, 추출 셀마다 원문 출처 추적 가능', risk:'m', ko:'중',
+   priceTxt:'무료(Basic) / Plus $12·월 / Pro $49·월',
+   strengths:['PICO/RCT 구조화 추출','비교표 자동 생성','Cochrane 대비 높은 추출 정확도'],
+   weaknesses:['주로 영어 문헌','고급 추출은 유료 크레딧','추출값 원문 대조 필요'],
+   prompts:['"hospitalized older adults fall prevention intervention" 주제로 RCT를 찾아 개입·대조·표본·낙상 결과를 비교표로 추출해줘.','당뇨 자가관리 앱의 HbA1c 효과 RCT를 표로 정리해줘. (영어 질의 권장)'],
+   url:'https://elicit.com'},
+  {id:'consensus',cats:['research'],name:'Consensus',provider:'Consensus',price:'freemium',
+   feat:'2.2억+ 동료심사 논문에서 과학적 합의를 합성하는 AI 검색엔진. Consensus Meter·Deep Search 제공.',
+   scn:['임상 질문의 근거 방향(합의도) 빠르게 확인','찬반이 갈리는 주제의 근거 지형 파악'],
+   ground:'모든 주장에 동료심사 논문 출처 링크 제시', risk:'l', ko:'중',
+   priceTxt:'무료(Pro Analysis·Snapshot 각 월 10회) / Premium $8.99·월 / Pro $15·월',
+   strengths:['출처 그라운딩 강함','Consensus Meter 합의도','임상 질문에 적합'],
+   weaknesses:['합의 표시 단순화 가능','한국어 문헌 약함','심층은 유료'],
+   prompts:['Does diabetes self-management education improve HbA1c in adults?','Are multifactorial interventions effective for fall prevention in hospitalized older adults?'],
+   url:'https://consensus.app'},
+  {id:'scispace',cats:['research'],name:'SciSpace',provider:'SciSpace',price:'freemium',
+   feat:'논문 PDF와 대화하며 방법·결과를 추출하는 Copilot, Deep Review, 4만+ 저널 템플릿 제공.',
+   scn:['논문 PDF의 방법·결과를 질문으로 추출','난해한 수식·용어를 즉시 해설'],
+   ground:'논문 색인·업로드 기반, 출처 인용 제공', risk:'m', ko:'중',
+   priceTxt:'무료(월 100크레딧) / Premium $12·월 / Advanced $70·월',
+   strengths:['PDF 정독·표 추출','의생명 에이전트','글쓰기 보조 통합'],
+   weaknesses:['무료 크레딧 제한','요약·추출 원문 대조 필요','한국어 제한적'],
+   prompts:['업로드한 RCT 논문(가상/공개)의 연구설계·표본수·1차 결과변수·결론을 표로 추출해줘.','이 논문의 통계 분석 방법을 간호학생이 이해하기 쉽게 설명해줘.'],
+   url:'https://scispace.com'},
+  {id:'scite',cats:['research'],name:'Scite',provider:'Scite',price:'paid',
+   feat:'인용을 지지·반대·언급으로 분류하는 Smart Citations. 13억+ 인용문 분석, 신뢰도 대시보드·철회 경고.',
+   scn:['핵심 논문이 어떻게 인용되었는지(지지/반대) 확인','근거 강도와 철회 여부 판단'],
+   ground:'인용 맥락을 원문 문장 단위로 분류·표시(그라운딩 매우 높음)', risk:'l', ko:'하',
+   priceTxt:'개인 $20·월(연 결제 시 $12·월) / 기관 별도',
+   strengths:['지지/반대 인용 맥락','신뢰도·철회 경고','근거 강도 평가 핵심'],
+   weaknesses:['유료 중심(무료 제한적)','영어 문헌 중심','분류도 사람 검토 필요'],
+   prompts:['핵심 RCT 제목을 검색해 Supporting/Contrasting 인용 맥락을 확인하고 근거 강도를 판단한다.','인용하려는 논문의 철회·정정 여부를 확인한다.'],
+   url:'https://scite.ai'},
+
+  /* 3. RAG */
+  {id:'notebooklm',cats:['rag'],name:'NotebookLM',provider:'Google',price:'freemium',
+   feat:'업로드한 자료에만 근거(RAG)해 답하는 소스 그라운디드 AI. 오디오/비디오 개요·플래시카드·퀴즈 생성.',
+   scn:['강의 PDF로 학습가이드·플래시카드·퀴즈 생성','오디오 개요로 이동 중 복습'],
+   ground:'업로드 소스 내에서만 답하고 인용 위치를 표시(환각 적음)', risk:'l', ko:'상',
+   priceTxt:'무료(노트북 100·소스 50개·일 질문 50) / Plus $7.99·월 / Pro $19.99·월',
+   strengths:['업로드 자료 밖 환각 적음','답변마다 출처 위치 표시','오디오·플래시카드 학습'],
+   weaknesses:['업로드 자료 정확성에 종속','자료 밖 질문엔 약함','무료 일일 한도'],
+   prompts:['업로드한 강의노트(가상)로 학습가이드와 플래시카드 20장, 핵심개념 퀴즈를 만들어줘.','이 자료들의 핵심 쟁점을 오디오 개요(deep dive)로 만들어줘.'],
+   url:'https://notebooklm.google'},
+
+  /* 4. 발표·문서 자동 생성 */
+  {id:'gamma',cats:['present'],name:'Gamma',provider:'Gamma',price:'freemium',
+   feat:'텍스트 프롬프트·문서를 발표 슬라이드·문서·웹페이지로 자동 생성. PDF/PPTX 가져와 재구성 가능.',
+   scn:['실습 주제를 발표 슬라이드로 빠르게 초안화','요약문을 시각적 카드/문서로 변환'],
+   ground:'생성형(사실 검증 책임은 사용자) — 출처 자동검증 아님', risk:'m', ko:'상',
+   priceTxt:'무료(400 AI 크레딧) / Plus $8~10·월 / Pro $15~20·월',
+   strengths:['빠른 슬라이드 자동 생성','PDF/PPTX 가져오기·재구성','PPTX·PDF·Google Slides 내보내기'],
+   weaknesses:['내용 사실성은 사용자 책임','무료 크레딧 제한·브랜딩','정밀 디자인 제어는 제한'],
+   prompts:['"노인 낙상 예방 간호중재" 주제로 10장짜리 발표 슬라이드 개요와 슬라이드를 만들어줘. (학습용)','이 요약문을 발표용 핵심 카드 6개로 구성해줘.'],
+   url:'https://gamma.app'},
+  {id:'canva',cats:['present','image'],name:'Canva AI (Magic Studio)',provider:'Canva',price:'freemium',
+   feat:'디자인 플랫폼 내 AI 묶음(Magic Design·Dream Lab 이미지·Magic Write). 발표·포스터·이미지 생성.',
+   scn:['건강교육 포스터/리플릿 디자인','발표 슬라이드·SNS 카드 자동 디자인'],
+   ground:'생성형(이미지·문구) — 사실/출처 검증 아님', risk:'m', ko:'상',
+   priceTxt:'무료(Magic Design 월 10회·Dream Lab 5회) / Pro 약 $15·월',
+   strengths:['디자인 템플릿 풍부','이미지+문서+발표 한 곳','한국어 UI·협업'],
+   weaknesses:['생성 이미지 사실성·저작권 주의','무료 AI 한도','정밀 학술도식엔 부적합'],
+   prompts:['당뇨 환자 자가관리 교육용 안내 포스터를 만들어줘. (가상, 한국어)','노인 낙상 예방 수칙 인포그래픽 카드를 디자인해줘.'],
+   url:'https://www.canva.com/canva-ai/'},
+
+  /* 5. 이미지·시각화 생성 */
+  {id:'gptimage',cats:['image'],name:'DALL·E → GPT Image',provider:'OpenAI (ChatGPT 내)',price:'freemium',
+   feat:'OpenAI 이미지 생성. DALL·E 3은 2025-12 ChatGPT에서 제거되어 현재 GPT Image 모델로 대체, ChatGPT 안에서 생성.',
+   scn:['환자교육 자료용 일러스트 생성(가상)','개념 설명용 비사진형 삽화 제작'],
+   ground:'생성형 이미지 — 의학적 정확성 보장 안 됨(검증 필수)', risk:'h', ko:'상(프롬프트)',
+   priceTxt:'무료(제한적) / ChatGPT Plus $20·월(약 3시간당 50장)',
+   strengths:['자연어 프롬프트로 이미지','ChatGPT 대화에 통합','한국어 프롬프트 가능'],
+   weaknesses:['DALL·E 3 단종(→GPT Image)','해부학적 정확성 부정확 가능','교육자료는 전문 검수 필요'],
+   prompts:['손위생 6단계를 보여주는 간단한 교육용 일러스트를 그려줘. (비사진·픽토그램 스타일)','노인 낙상 예방 가정환경 점검을 보여주는 안내 삽화를 만들어줘.'],
+   url:'https://chatgpt.com'},
+  {id:'msdesigner',cats:['image'],name:'Microsoft Designer',provider:'Microsoft',price:'freemium',
+   feat:'AI 이미지·그래픽 디자인 앱(구 Bing Image Creator 통합). 텍스트로 이미지 4종 생성, 100+ 언어 지원.',
+   scn:['건강교육 포스터·배너용 이미지 생성','발표 표지·SNS 시각자료 제작'],
+   ground:'생성형 이미지 — 사실/의학 정확성 검증 필요', risk:'h', ko:'상',
+   priceTxt:'무료(월 15 크레딧) / M365 구독 시 월 60 크레딧',
+   strengths:['무료로 이미지 생성','Microsoft 생태계 연동','다국어 프롬프트'],
+   weaknesses:['크레딧 제한','이미지 사실성·저작권 주의','학술 도식엔 부적합'],
+   prompts:['당뇨 식이교육용 건강한 식단 접시 일러스트를 만들어줘. (교육용, 밝은 톤)','금연 캠페인 포스터 배경 이미지를 생성해줘. (가상 학습용)'],
+   url:'https://designer.microsoft.com'},
+];
+
+/* 8개 비교 축 정의 */
+const AXES=[
+  {k:'providerLine',label:'제공사'},
+  {k:'feat',label:'핵심 기능'},
+  {k:'scnLine',label:'간호 활용 시나리오'},
+  {k:'groundLine',label:'근거 제시 & 환각 위험도'},
+  {k:'koLine',label:'한국어 지원'},
+  {k:'priceTxt',label:'요금 정책'},
+  {k:'swLine',label:'강점 / 약점'},
+  {k:'urlLine',label:'공식 링크'},
+];
+const RISK_TXT={h:'높음',m:'중간',l:'낮음'};
+function svc(id){return SERVICES.find(s=>s.id===id);}
+function catColor(k){return (CATS.find(c=>c.key===k)||{}).color||'#065F46';}
+function priceTag(p){
+  if(p==='free')return '<span class="tag tag-free">무료</span>';
+  if(p==='paid')return '<span class="tag tag-paid">유료</span>';
+  return '<span class="tag tag-freemium">부분유료</span>';
+}
+function urlHtml(s){
+  return s.url
+    ? `<a class="src-link" href="${s.url}" target="_blank" rel="noopener">${s.url.replace('https://','')}</a>`
+    : `<span class="no-link">공식 사이트에서 "${esc(s.name)}" 검색</span>`;
+}
+
+/* ===== 탭 + 카드 렌더 ===== */
+let activeCat='chat';
+function renderTabs(){
+  const t=document.getElementById('tabs');
+  t.innerHTML=`<button class="tab ${activeCat==='all'?'active':''}" data-cat="all" role="tab">전체</button>`+
+    CATS.map(c=>{
+      const cnt=SERVICES.filter(s=>s.cats.includes(c.key)).length;
+      return `<button class="tab ${activeCat===c.key?'active':''}" data-cat="${c.key}" role="tab">${c.n}. ${c.name}<span class="n">${cnt}</span></button>`;
+    }).join('');
+  t.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{activeCat=b.dataset.cat;renderTabs();renderCards();}));
+}
+function renderCards(){
+  let list;
+  if(activeCat==='all') list=SERVICES.slice();
+  else list=SERVICES.filter(s=>s.cats.includes(activeCat));
+  const rec=store.get(LS_REC,{});
+  document.getElementById('cards').innerHTML=list.map(s=>{
+    const pc=catColor(s.cats[0]);
+    const r=rec[s.id]||{};
+    return `<div class="card" style="--cc:${pc}">
+      <h3>${esc(s.name)} ${priceTag(s.price)}</h3>
+      <div class="provider">${esc(s.provider)} · ${s.cats.map(k=>(CATS.find(c=>c.key===k)||{}).name).join(' · ')}</div>
+      <p class="feat">${esc(s.feat)}</p>
+      <div class="scn"><b>🩺 간호 활용 시나리오</b><ul>${s.scn.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>
+      <dl class="meta">
+        <dt>근거 제시</dt><dd>${esc(s.ground)}</dd>
+        <dt>환각 위험</dt><dd><span class="risk ${s.risk}">${RISK_TXT[s.risk]}</span></dd>
+        <dt>한국어</dt><dd>${esc(s.ko)}</dd>
+        <dt>요금</dt><dd>${esc(s.priceTxt)}</dd>
+      </dl>
+      <div class="sw">
+        <div class="s"><h5>강점</h5><ul>${s.strengths.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>
+        <div class="w"><h5>약점</h5><ul>${s.weaknesses.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>
+      </div>
+      <div style="font-size:.8rem;margin-bottom:6px">🔗 ${urlHtml(s)}</div>
+      <div class="card-actions">
+        <button class="btn btn-sm" data-lab="${s.id}">🧪 실습하기${r.ts?' ✓':''}</button>
+        ${s.url?`<a class="btn btn-ghost btn-sm" href="${s.url}" target="_blank" rel="noopener">공식 사이트 열기 ↗</a>`:''}
+      </div>
+      <div class="lab" id="lab_${s.id}">
+        <h4>📋 검증된 실습 프롬프트 (간호정보학 맥락)</h4>
+        ${s.prompts.map((p,i)=>`<div class="prompt-ex">${esc(p)}<button class="copy" data-copy="${s.id}_${i}">복사</button></div>`).join('')}
+        <form class="lab-form" data-form="${s.id}">
+          <label>① 내가 입력한 프롬프트</label>
+          <textarea name="prompt" rows="2" placeholder="실제 입력한 프롬프트를 적어주세요">${esc(r.prompt||'')}</textarea>
+          <div class="row">
+            <div>
+              <label>② 응답 유용성 (5점)</label>
+              <select name="usefulness">
+                ${[['','선택'],['5','5 매우 유용'],['4','4 유용'],['3','3 보통'],['2','2 미흡'],['1','1 매우 미흡']].map(([v,t])=>`<option value="${v}" ${r.usefulness==v?'selected':''}>${t}</option>`).join('')}
+              </select>
+            </div>
+            <div>
+              <label>③ 출처 제시 여부</label>
+              <div class="radiogrp">
+                <label><input type="radio" name="source" value="예" ${r.source==='예'?'checked':''}>예</label>
+                <label><input type="radio" name="source" value="아니오" ${r.source==='아니오'?'checked':''}>아니오</label>
+              </div>
+            </div>
+          </div>
+          <label>④ 환각·오류 발견 여부</label>
+          <div class="radiogrp">
+            <label><input type="radio" name="halluc" value="발견" ${r.halluc==='발견'?'checked':''}>발견함</label>
+            <label><input type="radio" name="halluc" value="미발견" ${r.halluc==='미발견'?'checked':''}>발견 못함</label>
+          </div>
+          <label>　└ 환각·오류 메모</label>
+          <input type="text" name="hallucMemo" placeholder="예: 존재하지 않는 DOI를 인용함" value="${esc(r.hallucMemo||'')}">
+          <label>⑤ 종합 소감</label>
+          <textarea name="reflection" rows="2" placeholder="이 도구의 유용성·한계·다음에 쓸 상황 등">${esc(r.reflection||'')}</textarea>
+          <div class="btn-row" style="margin-top:10px">
+            <button type="submit" class="btn btn-sm">💾 실습 기록 저장</button>
+            <span class="saved-note" id="note_${s.id}">저장되었습니다 ✓</span>
+          </div>
+        </form>
+      </div>
+    </div>`;
+  }).join('');
+
+  // 이벤트 바인딩
+  document.querySelectorAll('[data-lab]').forEach(b=>b.addEventListener('click',()=>{
+    document.getElementById('lab_'+b.dataset.lab).classList.toggle('open');
+  }));
+  document.querySelectorAll('[data-copy]').forEach(b=>b.addEventListener('click',()=>{
+    const [id,i]=b.dataset.copy.split('_');const p=svc(id).prompts[+i];
+    navigator.clipboard?.writeText(p).then(()=>toast('프롬프트를 복사했습니다'),()=>toast('복사 실패 — 직접 선택하세요'));
+  }));
+  document.querySelectorAll('[data-form]').forEach(f=>f.addEventListener('submit',e=>{
+    e.preventDefault();saveRecord(f.dataset.form,f);
+  }));
+}
+function saveRecord(id,form){
+  const fd=new FormData(form);
+  const rec=store.get(LS_REC,{});
+  rec[id]={
+    prompt:fd.get('prompt')||'', usefulness:fd.get('usefulness')||'',
+    source:fd.get('source')||'', halluc:fd.get('halluc')||'',
+    hallucMemo:fd.get('hallucMemo')||'', reflection:fd.get('reflection')||'',
+    ts:new Date().toISOString()
+  };
+  store.set(LS_REC,rec);
+  const note=document.getElementById('note_'+id);
+  if(note){note.classList.add('show');setTimeout(()=>note.classList.remove('show'),2000);}
+  toast(svc(id).name+' 실습 기록 저장됨');
+  renderDashboard();
+}
+
+/* ===== 비교 모드 ===== */
+function renderCmpPick(){
+  const rec=store.get(LS_REC,{});
+  document.getElementById('cmpPick').innerHTML=SERVICES.map(s=>
+    `<label data-pick="${s.id}"><input type="checkbox" value="${s.id}"> ${esc(s.name)}</label>`
+  ).join('');
+  document.querySelectorAll('#cmpPick input').forEach(cb=>cb.addEventListener('change',()=>{
+    const checked=[...document.querySelectorAll('#cmpPick input:checked')];
+    if(checked.length>3){cb.checked=false;toast('최대 3개까지 선택할 수 있습니다');}
+    document.querySelectorAll('#cmpPick label').forEach(l=>l.classList.toggle('sel',l.querySelector('input').checked));
+    renderCmp();
+  }));
+}
+function rowVal(s,k){
+  switch(k){
+    case 'providerLine':return esc(s.provider);
+    case 'feat':return esc(s.feat);
+    case 'scnLine':return s.scn.map(esc).join('<br>· ').replace(/^/,'· ');
+    case 'groundLine':return esc(s.ground)+`<br><span class="risk ${s.risk}">환각 ${RISK_TXT[s.risk]}</span>`;
+    case 'koLine':return esc(s.ko);
+    case 'priceTxt':return priceTag(s.price)+'<br>'+esc(s.priceTxt);
+    case 'swLine':return '<b style="color:var(--good)">강점</b><br>· '+s.strengths.map(esc).join('<br>· ')+'<br><b style="color:var(--bad)">약점</b><br>· '+s.weaknesses.map(esc).join('<br>· ');
+    case 'urlLine':return urlHtml(s);
+  }
+}
+function renderCmp(){
+  const ids=[...document.querySelectorAll('#cmpPick input:checked')].map(c=>c.value);
+  const out=document.getElementById('cmpOut');
+  if(ids.length<2){out.innerHTML='<div class="cmp-empty">비교할 서비스를 <strong>2개 이상</strong> 선택하세요 (최대 3개).</div>';return;}
+  const cols=ids.map(svc);
+  out.innerHTML=`<div class="cmp-wrap"><table class="cmp"><thead><tr><th>비교 축</th>${cols.map(s=>`<th>${esc(s.name)} ${priceTag(s.price)}</th>`).join('')}</tr></thead><tbody>`+
+    AXES.map(a=>`<tr><th>${a.label}</th>${cols.map(s=>`<td>${rowVal(s,a.k)}</td>`).join('')}</tr>`).join('')+
+    `</tbody></table></div>`;
+}
+
+/* ===== 대시보드 ===== */
+function renderDashboard(){
+  const rec=store.get(LS_REC,{});
+  const ids=Object.keys(rec).filter(id=>svc(id));
+  const t=document.getElementById('dashTable');
+  if(!ids.length){t.innerHTML=`<tbody><tr><td class="dash-empty">아직 저장된 실습 기록이 없습니다. 위에서 서비스의 <strong>실습하기</strong>를 눌러 기록을 남겨보세요.</td></tr></tbody>`;return;}
+  t.innerHTML='<thead><tr><th>서비스</th><th>유용성</th><th>출처</th><th>환각</th><th>소감</th><th>저장 일시</th></tr></thead><tbody>'+
+    ids.map(id=>{const r=rec[id];const s=svc(id);
+      const srcPill=r.source==='예'?'<span class="pill y">예</span>':r.source==='아니오'?'<span class="pill n">아니오</span>':'-';
+      const halPill=r.halluc==='발견'?'<span class="pill warn">발견</span>':r.halluc==='미발견'?'<span class="pill y">미발견</span>':'-';
+      const refl=(r.reflection||'').slice(0,40)+((r.reflection||'').length>40?'…':'');
+      return `<tr><td><strong>${esc(s.name)}</strong></td><td>${r.usefulness?esc(r.usefulness)+'/5':'-'}</td><td>${srcPill}</td><td>${halPill}${r.hallucMemo?' <span class="muted" style="font-size:.74rem">('+esc(r.hallucMemo.slice(0,20))+')</span>':''}</td><td>${esc(refl)||'-'}</td><td class="mono" style="font-size:.74rem">${new Date(r.ts).toLocaleString('ko-KR')}</td></tr>`;
+    }).join('')+'</tbody>';
+}
+function exportCsv(){
+  const rec=store.get(LS_REC,{});
+  const ids=Object.keys(rec).filter(id=>svc(id));
+  if(!ids.length){toast('내보낼 기록이 없습니다');return;}
+  const head=['서비스','제공사','카테고리','입력 프롬프트','유용성(5)','출처제시','환각발견','환각메모','종합소감','저장일시'];
+  const rows=ids.map(id=>{const r=rec[id],s=svc(id);
+    return [s.name,s.provider,s.cats.map(k=>(CATS.find(c=>c.key===k)||{}).name).join('|'),r.prompt,r.usefulness,r.source,r.halluc,r.hallucMemo,r.reflection,r.ts];});
+  const csv=[head,...rows].map(row=>row.map(c=>`"${String(c==null?'':c).replace(/"/g,'""')}"`).join(',')).join('\r\n');
+  const blob=new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=`AI실습기록_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+  toast('CSV로 내보냈습니다');
+}
+
+/* ===== 초기화 ===== */
+function init(){
+  renderTabs();renderCards();
+  renderCmpPick();renderCmp();
+  renderDashboard();
+  document.getElementById('exportCsv').addEventListener('click',exportCsv);
+  document.getElementById('clearRecords').addEventListener('click',()=>{
+    if(confirm('저장된 모든 실습 기록을 삭제할까요? 되돌릴 수 없습니다.')){
+      localStorage.removeItem(LS_REC);renderCards();renderDashboard();toast('기록을 모두 삭제했습니다');
+    }
+  });
+}
+document.addEventListener('DOMContentLoaded',init);
+</script>
+</body>
+</html>
