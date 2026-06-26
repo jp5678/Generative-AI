@@ -11,7 +11,7 @@
 <style>
 /* ===== 디자인 시스템 — Care Green ===== */
 :root{
-  --green:#065F46; --green-d:#044534; --green-l:#0d8a66; --green-bg:#ecf6f1;
+  --green:#be123c; --green-d:#881337; --green-l:#e11d48; --green-bg:#fdf2f5;
   --ink:#1f2937; --ink-soft:#4b5563; --line:#dbe3de; --bg:#f6f9f7; --card:#fff;
   --warn-bg:#fff4e5; --warn-line:#f59e0b; --warn-ink:#92400e;
   --good:#047857; --bad:#b91c1c; --mid:#b45309;
@@ -33,13 +33,13 @@ button{font-family:var(--sans);cursor:pointer}
 /* ===== 헤더 ===== */
 header.site{background:linear-gradient(135deg,var(--green),var(--green-d));color:#fff;padding:28px 0 24px}
 header.site h1{color:#fff;font-size:1.65rem;margin-bottom:.2em}
-header.site .sub{color:#c7e7db;font-size:.95rem;font-weight:500}
-.chip{display:inline-block;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.3);color:#eafaf3;font-size:.75rem;padding:3px 11px;border-radius:999px;margin-bottom:10px;letter-spacing:.03em}
+header.site .sub{color:#f6d3dc;font-size:.95rem;font-weight:500}
+.chip{display:inline-block;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.3);color:#fdeaf0;font-size:.75rem;padding:3px 11px;border-radius:999px;margin-bottom:10px;letter-spacing:.03em}
 .goals{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:18px}
 .goal{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:12px;padding:12px 14px}
-.goal .lvl{font-family:var(--mono);font-size:.72rem;color:#9fe0cb;letter-spacing:.05em;text-transform:uppercase}
+.goal .lvl{font-family:var(--mono);font-size:.72rem;color:#f1bccb;letter-spacing:.05em;text-transform:uppercase}
 .goal .txt{color:#fff;font-weight:500;font-size:.92rem;margin-top:2px}
-.datestamp{margin-top:16px;font-size:.8rem;color:#bfe3d6}
+.datestamp{margin-top:16px;font-size:.8rem;color:#f0c4d0}
 
 /* ===== 네비 ===== */
 nav.toc{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:50;box-shadow:0 1px 4px rgba(0,0,0,.04)}
@@ -104,7 +104,7 @@ section.block{padding:38px 0 14px}
 .lab{margin-top:12px;border-top:1px dashed var(--line);padding-top:12px;display:none}
 .lab.open{display:block}
 .lab h4{font-size:.92rem;margin-bottom:6px}
-.prompt-ex{background:#0b3b2d;color:#d7f5ea;font-family:var(--mono);font-size:.78rem;border-radius:8px;padding:10px 12px;margin:6px 0;line-height:1.6;position:relative}
+.prompt-ex{background:#4a0d1c;color:#fbe4ea;font-family:var(--mono);font-size:.78rem;border-radius:8px;padding:10px 12px;margin:6px 0;line-height:1.6;position:relative}
 .prompt-ex .copy{position:absolute;top:7px;right:7px;background:rgba(255,255,255,.15);color:#fff;border:none;border-radius:6px;padding:3px 8px;font-size:.7rem;cursor:pointer}
 .lab-form label{display:block;font-size:.8rem;font-weight:700;color:var(--green-d);margin:9px 0 3px}
 .lab-form textarea,.lab-form select,.lab-form input[type=text]{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:8px;font-family:var(--sans);font-size:.86rem;resize:vertical}
@@ -146,7 +146,7 @@ table.dash tbody tr:hover{background:var(--green-bg)}
 .notice p{font-size:.86rem;color:var(--ink-soft);margin:0}
 
 /* ===== 푸터 / 토스트 ===== */
-footer.site{background:var(--green-d);color:#cdeae0;text-align:center;padding:22px 18px;font-size:.88rem;margin-top:32px}
+footer.site{background:var(--green-d);color:#f3cdd8;text-align:center;padding:22px 18px;font-size:.88rem;margin-top:32px}
 footer.site strong{color:#fff;font-family:var(--serif)}
 .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--green-d);color:#fff;padding:12px 20px;border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.3);opacity:0;transition:.25s;z-index:900;font-size:.9rem;max-width:90vw;pointer-events:none}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
@@ -276,10 +276,10 @@ function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','
    url: null 이면 "공식 사이트에서 검색" 안내로 대체
    =========================================================== */
 const CATS=[
-  {key:'chat',  n:1, name:'범용 대화형 AI', color:'#065F46'},
+  {key:'chat',  n:1, name:'범용 대화형 AI', color:'#0e7490'},
   {key:'research',n:2,name:'학술 문헌검색·연구 지원', color:'#1d4ed8'},
   {key:'rag',   n:3, name:'자료 학습·요약 (RAG)', color:'#6d28d9'},
-  {key:'present',n:4,name:'발표·문서 자동 생성', color:'#0e7490'},
+  {key:'present',n:4,name:'발표·문서 자동 생성', color:'#b45309'},
   {key:'image', n:5, name:'이미지·시각화 생성', color:'#be123c'},
 ];
 
@@ -434,7 +434,7 @@ const AXES=[
 ];
 const RISK_TXT={h:'높음',m:'중간',l:'낮음'};
 function svc(id){return SERVICES.find(s=>s.id===id);}
-function catColor(k){return (CATS.find(c=>c.key===k)||{}).color||'#065F46';}
+function catColor(k){return (CATS.find(c=>c.key===k)||{}).color||'#be123c';}
 function priceTag(p){
   if(p==='free')return '<span class="tag tag-free">무료</span>';
   if(p==='paid')return '<span class="tag tag-paid">유료</span>';
