@@ -11,8 +11,8 @@
 <style>
 /* ===== 디자인 시스템 — Care Green ===== */
 :root{
-  --green:#5d7a93; --green-d:#3a5266; --green-l:#4f6f8a; --green-bg:#e6edf3;
-  --ink:#1f2937; --ink-soft:#4b5563; --line:#d6dee6; --bg:#f3f6f9; --card:#fff;
+  --green:#2563eb; --green-d:#1e3a8a; --green-l:#1d4ed8; --green-bg:#eef4ff;
+  --ink:#1f2937; --ink-soft:#4b5563; --line:#d9e1ee; --bg:#f4f7fc; --card:#fff;
   --warn-bg:#fff4e5; --warn-line:#f59e0b; --warn-ink:#92400e;
   --good:#047857; --bad:#b91c1c; --mid:#b45309;
   --radius:14px; --shadow:0 1px 3px rgba(47,62,79,.08),0 6px 18px rgba(47,62,79,.05);
@@ -111,7 +111,7 @@ section.block{padding:38px 0 14px}
 .scn-steps label{display:flex;gap:8px;align-items:flex-start;font-size:.86rem;cursor:pointer;line-height:1.5}
 .scn-steps input{margin-top:3px;accent-color:var(--green);flex:0 0 auto;width:16px;height:16px}
 .scn-prog{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:.8rem;color:var(--ink-soft)}
-.scn-bar{flex:1;height:7px;background:#dde3ec;border-radius:999px;overflow:hidden}
+.scn-bar{flex:1;height:7px;background:#dbe6f8;border-radius:999px;overflow:hidden}
 .scn-bar>span{display:block;height:100%;width:0;background:var(--green);transition:.3s}
 .prompt-ex{background:#1f2c3a;color:#e2e9f2;font-family:var(--mono);font-size:.78rem;border-radius:8px;padding:10px 12px;margin:6px 0;line-height:1.6;display:flex;gap:10px;align-items:flex-start}
 .prompt-ex span{flex:1;min-width:0;word-break:break-word}
@@ -882,7 +882,7 @@ const AXES=[
 ];
 const RISK_TXT={h:'높음',m:'중간',l:'낮음'};
 function svc(id){return SERVICES.find(s=>s.id===id);}
-function catColor(k){return (CATS.find(c=>c.key===k)||{}).color||'#5d7a93';}
+function catColor(k){return (CATS.find(c=>c.key===k)||{}).color||'#2563eb';}
 function priceTag(p){
   if(p==='free')return '<span class="tag tag-free">무료</span>';
   if(p==='paid')return '<span class="tag tag-paid">유료</span>';
