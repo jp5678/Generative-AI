@@ -192,8 +192,7 @@ footer.site strong{color:#fff;font-family:var(--serif)}
   <div class="wrap">
     <a href="#explore">① 카테고리별 서비스</a>
     <a href="#compare">② 비교 모드</a>
-    <a href="#dashboard">③ 내 실습 기록</a>
-    <a href="#notice">④ 유의사항</a>
+    <a href="#notice">③ 유의사항</a>
   </div>
 </nav>
 
@@ -212,7 +211,7 @@ footer.site strong{color:#fff;font-family:var(--serif)}
     <div class="sec-head">
       <span class="kick">Explore &amp; Practice</span>
       <h2>① 카테고리별 서비스 탐색 &amp; 직접 실습</h2>
-      <p>카테고리 탭으로 서비스를 분류해 보고, 각 카드의 <strong>실습예제</strong>를 눌러 학습 포인트·예제 프롬프트·단계별 시나리오로 직접 실습하세요. 시나리오 진행은 이 브라우저(localStorage)에 자동 저장됩니다.</p>
+      <p>카테고리 탭으로 서비스를 분류해 보고, 각 카드의 <strong>실습예제</strong>를 눌러 학습 포인트·예제 프롬프트·단계별 시나리오로 직접 실습하세요. 단계 체크로 진행 상황을 바로 확인할 수 있습니다.</p>
     </div>
     <div class="tabs" id="tabs" role="tablist"></div>
     <div class="cards" id="cards"></div>
@@ -232,28 +231,13 @@ footer.site strong{color:#fff;font-family:var(--serif)}
   </div>
 </section>
 
-<!-- ===== ③ 대시보드 ===== -->
-<section class="block" id="dashboard">
-  <div class="wrap">
-    <div class="sec-head">
-      <span class="kick">My Records</span>
-      <h2>③ 내 실습 기록 모아보기</h2>
-      <p>각 서비스의 실습 시나리오 진행 상황을 한눈에 보고 CSV로 내보낼 수 있습니다.</p>
-    </div>
-    <div class="dash-wrap"><table class="dash" id="dashTable"></table></div>
-    <div class="btn-row">
-      <button class="btn btn-amber" id="exportCsv">⬇ CSV로 내보내기</button>
-      <button class="btn btn-ghost" id="clearRecords">🗑 기록 전체 삭제</button>
-    </div>
-  </div>
-</section>
 
 <!-- ===== ④ 유의사항 ===== -->
 <section class="block" id="notice" style="background:#fff;border-top:1px solid var(--line)">
   <div class="wrap">
     <div class="sec-head">
       <span class="kick">Cautions</span>
-      <h2>④ 생성형 AI 활용 시 유의사항</h2>
+      <h2>③ 생성형 AI 활용 시 유의사항</h2>
     </div>
     <div class="notice-grid">
       <div class="notice"><h4>🔒 개인·환자정보 보호</h4><p>실제 환자 식별정보·의무기록(EMR)을 어떤 AI에도 입력하지 않습니다. 입력 내용은 외부 서버로 전송·학습될 수 있습니다. 가상 사례만 사용하세요.</p></div>
@@ -1080,7 +1064,7 @@ function renderCards(){
       </div>
       <div style="font-size:.8rem;margin-bottom:6px">🔗 ${urlHtml(s)}</div>
       <div class="card-actions">
-        <button class="btn btn-sm" data-lab="${s.id}">📝 실습예제${(r.steps&&r.steps.some(Boolean))?' ✓':''}</button>
+        <button class="btn btn-sm" data-lab="${s.id}">📝 실습예제</button>
         ${s.url?`<a class="btn btn-ghost btn-sm" href="${s.url}" target="_blank" rel="noopener">공식 사이트 열기 ↗</a>`:''}
       </div>
       <div class="lab" id="lab_${s.id}">
@@ -1090,7 +1074,7 @@ function renderCards(){
         ${s.prompts.map((p,i)=>`<div class="prompt-ex">${esc(p)}<button class="copy" data-copy="${s.id}_${i}">복사</button></div>`).join('')}
         <div class="ex-label">실습 시나리오 · 따라 하며 익히기</div>
         <ul class="scn-steps">
-          ${(STEPS[s.id]||[]).map((st,i)=>`<li><label><input type="checkbox" data-step="${s.id}|${i}" ${(r.steps&&r.steps[i])?'checked':''}> ${esc(st)}</label></li>`).join('')}
+          ${(STEPS[s.id]||[]).map((st,i)=>`<li><label><input type="checkbox" data-step="${s.id}|${i}"> ${esc(st)}</label></li>`).join('')}
         </ul>
         <div class="scn-prog"><span>진행</span><div class="scn-bar"><span id="sbar_${s.id}"></span></div><span class="mono" id="scnt_${s.id}">0/0</span></div>
       </div>
@@ -1106,32 +1090,19 @@ function renderCards(){
     navigator.clipboard?.writeText(p).then(()=>toast('프롬프트를 복사했습니다'),()=>toast('복사 실패 — 직접 선택하세요'));
   }));
   document.querySelectorAll('[data-step]').forEach(cb=>cb.addEventListener('change',()=>{
-    const a=cb.dataset.step.split('|');toggleStep(a[0],+a[1],cb.checked);
+    updateScnProg(cb.dataset.step.split('|')[0]);
   }));
   list.forEach(x=>updateScnProg(x.id));
 }
-function toggleStep(id,i,on){
-  const rec=store.get(LS_REC,{});
-  const total=(STEPS[id]||[]).length;
-  if(!rec[id]||!rec[id].steps) rec[id]={steps:new Array(total).fill(false)};
-  rec[id].steps[i]=on;
-  rec[id].ts=new Date().toISOString();
-  store.set(LS_REC,rec);
-  updateScnProg(id);
-  renderDashboard();
-}
-function scnDone(id){
-  const r=store.get(LS_REC,{})[id];
-  const total=(STEPS[id]||[]).length;
-  const done=(r&&r.steps)?r.steps.filter(Boolean).length:0;
-  return {done,total};
-}
 function updateScnProg(id){
-  const o=scnDone(id);
+  const lab=document.getElementById('lab_'+id);
+  if(!lab) return;
+  const boxes=lab.querySelectorAll('[data-step]');
+  const done=[...boxes].filter(b=>b.checked).length, total=boxes.length;
   const bar=document.getElementById('sbar_'+id);
-  if(bar) bar.style.width=(o.total?Math.round(o.done/o.total*100):0)+'%';
+  if(bar) bar.style.width=(total?Math.round(done/total*100):0)+'%';
   const c=document.getElementById('scnt_'+id);
-  if(c) c.textContent=o.done+'/'+o.total;
+  if(c) c.textContent=done+'/'+total;
 }
 
 /* ===== 비교 모드 ===== */
@@ -1169,45 +1140,10 @@ function renderCmp(){
     `</tbody></table></div>`;
 }
 
-/* ===== 대시보드 ===== */
-function renderDashboard(){
-  const rec=store.get(LS_REC,{});
-  const ids=Object.keys(rec).filter(id=>svc(id)&&rec[id].steps&&rec[id].steps.some(Boolean));
-  const t=document.getElementById('dashTable');
-  if(!ids.length){t.innerHTML=`<tbody><tr><td class="dash-empty">아직 진행한 실습 시나리오가 없습니다. 위에서 서비스의 <strong>실습예제</strong>를 열어 시나리오 단계를 체크해 보세요.</td></tr></tbody>`;return;}
-  ids.sort((a,b)=>new Date(rec[b].ts)-new Date(rec[a].ts));
-  t.innerHTML='<thead><tr><th>서비스</th><th>카테고리</th><th>시나리오 진행</th><th>완료율</th><th>마지막 활동</th></tr></thead><tbody>'+
-    ids.map(id=>{const s=svc(id);const o=scnDone(id);const pct=o.total?Math.round(o.done/o.total*100):0;const cls=pct===100?'y':(pct>0?'warn':'n');
-      return `<tr><td><strong>${esc(s.name)}</strong></td><td class="muted" style="font-size:.78rem">${s.cats.map(k=>(CATS.find(c=>c.key===k)||{}).name).join(' · ')}</td><td>${o.done}/${o.total} 단계</td><td><span class="pill ${cls}">${pct}%</span></td><td class="mono" style="font-size:.74rem">${new Date(rec[id].ts).toLocaleString('ko-KR')}</td></tr>`;
-    }).join('')+'</tbody>';
-}
-function exportCsv(){
-  const rec=store.get(LS_REC,{});
-  const ids=Object.keys(rec).filter(id=>svc(id)&&rec[id].steps&&rec[id].steps.some(Boolean));
-  if(!ids.length){toast('내보낼 진행 기록이 없습니다');return;}
-  const head=['서비스','제공사','카테고리','완료 단계','전체 단계','완료율(%)','마지막 활동'];
-  const rows=ids.map(id=>{const s=svc(id);const o=scnDone(id);const pct=o.total?Math.round(o.done/o.total*100):0;
-    return [s.name,s.provider,s.cats.map(k=>(CATS.find(c=>c.key===k)||{}).name).join('|'),o.done,o.total,pct,rec[id].ts];});
-  const csv=[head,...rows].map(row=>row.map(c=>`"${String(c==null?'':c).replace(/"/g,'""')}"`).join(',')).join('\r\n');
-  const blob=new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8'});
-  const a=document.createElement('a');
-  a.href=URL.createObjectURL(blob);
-  a.download=`AI실습진행_${new Date().toISOString().slice(0,10)}.csv`;
-  a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
-  toast('CSV로 내보냈습니다');
-}
-
 /* ===== 초기화 ===== */
 function init(){
   renderTabs();renderCards();
   renderCmpPick();renderCmp();
-  renderDashboard();
-  document.getElementById('exportCsv').addEventListener('click',exportCsv);
-  document.getElementById('clearRecords').addEventListener('click',()=>{
-    if(confirm('저장된 모든 실습 기록을 삭제할까요? 되돌릴 수 없습니다.')){
-      localStorage.removeItem(LS_REC);renderCards();renderDashboard();toast('기록을 모두 삭제했습니다');
-    }
-  });
 }
 document.addEventListener('DOMContentLoaded',init);
 </script>
