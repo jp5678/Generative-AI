@@ -178,7 +178,7 @@ footer.site strong{color:#fff;font-family:var(--serif)}
   <div class="wrap">
     <span class="chip">청암대학교 간호학과 · 3학년 · AI융합 간호정보학</span>
     <h1>연구·학습 지원 AI · 학술정보 비교·실습 랩</h1>
-    <p class="sub">학술 DB·전자정보원과 생성형 AI 등 10개 카테고리 63개 서비스를 비교 학습하고, 직접 실습한 뒤 결과를 기록·성찰합니다.</p>
+    <p class="sub">학술 DB·전자정보원과 생성형 AI 등 10개 카테고리 61개 서비스를 비교 학습하고, 직접 실습한 뒤 결과를 기록·성찰합니다.</p>
     <div class="goals" aria-label="학습 목표">
       <div class="goal"><div class="lvl">이해 · Understand</div><div class="txt">① 생성형 AI 서비스를 용도별로 <b>분류</b>한다</div></div>
       <div class="goal"><div class="lvl">분석 · Analyze</div><div class="txt">② 8개 축으로 서비스를 <b>비교</b>한다</div></div>
@@ -851,24 +851,6 @@ const SERVICES=[
    weaknesses:['크레딧 제한','사실성·저작권 주의','의학 시연엔 부정확'],
    prompts:['밝은 톤의 손위생 안내 짧은 영상을 만들어줘. (교육용, 가상)','발표 도입용 5초 인트로 영상 생성'],
    url:'https://app.klingai.com'},
-  {id:'clovanote',cats:['media'],name:'CLOVA Note (클로바노트)',provider:'네이버',price:'freemium',
-   feat:'음성을 텍스트로 변환하고 AI가 회의/강의 내용을 요약해 주는 한국어 강점 기록 도구.',
-   scn:['실습 회의·강의 녹음을 텍스트화·요약','인터뷰 전사(가상/동의 자료)'],
-   ground:'음성→텍스트 전사·요약(사실 확인 권장)', risk:'m', ko:'상',
-   priceTxt:'무료(월 300~600분) / 유료 월 9,900원(3,000분)',
-   strengths:['한국어 전사 강점','자동 요약','화상회의 음성 연동'],
-   weaknesses:['전사 오류 가능','요약 누락','민감정보 입력 금지'],
-   prompts:['강의 녹음(가상/동의)을 전사하고 핵심을 요약해줘.','회의록의 결정사항을 항목화'],
-   url:'https://clovanote.naver.com'},
-  {id:'clovadubbing',cats:['media'],name:'CLOVA Dubbing (클로바더빙)',provider:'네이버',price:'freemium',
-   feat:'텍스트를 자연스러운 AI 음성으로 더빙해 영상·교육자료에 입히는 도구.',
-   scn:['건강교육 영상에 한국어 내레이션 입히기','발표 자료 음성 안내 제작'],
-   ground:'텍스트→음성 합성(사실은 입력 텍스트에 의존)', risk:'l', ko:'상',
-   priceTxt:'무료(기본 한도) / 유료 확장',
-   strengths:['자연스러운 한국어 음성','다양한 보이스','영상 편집 연동'],
-   weaknesses:['무료 한도','상업 사용 라이선스 확인','목소리 저작권 유의'],
-   prompts:['이 교육 스크립트를 차분한 한국어 음성으로 더빙해줘.','슬라이드 설명용 내레이션 생성'],
-   url:'https://clovadubbing.naver.com'},
 ];
 
 const TIPS={
@@ -933,8 +915,6 @@ const TIPS={
   whisk:'참고 이미지를 결합·리믹스해 교육 비주얼을 변주.',
   suno:'건강 캠페인송·암기송을 만들어 학습 활동에 활용.',
   kling:'교육용 짧은 시연/인트로 영상을 생성(정확성은 검수).',
-  clovanote:'강의·회의 녹음을 전사·요약(실제 환자·민감정보 입력 금지).',
-  clovadubbing:'교육 영상에 자연스러운 한국어 내레이션을 입히기.',
 };
 
 const STEPS={
@@ -999,8 +979,6 @@ const STEPS={
   whisk:['참고 이미지를 주제·스타일로 올린다','결합·리믹스로 새 비주얼을 생성한다','사실성·저작권을 확인한다'],
   suno:['건강 캠페인 주제로 가사·곡을 생성한다','스타일을 조정해 재생성한다','상업/공유 라이선스를 확인한다'],
   kling:['교육용 짧은 영상을 텍스트/이미지로 생성한다','길이·구도를 조정한다','의학 시연의 정확성을 검수한다'],
-  clovanote:['강의/회의 녹음을 업로드한다(민감정보 금지)','전사와 AI 요약을 생성한다','핵심 결정사항을 항목화해 정리한다'],
-  clovadubbing:['교육 스크립트를 입력한다','어울리는 한국어 음성으로 더빙한다','영상에 입히고 라이선스를 확인한다'],
 };
 
 /* 8개 비교 축 정의 */
