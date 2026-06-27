@@ -11,8 +11,8 @@
 <style>
 /* ===== 디자인 시스템 — Care Green ===== */
 :root{
-  --green:#3f5a73; --green-d:#2b3f52; --green-l:#4f6f93; --green-bg:#eef1f5;
-  --ink:#1f2937; --ink-soft:#4b5563; --line:#dbe3de; --bg:#f6f9f7; --card:#fff;
+  --green:#5d7a93; --green-d:#3a5266; --green-l:#4f6f8a; --green-bg:#e6edf3;
+  --ink:#1f2937; --ink-soft:#4b5563; --line:#d6dee6; --bg:#f3f6f9; --card:#fff;
   --warn-bg:#fff4e5; --warn-line:#f59e0b; --warn-ink:#92400e;
   --good:#047857; --bad:#b91c1c; --mid:#b45309;
   --radius:14px; --shadow:0 1px 3px rgba(47,62,79,.08),0 6px 18px rgba(47,62,79,.05);
@@ -882,7 +882,7 @@ const AXES=[
 ];
 const RISK_TXT={h:'높음',m:'중간',l:'낮음'};
 function svc(id){return SERVICES.find(s=>s.id===id);}
-function catColor(k){return (CATS.find(c=>c.key===k)||{}).color||'#3f5a73';}
+function catColor(k){return (CATS.find(c=>c.key===k)||{}).color||'#5d7a93';}
 function priceTag(p){
   if(p==='free')return '<span class="tag tag-free">무료</span>';
   if(p==='paid')return '<span class="tag tag-paid">유료</span>';
