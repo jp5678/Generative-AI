@@ -96,7 +96,6 @@ section.block{padding:38px 0 14px}
 .btn-ghost{background:transparent;color:var(--green);border:1.5px solid var(--green)}
 .btn-ghost:hover{background:var(--green-bg)}
 .btn-sm{padding:7px 12px;font-size:.82rem;border-radius:8px}
-.btn-amber{background:var(--mid)} .btn-amber:hover{background:#92400e}
 .src-link{font-family:var(--mono);font-size:.76rem;word-break:break-all}
 .no-link{font-family:var(--mono);font-size:.76rem;color:var(--mid)}
 
@@ -116,15 +115,6 @@ section.block{padding:38px 0 14px}
 .scn-bar>span{display:block;height:100%;width:0;background:var(--green);transition:.3s}
 .prompt-ex{background:#4a0d1c;color:#fbe4ea;font-family:var(--mono);font-size:.78rem;border-radius:8px;padding:10px 12px;margin:6px 0;line-height:1.6;position:relative}
 .prompt-ex .copy{position:absolute;top:7px;right:7px;background:rgba(255,255,255,.15);color:#fff;border:none;border-radius:6px;padding:3px 8px;font-size:.7rem;cursor:pointer}
-.lab-form label{display:block;font-size:.8rem;font-weight:700;color:var(--green-d);margin:9px 0 3px}
-.lab-form textarea,.lab-form select,.lab-form input[type=text]{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:8px;font-family:var(--sans);font-size:.86rem;resize:vertical}
-.lab-form .row{display:flex;gap:10px;flex-wrap:wrap}
-.lab-form .row > div{flex:1;min-width:130px}
-.radiogrp{display:flex;gap:6px;flex-wrap:wrap}
-.radiogrp label{display:inline-flex;align-items:center;gap:5px;font-weight:400;font-size:.83rem;background:#fff;border:1px solid var(--line);border-radius:8px;padding:6px 10px;margin:0;cursor:pointer}
-.radiogrp input{accent-color:var(--green);margin:0}
-.saved-note{font-size:.78rem;color:var(--good);margin-top:6px;display:none}
-.saved-note.show{display:block}
 
 /* ===== 비교 모드 ===== */
 .cmp-pick{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
@@ -139,15 +129,6 @@ table.cmp tbody th{background:var(--green-bg);color:var(--green-d);font-weight:7
 .cmp-empty{color:var(--ink-soft);font-size:.9rem;padding:14px;background:#fff;border:1px dashed var(--line);border-radius:12px;margin-top:12px}
 
 /* ===== 대시보드 ===== */
-.dash-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--radius);background:#fff;margin-top:14px}
-table.dash{border-collapse:collapse;width:100%;min-width:760px;font-size:.83rem}
-table.dash th,table.dash td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
-table.dash thead th{background:var(--green);color:#fff;font-family:var(--sans);font-weight:600;white-space:nowrap}
-table.dash tbody tr:hover{background:var(--green-bg)}
-.pill{font-family:var(--mono);font-size:.72rem;padding:1px 7px;border-radius:5px}
-.pill.y{background:#dcfce7;color:#166534}.pill.n{background:#fee2e2;color:#991b1b}.pill.warn{background:#fef3c7;color:#92400e}
-.dash-empty{color:var(--ink-soft);padding:16px;text-align:center}
-.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
 
 /* ===== 유의사항 ===== */
 .notice-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:16px}
@@ -258,9 +239,6 @@ footer.site strong{color:#fff;font-family:var(--serif)}
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
-/* ===== localStorage ===== */
-const LS_REC='aslab_records';
-const store={get:(k,d)=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set:(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2400);}
 function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 
@@ -289,7 +267,7 @@ const SERVICES=[
    priceTxt:'재학생·교직원 무료(교내/교외 인증 필요)',
    strengths:['구독 DB 통합 접근','원문복사·상호대차','사서 이용 지원'],
    weaknesses:['교외 접근 시 인증 필요','구독 범위 내로 한정'],
-   prompts:['간호 주제 키워드로 교내 통합검색 후 이용 가능 DB·원문 확인','원문 없는 논문을 상호대차로 신청하고 수령 경로 확인'],
+   prompts:['통합검색창에 "노인 낙상 예방 간호중재" 입력 후 [원문있는자료]·[학위논문] 필터 적용','"diabetes self-management education HbA1c" 검색 → 교내 구독 DB 원문 우선 확인, 없으면 상호대차 신청'],
    url:'https://lib.ca.ac.kr'},
   {id:'riss',cats:['lib'],name:'RISS',provider:'KERIS(한국교육학술정보원)',price:'freemium',
    feat:'국내 학위논문·학술지논문·단행본을 통합검색하고 해외 DB까지 연계하는 대국민 학술정보 서비스.',
@@ -298,7 +276,7 @@ const SERVICES=[
    priceTxt:'검색 무료 / 일부 원문 기관 인증·유료',
    strengths:['국내 문헌 포괄 범위','학위논문 강점','해외 DB 연계'],
    weaknesses:['AI 합성·요약 없음(검색 중심)','일부 원문 기관 구독'],
-   prompts:['"노인 낙상 예방 간호중재" 국내 학위·학술지 논문 검색','검색 결과를 발행연도·자료유형으로 필터링'],
+   prompts:['상세검색: 입원 노인 낙상 예방 → 자료유형 [학위논문], 발행연도 [2020~2026] 한정','당뇨병 자가관리 교육 AND 당화혈색소 → [국내학술지] 한정 후 등재지 여부 확인'],
    url:'https://www.riss.kr'},
   {id:'kiss',cats:['lib'],name:'KISS',provider:'한국학술정보(주)',price:'paid',
    feat:'국내 학회·연구기관 학술지 원문을 제공하는 데이터베이스(간호·보건 등재지 다수).',
@@ -307,7 +285,7 @@ const SERVICES=[
    priceTxt:'기관 구독(소속기관 인증)',
    strengths:['국내 등재지 원문','간호·보건 분야 수록'],
    weaknesses:['개인은 유료·기관 구독','해외 문헌 약함'],
-   prompts:['간호 주제어로 국내 학회지 원문 검색','등재지 여부와 발행 학회 확인'],
+   prompts:['검색창에 "노인 낙상 예방" 입력 → 분야 [간호학]으로 좁혀 학회지 원문 확인','"가정간호" AND "만성질환 관리" 로 국내 학회지 논문 검색'],
    url:'https://kiss.kstudy.com'},
   {id:'dbpia',cats:['lib'],name:'DBpia',provider:'누리미디어',price:'paid',
    feat:'국내 학술지·논문을 폭넓게 수록한 플랫폼. 최근 AI 추천·요약 기능 도입.',
@@ -316,7 +294,7 @@ const SERVICES=[
    priceTxt:'기관 구독(소속기관 인증)',
    strengths:['국내 등재지 폭넓은 수록','주제·인용 탐색 편의'],
    weaknesses:['개인 유료·기관 구독','해외 문헌 색인 제한'],
-   prompts:['주제어로 국내 학술지 논문 검색 후 관련도순 정렬','핵심 논문의 참고문헌·인용 추적'],
+   prompts:['"중환자실 섬망 간호중재" 검색 → 관련도순 정렬 후 상위 10편 초록 비교','"당뇨 자가관리 앱" AND "당화혈색소" 검색 → 인용 많은 논문의 참고문헌 추적'],
    url:'https://www.dbpia.co.kr'},
   {id:'earticle',cats:['lib'],name:'e-Article',provider:'학술교육원',price:'paid',
    feat:'국내 학회·연구소가 발행한 학술논문 원문을 제공하는 전자저널 DB.',
@@ -325,7 +303,7 @@ const SERVICES=[
    priceTxt:'기관 구독·부분 유료(소속기관 인증)',
    strengths:['국내 학회 논문 원문','타 DB 보완용'],
    weaknesses:['수록 범위 한정','개인 유료'],
-   prompts:['타 DB에서 못 찾은 국내 논문을 주제어로 재검색','발행 학회·연도로 신뢰성 확인'],
+   prompts:['RISS·KISS에서 못 찾은 "노인 낙상 위험요인" 을 e-Article에서 재검색','"수술 후 통증관리 비약물 중재" 로 국내 학회 논문 원문 확인'],
    url:'https://www.earticle.net'},
   {id:'scienceon',cats:['lib'],name:'ScienceON',provider:'KISTI',price:'free',
    feat:'국가 과학기술 정보(논문·특허·보고서·연구데이터)를 통합 검색하는 무료 서비스.',
@@ -334,7 +312,7 @@ const SERVICES=[
    priceTxt:'무료(회원가입) / 일부 외부 DB 기관 인증',
    strengths:['국가 과학기술정보 통합','무료 원문 다수','NTIS 연계'],
    weaknesses:['임상 간호보다 과기 일반에 강점','AI 합성 제한'],
-   prompts:['보건의료 주제로 논문·보고서 통합검색','국가 R&D 과제·연구데이터 연계 확인'],
+   prompts:['"치매 환자 돌봄 부담" 통합검색 → [논문]+[무료원문] 필터로 즉시 열람 자료 확인','"디지털 헬스케어 만성질환" 으로 논문·보고서·국가R&D 과제 함께 확인'],
    url:'https://scienceon.kisti.re.kr'},
   {id:'nl',cats:['lib'],name:'국립중앙도서관',provider:'국립중앙도서관',price:'free',
    feat:'국내 최대 장서와 디지털 원문을 제공하는 국가 대표 도서관(국가전자도서관 포함).',
@@ -343,7 +321,7 @@ const SERVICES=[
    priceTxt:'무료(일부 원문은 관내/협약도서관 열람)',
    strengths:['방대한 국가 장서','디지털 원문','납본 자료 포괄'],
    weaknesses:['일부 원문 관내/협약 제한','최신 학술논문은 전문 DB가 우위'],
-   prompts:['단행본·학위논문을 키워드로 검색','디지털 원문 열람 가능 여부·경로 확인'],
+   prompts:['"간호이론" 단행본 검색 → 디지털화 자료(원문보기) 가능 여부 확인','"노인간호학" 학위논문 검색 후 협약도서관 원문 열람 경로 확인'],
    url:'https://www.nl.go.kr'},
   {id:'nanet',cats:['lib'],name:'국회도서관',provider:'대한민국 국회도서관',price:'free',
    feat:'학위논문·정기간행물이 풍부한 입법·학술 도서관. 디지털 원문 제공(관내/협약).',
@@ -352,7 +330,7 @@ const SERVICES=[
    priceTxt:'무료(일부 원문 관내/협약 열람)',
    strengths:['학위논문 강점','정책·입법 자료','디지털 원문'],
    weaknesses:['일부 원문 관내 제한','해외 문헌 약함'],
-   prompts:['주제어로 국내 학위논문 검색','정책·법령 연계 자료 확인'],
+   prompts:['"간호인력 정책" 학위논문 검색 → 발행연도 최신순 정렬','"노인장기요양보험" 관련 정책자료와 학위논문을 함께 검색'],
    url:'https://www.nanet.go.kr'},
   {id:'koreamed',cats:['lib'],name:'KoreaMed',provider:'대한의학학술지편집인협의회(KAMJE)',price:'free',
    feat:'국내 의학·간호·보건 학술지를 영문으로 색인하는 무료 서비스(국내판 MEDLINE 성격).',
@@ -361,7 +339,7 @@ const SERVICES=[
    priceTxt:'무료',
    strengths:['국내 의학·간호 학술지 영문 색인','무료 접근','KoMCI 인용 연계'],
    weaknesses:['색인 중심(원문은 발행처)','수록은 등재지 한정'],
-   prompts:['nursing 등 영문 키워드로 국내 의학 학술지 검색','관심 논문의 발행 학술지·원문 링크 확인'],
+   prompts:['검색창에 fall prevention AND elderly AND nursing 입력 → 국내 등재 학술지 논문 확인','diabetes self-management AND HbA1c 로 검색 후 발행 학술지·원문 링크 확인'],
    url:'https://koreamed.org'},
   {id:'pubmed',cats:['lib'],name:'PubMed',provider:'미국 NLM/NCBI',price:'free',
    feat:'3,700만+ 생의학 문헌을 색인하는 무료 검색(MEDLINE). 간호·의학 근거검색의 표준 관문.',
@@ -370,7 +348,7 @@ const SERVICES=[
    priceTxt:'무료',
    strengths:['생의학 표준 색인','MeSH·강력한 필터','무료'],
    weaknesses:['영문 중심','원문은 발행처/PMC 경유','국내 비등재 문헌 약함'],
-   prompts:['MeSH로 "Accidental Falls"+"Aged"+"Nursing" 조합 검색','Article type를 RCT·Systematic Review로 한정'],
+   prompts:['("Accidental Falls"[MeSH]) AND ("Aged"[MeSH]) AND ("Nursing"[MeSH]) → Filters에서 RCT, 최근 5년 적용','("Diabetes Mellitus, Type 2"[MeSH]) AND "Self-Management" AND "Hemoglobin A1c" → Systematic Review 필터'],
    url:'https://pubmed.ncbi.nlm.nih.gov'},
   {id:'gscholar',cats:['lib'],name:'Google Scholar',provider:'Google',price:'free',
    feat:'광범위한 학술 문헌을 무료로 검색하고 피인용·관련 논문을 탐색.',
@@ -379,7 +357,7 @@ const SERVICES=[
    priceTxt:'무료',
    strengths:['넓은 포괄 범위','피인용·관련 논문','도서관 링크 연동'],
    weaknesses:['수록 품질 편차(비심사 포함)','정밀 필터 약함','중복 결과'],
-   prompts:['주제어로 검색 후 피인용 많은 순 확인','관심 논문의 인용 논문(Cited by) 추적'],
+   prompts:['"입원 노인 낙상 예방" 다요인 중재 → 기간 2021~2026 설정 후 피인용순 확인','"diabetes self-management education" "HbA1c" randomized → Cited by 클릭해 후속 연구 추적'],
    url:'https://scholar.google.co.kr'},
   {id:'sciencedirect',cats:['lib'],name:'ScienceDirect',provider:'Elsevier',price:'paid',
    feat:'Elsevier 저널·도서의 해외 전문(full-text)을 제공하는 대형 학술 플랫폼.',
@@ -388,7 +366,7 @@ const SERVICES=[
    priceTxt:'기관 구독(소속기관 인증) / 일부 오픈액세스',
    strengths:['해외 핵심 저널 원문','정제된 메타데이터'],
    weaknesses:['기관 구독 의존','영문 중심'],
-   prompts:['교내 인증으로 해외 저널 전문 접근','관심 논문 PDF 다운로드·인용 내보내기'],
+   prompts:['검색창에 fall prevention multifactorial intervention hospitalized older adults 입력 → Review articles 필터','nurse-led diabetes self-management AND glycemic control → 핵심 논문 PDF 저장 후 인용 내보내기'],
    url:'https://www.sciencedirect.com'},
   {id:'proquest',cats:['lib'],name:'ProQuest',provider:'ProQuest (Clarivate)',price:'paid',
    feat:'해외 학위논문·다분야 학술 DB를 통합 제공하는 플랫폼(학위논문 강점).',
@@ -397,7 +375,7 @@ const SERVICES=[
    priceTxt:'기관 구독(소속기관 인증)',
    strengths:['해외 학위논문 풍부','다분야 통합 DB'],
    weaknesses:['기관 구독 의존','영문 중심'],
-   prompts:['해외 학위논문을 주제어로 검색','전문(full-text) 제공 여부 확인'],
+   prompts:['Advanced Search: nursing AND "fall prevention" → Source type을 Dissertations & Theses로 한정','"diabetes self-management" AND education 로 학위논문 검색 → full text 제공 여부 확인'],
    url:'https://www.proquest.com'},
   {id:'jstor',cats:['lib'],name:'JSTOR',provider:'ITHAKA',price:'freemium',
    feat:'인문·사회 중심의 학술지 아카이브(과거호 강점). 일부 무료 열람 제공.',
@@ -406,7 +384,7 @@ const SERVICES=[
    priceTxt:'기관 구독 / 개인 무료 열람 일부 제공',
    strengths:['인문사회 아카이브','과거호 깊이'],
    weaknesses:['최신 임상논문 약함','영문 중심'],
-   prompts:['간호 윤리·돌봄의 사회적 맥락 주제로 검색','무료 열람 가능 항목 확인'],
+   prompts:['검색창: caring ethics in nursing → Subject를 Nursing/Health Sciences로 한정','"history of nursing profession" 검색 후 무료 열람 가능 항목 확인'],
    url:'https://www.jstor.org'},
   {id:'fric',cats:['lib'],name:'FRIC (외국학술지지원센터)',provider:'KERIS·권역별 대학(국가사업)',price:'free',
    feat:'국내에서 구하기 어려운 해외 학술지 원문 복사·열람을 권역별로 지원하는 국가 서비스.',
@@ -415,7 +393,7 @@ const SERVICES=[
    priceTxt:'무료/실비(소속기관 경유 신청)',
    strengths:['미구독 해외 저널 보완','권역 분담 보존'],
    weaknesses:['신청·수령에 시간 소요','범위는 분담관 소장 한정'],
-   prompts:['교내 미구독 해외 논문을 FRIC로 원문 신청','분담관 소장 여부 확인 후 복사 요청'],
+   prompts:['교내 미구독 해외 논문(예: Journal of Advanced Nursing 특정 호) 서지 확인 후 FRIC 분담관 소장 검색','소속 도서관을 경유해 해당 논문 원문복사 신청서 작성'],
    url:'https://www.fric.kr'},
 
   /* ===== 2. 학술 글쓰기·인용 관리 ===== */
@@ -426,7 +404,7 @@ const SERVICES=[
    priceTxt:'기관 구독(소속기관 제공 시 무료 이용)',
    strengths:['DB에서 서지 직접 가져오기','워드 인용 삽입','클라우드 동기화'],
    weaknesses:['기관 구독 의존','형식 정확성은 최종 점검 필요'],
-   prompts:['DB 검색 결과를 RefWorks로 내보내 폴더 정리','APA 7판으로 참고문헌 목록 생성 후 오류 점검'],
+   prompts:['PubMed 검색 결과를 Export → RefWorks로 가져온 뒤 "낙상예방" 폴더로 분류','Word [RefWorks] 탭에서 APA 7th로 인용 삽입 → 마지막에 참고문헌 목록 자동 생성'],
    url:'https://refworks.proquest.com'},
   {id:'jenni',cats:['write'],name:'Jenni AI',provider:'Jenni AI',price:'freemium',
    feat:'AI 학술 글쓰기 보조. 문장 자동완성·인용 삽입·패러프레이즈로 초안 작성을 돕는다.',
@@ -435,7 +413,7 @@ const SERVICES=[
    priceTxt:'무료(일일 한도) / 유료 무제한 약 $20·월',
    strengths:['초안 속도','인용 삽입 보조','형식 다양'],
    weaknesses:['생성 인용 환각 위험','학술 진실성·표절 주의','한국어는 영어보다 약함'],
-   prompts:['이 개요로 서론 초안을 작성하되 각 주장에 인용 표시 (이후 원문 검증)','내 문단을 학술 어조로 다듬되 의미 왜곡 금지'],
+   prompts:['Write a short paragraph on the effect of nurse-led diabetes education on HbA1c, with in-text citations (이후 인용 검증)','Paraphrase this paragraph in a formal academic tone without changing the meaning: [내 문단 붙여넣기]'],
    url:'https://app.jenni.ai'},
 
   /* ===== 3. 범용 대화형·학습 AI ===== */
@@ -446,7 +424,7 @@ const SERVICES=[
    priceTxt:'무료 / Plus $20·월 / Pro $200·월',
    strengths:['폭넓은 범용성·빠른 초안','공부모드·프로젝트','파일/이미지 분석'],
    weaknesses:['기본 모드 출처 미표기→환각 위험','의학 사실 교차검증 필수'],
-   prompts:['공부모드로 "당뇨 자가관리 교육과 HbA1c" 개념을 단계별로 가르쳐줘. (가상 학습용)','수술 후 통증 사정도구(NRS·VAS) 차이를 표로 정리해줘.'],
+   prompts:['당뇨병 자가관리 교육이 당화혈색소(HbA1c)에 미치는 효과를 간호학생 눈높이로 핵심 기전과 함께 설명하고, 이해도 점검용 O/X 5문항을 만들어줘. (가상 학습용)','수술 후 통증 사정도구 NRS와 VAS의 차이, 적용 상황, 간호중재 포인트를 표로 정리해줘.'],
    url:'https://chatgpt.com'},
   {id:'claude',cats:['chat'],name:'Claude',provider:'Anthropic',price:'freemium',
    feat:'범용 추론 AI. 긴 문서 종합·신중한 추론에 강하며 무료 티어에도 웹검색·확장적 사고를 포함.',
@@ -455,7 +433,7 @@ const SERVICES=[
    priceTxt:'무료(웹검색 포함) / Pro $20·월 / Max $100·$200·월',
    strengths:['긴 맥락·문서 종합 우수','신중·구조적 응답','무료에 웹검색 포함'],
    weaknesses:['그라운딩 없으면 인용 환각','이미지 생성 미지원'],
-   prompts:['첨부한 강의노트(가상)를 학습목표·핵심개념·예상문제 5개로 구조화해줘.','노인 낙상 예방 중재를 PICO 형식으로 정리해줘.'],
+   prompts:['첨부한 강의노트(가상)를 학습목표 3개·핵심개념 정의·예상 시험문제 5개(해설 포함)로 구조화해줘.','"입원 노인의 낙상 예방 중재 효과"를 PICO로 나누고 각 요소(P/I/C/O)를 한 문장씩 설명해줘.'],
    url:'https://claude.ai'},
   {id:'gemini',cats:['chat'],name:'Gemini',provider:'Google',price:'freemium',
    feat:'Google의 범용 AI. 최대 100만 토큰 초장문 컨텍스트와 Deep Research, 가이드 학습 제공.',
@@ -464,7 +442,7 @@ const SERVICES=[
    priceTxt:'무료 / Google AI Pro $19.99·월',
    strengths:['초장문 컨텍스트','Google 생태계 연동','Deep Research'],
    weaknesses:['출처 명시 안 하면 환각','의학 정확성 별도 검증'],
-   prompts:['첨부한 3편의 가상 요약본을 한 표로 비교해줘.','이 주제를 가이드 학습 방식으로 단계별로 설명해줘.'],
+   prompts:['첨부한 논문 PDF 3편을 [저자·연도 / 연구설계 / 표본 / 주요결과] 열로 비교표를 만들어줘.','이 주제를 처음 배우는 간호학생을 위해 개념→예시→자가점검 순서로 설명해줘: 만성질환 자가효능감'],
    url:'https://gemini.google.com'},
   {id:'copilot',cats:['chat'],name:'Copilot',provider:'Microsoft',price:'freemium',
    feat:'Microsoft의 AI 비서. 무료 채팅과 Microsoft 365 Copilot(Word·Excel·PowerPoint 내장).',
@@ -473,7 +451,7 @@ const SERVICES=[
    priceTxt:'무료(Copilot) / M365 Copilot 약 $30·user·월',
    strengths:['Office 앱 직접 내장','웹 답변 출처 각주','한국어 양호'],
    weaknesses:['고급 기능 M365 구독','학술 전문 검색 약함'],
-   prompts:['이 발표 개요(가상)를 PowerPoint 슬라이드 초안으로 만들어줘.','실습 일정 데이터를 요약 통계로 정리해줘. (가상)'],
+   prompts:['(PowerPoint) 이 발표 개요(가상)를 제목 슬라이드 포함 8장 초안으로 구성해줘: 노인 낙상 예방 간호','(Excel) A~D열의 실습 설문 응답(가상)을 평균·빈도로 요약하고 간단한 차트를 만들어줘.'],
    url:'https://copilot.microsoft.com'},
   {id:'grok',cats:['chat'],name:'Grok',provider:'xAI',price:'freemium',
    feat:'xAI의 범용 대화 AI. 실시간 X(트위터) 연동과 추론·검색을 제공.',
@@ -482,7 +460,7 @@ const SERVICES=[
    priceTxt:'무료(제한) / 유료 구독(X Premium 연계)',
    strengths:['실시간 X 연동','빠른 응답'],
    weaknesses:['학술 그라운딩 약함','한국어·의학 정확성 검증 필요','출처 신뢰성 편차'],
-   prompts:['이 주제의 최근 공개 동향을 출처와 함께 정리해줘. (학습용)','개념을 비유로 쉽게 설명해줘.'],
+   prompts:['최근 1년간 공개된 디지털 헬스케어·원격간호 동향을 출처 링크와 함께 5가지로 정리해줘. (사실은 별도 검증)','이 개념을 일상 비유로 쉽게 설명해줘: 인슐린 저항성'],
    url:'https://grok.com'},
   {id:'wrtn',cats:['chat'],name:'Wrtn (뤼튼)',provider:'뤼튼테크놀로지스',price:'free',
    feat:'국내 무료 AI 포털. 여러 모델 채팅·AI 검색·이미지·과제 작성을 한국어로 제공.',
@@ -491,7 +469,7 @@ const SERVICES=[
    priceTxt:'기본 무료(캐릭터챗 등 일부 유료)',
    strengths:['전면 무료·한국어 최적','여러 모델 통합','이미지·검색 포함'],
    weaknesses:['학술 그라운딩 약함','인용 환각 위험','심층 연구엔 부족'],
-   prompts:['간호 개념을 한국어로 쉽게 설명하고 예시를 들어줘. (가상)','과제 개요 초안을 작성해줘 (사실은 직접 검증).'],
+   prompts:['욕창 1~4단계와 단계별 간호중재를 한국어로 쉽게 표로 정리해줘.','고혈압 환자 생활습관 교육의 핵심 5가지를 정리하고, 같은 질문을 다른 모델로도 답하게 해 비교해줘.'],
    url:'https://wrtn.ai'},
   {id:'adot',cats:['chat'],name:'A. (에이닷)',provider:'SK텔레콤',price:'freemium',
    feat:'국내 AI 개인비서. 통화 요약·일상 비서·여러 LLM 기반 검색/대화를 한국어로 제공.',
@@ -500,7 +478,7 @@ const SERVICES=[
    priceTxt:'무료(일부 기능 통신 연계)',
    strengths:['한국어 특화','통화 요약 등 생활 기능','모바일 접근성'],
    weaknesses:['학술 전문성 낮음','인용 환각 위험','연구용으로는 한계'],
-   prompts:['이 개념을 한국어로 간단히 설명해줘. (학습용)','녹음한 강의(가상)를 요약해줘.'],
+   prompts:['오늘 배운 "수분·전해질 균형" 개념을 3줄로 요약해줘. (한국어, 가상 학습용)','녹음한 스터디 토론(가상)을 핵심 요점 위주로 요약해줘.'],
    url:'https://adot.ai'},
   {id:'aistudio',cats:['chat'],name:'Google AI Studio',provider:'Google',price:'free',
    feat:'Gemini 모델을 직접 시험·프롬프트 설계하는 개발자용 무료 플레이그라운드(API 연동).',
@@ -509,7 +487,7 @@ const SERVICES=[
    priceTxt:'무료(사용량 한도) / API는 종량제',
    strengths:['최신 Gemini 직접 실험','시스템 프롬프트·파라미터 제어','무료'],
    weaknesses:['개발자 지향(학습 곡선)','그라운딩 없음','데이터 처리 정책 확인 필요'],
-   prompts:['시스템 프롬프트로 "간호 개념 튜터" 역할을 설정해 실험','동일 질문에 temperature를 바꿔 응답 차이 관찰'],
+   prompts:['System instructions에 "너는 간호학 개념을 쉽게 설명하는 튜터" 설정 후 "전해질 불균형"을 질문','같은 질문을 temperature 0.2와 0.9로 각각 실행해 응답 차이를 비교 (민감정보 입력 금지)'],
    url:'https://aistudio.google.com'},
 
   /* ===== 4. AI 학술 검색·답변엔진 ===== */
@@ -520,7 +498,7 @@ const SERVICES=[
    priceTxt:'무료(Deep Research 일 5회) / Pro $20·월 / 학생 $10·월',
    strengths:['출처 그라운딩 일관적','Academic·Deep Research','한국어 양호'],
    weaknesses:['출처가 1차 논문 아닐 수 있음','심층 추출은 전용 도구 우위'],
-   prompts:['당뇨 자가관리 교육이 HbA1c에 미치는 효과 최근 5년 RCT를 출처와 함께 요약해줘.','입원 노인 낙상예방 중재의 체계적 문헌고찰을 출처와 함께 정리해줘.'],
+   prompts:['당뇨병 환자의 자가관리 교육이 HbA1c에 미치는 효과에 대한 최근 5년 무작위대조연구를 찾아 핵심 결과를 출처와 함께 요약해줘.','입원 노인 낙상 예방을 위한 다요인 중재의 효과를 체계적 문헌고찰 중심으로 출처와 함께 정리해줘.'],
    url:'https://www.perplexity.ai'},
   {id:'liner',cats:['searchai'],name:'Liner (라이너)',provider:'Liner',price:'freemium',
    feat:'출처 기반 AI 검색. 학술 모드로 ArXiv·PubMed·Nature 등에서 검색하고 인용을 생성.',
@@ -529,7 +507,7 @@ const SERVICES=[
    priceTxt:'무료(학술 모드 무제한) / Pro 약 월 29,000원, .ac.kr·.edu 1개월 무료',
    strengths:['출처 중심·인용 자동','학술 모드(PubMed 등)','한국어 강점·학생 혜택'],
    weaknesses:['딥리서치는 크레딧 소진 제한','광고(무료)','1차 원문 검증 필요'],
-   prompts:['학술 모드로 "fall prevention older adults" 핵심 논문을 출처와 함께 검색','APA 형식으로 인용 자동 생성 후 점검'],
+   prompts:['(학술 모드) effect of nurse-led diabetes self-management education on HbA1c → 출처·피인용 함께 확인','multifactorial fall prevention in hospitalized older adults 검색 후 핵심 논문을 APA로 인용 생성'],
    url:'https://getliner.com/ko'},
   {id:'felo',cats:['searchai'],name:'Felo',provider:'Felo',price:'freemium',
    feat:'다국어 AI 검색·요약 엔진. 25개+ 언어 교차검색과 AI 에이전트·AI PPT 제공.',
@@ -538,7 +516,7 @@ const SERVICES=[
    priceTxt:'무료 / Pro 약 $14.99·월(일 300검색)',
    strengths:['다국어 교차검색','AI PPT·에이전트','요약 품질'],
    weaknesses:['소셜 출처 신뢰성 편차','1차 학술 출처 약함','심층은 유료'],
-   prompts:['이 주제를 영어·일본어 자료까지 교차검색해 한국어로 요약해줘.','검색 결과를 발표용 슬라이드 개요로 만들어줘.'],
+   prompts:['간호 인력 배치와 환자 안전의 관계를 영어·일본어 자료까지 교차검색해 한국어로 요약해줘.','만성질환자 복약순응도 핵심을 6장짜리 발표 슬라이드(AI PPT) 개요로 만들어줘.'],
    url:'https://felo.ai'},
   {id:'consensus',cats:['searchai'],name:'Consensus',provider:'Consensus',price:'freemium',
    feat:'2.2억+ 동료심사 논문에서 과학적 합의를 합성하는 AI 검색엔진. Consensus Meter·Deep Search.',
@@ -547,7 +525,7 @@ const SERVICES=[
    priceTxt:'무료(월 10회) / Premium $8.99·월 / Pro $15·월',
    strengths:['출처 그라운딩 강함','Consensus Meter','임상 질문에 적합'],
    weaknesses:['합의 표시 단순화 가능','한국어 문헌 약함'],
-   prompts:['Does diabetes self-management education improve HbA1c in adults?','Are multifactorial fall prevention interventions effective in hospitalized older adults?'],
+   prompts:['Does diabetes self-management education improve HbA1c in adults with type 2 diabetes?','Are multifactorial interventions effective for fall prevention in hospitalized older adults?'],
    url:'https://consensus.app'},
   {id:'scinapse',cats:['searchai'],name:'Scinapse',provider:'Pluto Labs (국내)',price:'freemium',
    feat:'2.5억+ 논문을 검색하고 분야별 영향력·연구 인텔리전스를 제공하는 학술 검색(국내 개발).',
@@ -556,7 +534,7 @@ const SERVICES=[
    priceTxt:'무료 / 고급 분석 유료',
    strengths:['분야별 영향력 분석','연구 인텔리전스·에이전트','국내 개발'],
    weaknesses:['영문 문헌 중심','심층 분석 유료','요약 원문 대조 필요'],
-   prompts:['주제 분야 내에서 영향력 높은 논문 상위를 검색','핵심 저자(h-index) 및 연구 동향 확인'],
+   prompts:['fall prevention older adults nursing 검색 → 내 분야에서 영향력 높은 논문·핵심 저자 확인','diabetes self-management education 검색 후 최근 연구 동향과 h-index 상위 저자 파악'],
    url:'https://www.scinapse.io'},
   {id:'answerthis',cats:['searchai'],name:'AnswerThis',provider:'AnswerThis (YC)',price:'freemium',
    feat:'3억+ 논문 기반으로 문장 단위 인용이 달린 문헌고찰을 자동 작성하는 연구 어시스턴트.',
@@ -565,7 +543,7 @@ const SERVICES=[
    priceTxt:'무료(리뷰 6회·업로드 8개) / Pro 약 $22·월',
    strengths:['문장 단위 인용 추적','문헌고찰 자동화','PDF 채팅·갭 분석'],
    weaknesses:['영문 중심','자동 초안도 사실 검증 필수','무료 한도 작음'],
-   prompts:['"hospitalized older adults fall prevention" 문헌고찰 초안을 인용과 함께 작성해줘.','이 초안의 연구 공백을 표시해줘 (이후 원문 검증).'],
+   prompts:['Write a literature review on the effect of nurse-led education on medication adherence in chronic disease (문장별 인용 검증)','노인 낙상 예방 디지털 중재 주제의 연구 공백(research gap)을 찾아줘.'],
    url:'https://app.answerthis.io'},
 
   /* ===== 5. 문헌 발견·평가·추출 ===== */
@@ -576,7 +554,7 @@ const SERVICES=[
    priceTxt:'무료(Basic) / Plus $12·월 / Pro $49·월',
    strengths:['PICO/RCT 구조화 추출','비교표 자동 생성','높은 추출 정확도'],
    weaknesses:['주로 영어 문헌','고급 추출 유료','추출값 원문 대조 필요'],
-   prompts:['"fall prevention intervention" RCT의 개입·대조·표본·결과를 비교표로 추출해줘.','당뇨 앱의 HbA1c 효과 RCT를 표로 정리해줘.'],
+   prompts:['Find RCTs on multifactorial fall prevention in hospitalized older adults; extract Population, Intervention, Comparator, and falls outcome into a table.','Compare RCTs on diabetes self-management apps; extract sample size, follow-up, and HbA1c change per arm.'],
    url:'https://elicit.com'},
   {id:'researchrabbit',cats:['litreview'],name:'ResearchRabbit',provider:'ResearchRabbit',price:'free',
    feat:'논문 간 인용·공저 네트워크를 시각적으로 탐색하는 무료 문헌 발견 도구.',
@@ -585,7 +563,7 @@ const SERVICES=[
    priceTxt:'완전 무료',
    strengths:['완전 무료','인용 네트워크 시각화','Zotero 연동'],
    weaknesses:['인용 맥락(지지/반대) 없음','발견 도구(평가는 아님)'],
-   prompts:['핵심 RCT 1편을 시드로 관련 논문 네트워크 확장','관심 저자를 추적해 신규 논문 알림 설정'],
+   prompts:['핵심 RCT 1편(예: 낙상예방 다요인 중재)을 시드로 추가 → Similar Work·Citing 으로 확장','관심 저자를 추가하고 신규 논문 알림(Notifications)을 설정'],
    url:'https://www.researchrabbitapp.com'},
   {id:'scite',cats:['litreview'],name:'Scite',provider:'Scite',price:'paid',
    feat:'인용을 지지·반대·언급으로 분류하는 Smart Citations. 13억+ 인용문 분석·철회 경고.',
@@ -594,7 +572,7 @@ const SERVICES=[
    priceTxt:'개인 $20·월(연 결제 $12·월) / 기관 별도',
    strengths:['지지/반대 인용 맥락','신뢰도·철회 경고','근거 강도 평가 핵심'],
    weaknesses:['유료 중심','영어 문헌 중심','분류도 사람 검토 필요'],
-   prompts:['핵심 RCT를 검색해 Supporting/Contrasting 인용 맥락 확인','인용 예정 논문의 철회·정정 여부 확인'],
+   prompts:['핵심 RCT 제목을 검색 → Supporting/Contrasting 인용 탭을 비교해 근거 강도 판단','인용 예정 논문을 검색해 retracted·has concerns 경고 여부 확인'],
    url:'https://scite.ai'},
   {id:'scispace',cats:['litreview','pdf'],name:'SciSpace',provider:'SciSpace',price:'freemium',
    feat:'논문 PDF와 대화하며 방법·결과를 추출하는 Copilot, Deep Review, 4만+ 저널 템플릿.',
@@ -603,7 +581,7 @@ const SERVICES=[
    priceTxt:'무료(월 100크레딧) / Premium $12·월 / Advanced $70·월',
    strengths:['PDF 정독·표 추출','의생명 에이전트','한국어 UI'],
    weaknesses:['무료 크레딧 제한','요약·추출 원문 대조 필요'],
-   prompts:['업로드한 RCT(가상/공개)의 설계·표본·1차 결과·결론을 표로 추출해줘.','이 논문의 통계 방법을 쉽게 설명해줘.'],
+   prompts:['(논문 PDF 업로드) 이 RCT의 연구설계·표본수·1차 결과변수·결론을 표로 추출해줘.','이 논문의 통계분석 방법(예: 다변량 회귀분석)을 간호학생이 이해하기 쉽게 설명해줘.'],
    url:'https://scispace.com'},
   {id:'paperdigest',cats:['litreview'],name:'Paper Digest',provider:'Paper Digest',price:'freemium',
    feat:'논문을 자동 요약하고 주제별 문헌 검토 보고서·일일 신규 논문 알림을 제공.',
@@ -612,7 +590,7 @@ const SERVICES=[
    priceTxt:'무료(제한) / 유료 구독',
    strengths:['문헌 검토 보고서 자동','일일 신규 논문 알림','빠른 요약'],
    weaknesses:['영문 중심','요약 깊이 제한','원문 검증 필요'],
-   prompts:['"fall prevention nursing" 주제의 문헌 검토 보고서를 생성해줘.','이 분야 신규 논문 일일 알림을 설정'],
+   prompts:['Generate a literature review report on fall prevention interventions in nursing homes','"diabetes self-management" 키워드로 일일 신규논문 알림(Daily Digest)을 설정'],
    url:'https://www.paperdigest.org'},
   {id:'ponder',cats:['litreview'],name:'Ponder',provider:'Ponder',price:'freemium',
    feat:'무한 캔버스 연구 워크스페이스. 다중 소스를 종합해 지식맵·문헌고찰 초안을 만든다.',
@@ -621,7 +599,7 @@ const SERVICES=[
    priceTxt:'무료(제한) / 유료 구독',
    strengths:['무한 캔버스·지식맵','다중 소스 종합','초안 작성 보조'],
    weaknesses:['학습 곡선','생성 요약 검증 필요','한국어는 영어보다 약함'],
-   prompts:['업로드한 논문들의 핵심 주장을 비교하고 모순을 표시해줘.','이 주제의 지식맵을 만들고 연구 공백을 제안해줘.'],
+   prompts:['(논문 3편 업로드) 세 연구의 핵심 주장을 비교하고 상충되는 결과를 표시해줘.','이 자료들로 "노인 낙상 예방" 주제의 지식맵을 만들고 연구 공백을 제안해줘.'],
    url:'https://ponder.ing/ko'},
   {id:'moonlight',cats:['litreview','pdf'],name:'Moonlight (더 문라이트)',provider:'Moonlight',price:'freemium',
    feat:'논문 정독 보조 도구. 구절 설명·요약·번역·Smart Citations를 브라우저에서 제공.',
@@ -630,7 +608,7 @@ const SERVICES=[
    priceTxt:'무료(확장) / 일부 유료',
    strengths:['구절 설명·번역','Smart Citations','하이라이트·노트'],
    weaknesses:['설명 정확성 검증 필요','요약 깊이 제한'],
-   prompts:['이 논문의 어려운 단락을 한국어로 풀어 설명해줘.','본문의 인용 논문 정보를 즉시 확인'],
+   prompts:['(논문 열람 중) 이 Methods 단락을 한국어로 풀어 설명해줘.','본문에 인용된 [12]번 논문이 무엇인지 Smart Citations로 즉시 확인'],
    url:'https://www.themoonlight.io/ko'},
   {id:'deepscholar',cats:['litreview'],name:'DeepScholar',provider:'DeepScholar',price:'freemium',
    feat:'학술 자료를 종합해 인용이 달린 글·문헌 분석을 만드는 초기 단계 AI 도구.',
@@ -639,7 +617,7 @@ const SERVICES=[
    priceTxt:'정보 제한(공식 사이트에서 확인 필요)',
    strengths:['자료 기반 작성 시도','인용 포함 초안'],
    weaknesses:['초기·니치 서비스로 정보 제한','사양·지속성 미확정','인용 사실성 반드시 검증'],
-   prompts:['(주의: 사양 미확정) 자료 기반 초안 후 모든 인용을 원문 검증','산출물은 보조 자료로만 활용'],
+   prompts:['(보조용) "간호사 주도 교육과 복약순응도" 주제로 인용 포함 초안 생성 → 모든 인용 원문 검증','생성된 문단의 출처 DOI를 doi.org에서 하나씩 조회해 실재 확인'],
    url:'https://deep-scholar.vercel.app'},
   {id:'scholargpt',cats:['litreview'],name:'Scholar GPT',provider:'OpenAI GPTs (커스텀 GPT)',price:'freemium',
    feat:'ChatGPT 커스텀 GPT. 2억+ 논문 접근을 표방하며 학술 검색·요약·인용을 돕는다.',
@@ -648,7 +626,7 @@ const SERVICES=[
    priceTxt:'ChatGPT 무료/Plus(커스텀 GPT는 Plus 권장)',
    strengths:['ChatGPT 워크플로 통합','학술 소스 연동','편의성'],
    weaknesses:['커스텀 GPT 품질 편차','인용 환각 위험','Plus 권장'],
-   prompts:['이 주제의 핵심 논문을 찾아 요약하고 인용을 정리해줘 (이후 검증).','찾은 논문의 DOI·출처를 표로 정리해줘.'],
+   prompts:['Find recent papers on nurse-led fall prevention and summarize key findings with DOIs','위 결과의 각 논문 제목·저자·연도·DOI를 표로 정리해줘 (이후 DOI 조회로 검증)'],
    url:'https://chatgpt.com/g/g-kZ0eYXlJe-scholar-gpt'},
 
   /* ===== 6. 문서·PDF 대화·요약(RAG) ===== */
@@ -659,7 +637,7 @@ const SERVICES=[
    priceTxt:'무료(소스 50개·일 질문 50) / Plus $7.99·월 / Pro $19.99·월',
    strengths:['업로드 밖 환각 적음','출처 위치 표시','오디오·플래시카드 학습'],
    weaknesses:['업로드 자료 정확성에 종속','자료 밖 질문엔 약함'],
-   prompts:['업로드한 강의노트(가상)로 학습가이드·플래시카드 20장·퀴즈를 만들어줘.','이 자료들의 핵심 쟁점을 오디오 개요로 만들어줘.'],
+   prompts:['(강의 PDF 업로드) 이 자료로 학습가이드와 플래시카드 20장, 핵심개념 퀴즈 10문항을 만들어줘.','이 소스들의 핵심 쟁점을 Audio Overview(deep dive)로 만들어줘.'],
    url:'https://notebooklm.google.com'},
   {id:'chatpdf',cats:['pdf'],name:'ChatPDF',provider:'ChatPDF',price:'freemium',
    feat:'PDF를 업로드해 내용에 대해 대화·요약하고 근거 위치를 인용해 답하는 도구.',
@@ -668,7 +646,7 @@ const SERVICES=[
    priceTxt:'무료(일일 한도) / Plus 약 $5·월',
    strengths:['간단한 PDF 대화','인용 페이지 표시','다국어'],
    weaknesses:['긴/복잡 문서 정확도 저하','요약 검증 필요'],
-   prompts:['이 논문(가상/공개)의 연구 목적과 결론을 인용과 함께 알려줘.','3장 방법 부분을 쉽게 요약해줘.'],
+   prompts:['(논문 PDF 업로드) 이 연구의 목적·방법·주요 결과·결론을 각각 2문장으로 요약하고 근거 페이지를 알려줘.','Results 섹션에서 1차 결과변수의 수치를 인용 페이지와 함께 알려줘.'],
    url:'https://www.chatpdf.com'},
   {id:'chatdoc',cats:['pdf'],name:'ChatDOC',provider:'ChatDOC',price:'freemium',
    feat:'PDF·워드·엑셀 등 문서와 대화하고 표·수식까지 추출하며 출처를 하이라이트.',
@@ -677,7 +655,7 @@ const SERVICES=[
    priceTxt:'무료(한도) / Pro 약 $13·월',
    strengths:['표·수식 추출 강점','출처 하이라이트','다양한 문서형식'],
    weaknesses:['무료 한도','요약·추출 검증 필요'],
-   prompts:['이 문서의 표를 정리해 핵심 수치를 추출해줘.','답변 근거가 된 문장을 하이라이트로 보여줘.'],
+   prompts:['(표 포함 문서 업로드) Table 2의 값을 정리해 군별 HbA1c 변화량을 알려줘.','이 답변의 근거 문장을 원문에서 하이라이트로 보여줘.'],
    url:'https://www.chatdoc.com'},
   {id:'explainpaper',cats:['pdf'],name:'Explainpaper',provider:'Explainpaper',price:'freemium',
    feat:'논문에서 어려운 구절을 선택하면 쉬운 말로 설명해 주는 정독 보조 도구.',
@@ -686,7 +664,7 @@ const SERVICES=[
    priceTxt:'무료(기본) / 유료 상위 모델',
    strengths:['선택 구절 즉시 설명','난이도 조절','초심자 친화'],
    weaknesses:['설명 정확성 검증 필요','영문 중심'],
-   prompts:['이 단락을 학부생 수준으로 쉽게 설명해줘.','이 통계 용어를 예시로 설명해줘.'],
+   prompts:['(논문 업로드 후 단락 선택) 이 단락을 학부생 수준으로 쉽게 설명해줘.','이 문장에서 "confounding variable"이 무엇인지 예시로 설명해줘.'],
    url:'https://www.explainpaper.com'},
   {id:'scholarcy',cats:['pdf'],name:'Scholarcy',provider:'Scholarcy',price:'freemium',
    feat:'논문을 플래시카드·요약·하이라이트로 변환하고 참고문헌을 추출해 빠른 검토를 돕는다.',
@@ -695,7 +673,7 @@ const SERVICES=[
    priceTxt:'7일 무료체험 / Plus $9.99·월(연 $7.99·월)',
    strengths:['플래시카드 요약','참고문헌 자동 추출','Zotero 연동'],
    weaknesses:['요약 깊이 제한','개발 둔화','한국어 제한적'],
-   prompts:['이 논문을 섹션별 요약 카드로 만들어줘.','참고문헌과 핵심 수치를 추출해줘.'],
+   prompts:['(논문 업로드) 섹션별 요약 플래시카드와 핵심 수치(주요 결과)를 추출해줘.','이 논문의 참고문헌 목록을 추출해 내보내기'],
    url:'https://www.scholarcy.com'},
   {id:'popai',cats:['pdf','present'],name:'PopAi',provider:'PopAi',price:'freemium',
    feat:'문서를 발표·요약·마인드맵으로 변환하고 이미지·영상도 생성하는 올인원 작업 AI.',
@@ -704,7 +682,7 @@ const SERVICES=[
    priceTxt:'무료(체험 크레딧) / 약 $12·월',
    strengths:['문서→발표 자동','요약·마인드맵·이미지','PPTX·PDF 내보내기'],
    weaknesses:['내용 사실성 사용자 책임','무료 크레딧 제한'],
-   prompts:['이 보고서(가상)를 12장 발표 슬라이드로 만들어줘.','핵심 내용을 마인드맵으로 정리해줘.'],
+   prompts:['(보고서 PDF 업로드) 이 내용을 12장 발표 슬라이드로 변환해줘. (이후 사실 검증)','이 문서의 핵심을 마인드맵으로 정리해줘.'],
    url:'https://www.popai.pro'},
 
 
@@ -716,7 +694,7 @@ const SERVICES=[
    priceTxt:'무료(400 크레딧) / Plus $8~10·월 / Pro $15~20·월',
    strengths:['빠른 슬라이드 자동 생성','PDF/PPTX 가져오기','다양한 내보내기'],
    weaknesses:['내용 사실성 사용자 책임','무료 크레딧·브랜딩'],
-   prompts:['"노인 낙상 예방 간호중재" 10장 발표 슬라이드를 만들어줘. (학습용)','이 요약문을 발표용 핵심 카드 6개로 구성해줘.'],
+   prompts:['"노인 낙상 예방 간호중재" 주제로 제목·서론·중재·결론을 포함한 10장 슬라이드를 만들어줘. (학습용, 사실 검증 필요)','(요약문 붙여넣기) 이 요약을 발표용 핵심 카드 6장으로 구성해줘.'],
    url:'https://gamma.app'},
   {id:'canva',cats:['present'],name:'Canva (Magic Studio)',provider:'Canva',price:'freemium',
    feat:'디자인 플랫폼 내 AI 묶음(Magic Design·Dream Lab·Magic Write). 발표·포스터·이미지 생성.',
@@ -725,7 +703,7 @@ const SERVICES=[
    priceTxt:'무료(AI 한도) / Pro 약 $15·월',
    strengths:['디자인 템플릿 풍부','이미지+문서+발표 한 곳','한국어 UI·협업'],
    weaknesses:['생성물 사실성·저작권 주의','무료 AI 한도'],
-   prompts:['당뇨 자가관리 교육 안내 포스터를 만들어줘. (가상, 한국어)','낙상 예방 수칙 인포그래픽을 디자인해줘.'],
+   prompts:['(Magic Design) 당뇨 환자 자가관리 안내 포스터를 한국어로 만들어줘. (가상 교육자료)','노인 낙상 예방 수칙 5가지 인포그래픽 카드를 디자인해줘.'],
    url:'https://www.canva.com'},
   {id:'napkin',cats:['present'],name:'Napkin AI',provider:'Napkin AI',price:'freemium',
    feat:'작성한 텍스트에서 다이어그램·인포그래픽·플로우차트를 자동 생성하는 시각화 도구.',
@@ -734,7 +712,7 @@ const SERVICES=[
    priceTxt:'무료(주 500 크레딧) / Plus $12·월 / Pro $30·월',
    strengths:['텍스트→도식 자동','자동 재배치','PPT·PNG·SVG 내보내기'],
    weaknesses:['정밀 학술 도식엔 한계','한국어 텍스트는 영어보다 약함'],
-   prompts:['이 개념 설명을 단계 흐름도로 시각화해줘.','이 비교 내용을 인포그래픽으로 만들어줘.'],
+   prompts:['(텍스트 붙여넣기) 이 "간호과정 5단계" 설명을 단계 흐름도로 시각화해줘.','이 비교 내용을 인포그래픽으로 만들어줘: 1형 당뇨 vs 2형 당뇨'],
    url:'https://www.napkin.ai'},
   {id:'whimsical',cats:['present'],name:'Whimsical',provider:'Whimsical',price:'freemium',
    feat:'플로우차트·마인드맵·다이어그램을 만드는 협업 도구(AI 생성 기능 포함).',
@@ -743,7 +721,7 @@ const SERVICES=[
    priceTxt:'무료(항목 제한) / 유료 약 $10·월',
    strengths:['깔끔한 다이어그램·협업','AI 마인드맵 생성','직관적 UI'],
    weaknesses:['무료 항목 수 제한','한국어 UI 제한적'],
-   prompts:['낙상 위험 사정→중재 의사결정 흐름도를 만들어줘.','이 주제의 마인드맵 초안을 생성해줘.'],
+   prompts:['낙상 위험 사정 → 중재 결정 과정을 의사결정 흐름도(Flowchart)로 작성','"수분·전해질 균형" 개념의 마인드맵 초안을 AI로 생성'],
    url:'https://whimsical.com'},
 
   /* ===== 8. AI 에이전트(자율 수행) ===== */
@@ -754,7 +732,7 @@ const SERVICES=[
    priceTxt:'무료 / Plus $19.99~24.99·월 / Pro $199~249·월',
    strengths:['자율 멀티스텝 수행','슬라이드·사이트·리서치 통합','크레딧제 유연'],
    weaknesses:['크레딧 소모 빠름','산출물 환각·오류 검증 필요','심층 작업 고비용'],
-   prompts:['"노인 낙상 예방" 주제를 리서치해 발표자료 초안까지 만들어줘. (이후 검증)','핵심 근거를 출처와 함께 정리해줘.'],
+   prompts:['"입원 노인 낙상 예방 중재" 주제를 리서치해 근거 요약과 10장 발표자료 초안을 만들어줘. (모든 인용·산출물 검증)','위 결과의 인용 출처 목록을 DOI 포함 표로 정리해줘 (이후 검증)'],
    url:'https://www.genspark.ai'},
   {id:'manus',cats:['agent'],name:'Manus',provider:'Manus',price:'freemium',
    feat:'한 프롬프트로 다단계 작업을 계획·실행하는 자율 에이전트(웹·코드·데이터·앱 빌더).',
@@ -763,7 +741,7 @@ const SERVICES=[
    priceTxt:'무료(일 300 크레딧 갱신) / 유료 $20·월~',
    strengths:['자율 멀티스텝 실행','다중 에이전트·모델 선택','커넥터(Gmail 등)'],
    weaknesses:['크레딧 소모','산출물 환각·오류 검증','복잡 작업 비용 급증'],
-   prompts:['이 주제의 공개 자료를 모아 비교표로 정리해줘. (이후 원문 검증)','요약 결과를 슬라이드 초안으로 만들어줘.'],
+   prompts:['당뇨 자가관리 앱 효과에 관한 공개 RCT를 모아 [저자 / 표본 / HbA1c 변화] 비교표로 정리해줘. (이후 원문 대조)','정리한 결과를 발표 슬라이드 초안으로 변환해줘.'],
    url:'https://manus.im'},
   {id:'skywork',cats:['agent'],name:'Skywork',provider:'Skywork',price:'freemium',
    feat:'문서·시트·슬라이드·팟캐스트·사이트를 만드는 5종 슈퍼에이전트와 DeepResearch 엔진.',
@@ -772,7 +750,7 @@ const SERVICES=[
    priceTxt:'무료(첫달 일 500 크레딧) / 약 $19.99·월',
    strengths:['문서/시트/슬라이드 전문 에이전트','DeepResearch','DOCX·PPTX·XLSX 출력'],
    weaknesses:['크레딧 제한','인용 환각 검증 필요','한국어는 영어보다 약함'],
-   prompts:['"낙상 예방 간호중재" 인용 포함 보고서를 작성해줘. (이후 검증)','이 데이터를 분석해 표·차트로 만들어줘. (가상)'],
+   prompts:['(문서 에이전트) "노인 낙상 예방 간호중재" 인용 포함 보고서를 작성해줘. (DeepResearch 인용 검증)','(시트 에이전트) 이 가상 데이터를 분석해 군별 평균·표준편차 표와 차트를 만들어줘.'],
    url:'https://skywork.ai'},
 
 ];
@@ -929,10 +907,8 @@ function renderCards(){
   let list;
   if(activeCat==='all') list=SERVICES.slice();
   else list=SERVICES.filter(s=>s.cats.includes(activeCat));
-  const rec=store.get(LS_REC,{});
   document.getElementById('cards').innerHTML=list.map(s=>{
     const pc=catColor(s.cats[0]);
-    const r=rec[s.id]||{};
     return `<div class="card" style="--cc:${pc}">
       <h3>${esc(s.name)} ${priceTag(s.price)}</h3>
       <div class="provider">${esc(s.provider)} · ${s.cats.map(k=>(CATS.find(c=>c.key===k)||{}).name).join(' · ')}</div>
@@ -993,7 +969,6 @@ function updateScnProg(id){
 
 /* ===== 비교 모드 ===== */
 function renderCmpPick(){
-  const rec=store.get(LS_REC,{});
   document.getElementById('cmpPick').innerHTML=SERVICES.map(s=>
     `<label data-pick="${s.id}"><input type="checkbox" value="${s.id}"> ${esc(s.name)}</label>`
   ).join('');
