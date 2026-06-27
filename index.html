@@ -104,6 +104,8 @@ section.block{padding:38px 0 14px}
 .lab{margin-top:12px;border-top:1px dashed var(--line);padding-top:12px;display:none}
 .lab.open{display:block}
 .lab h4{font-size:.92rem;margin-bottom:6px}
+.lab-tip{background:var(--green-bg);border:1px solid var(--line);border-left:3px solid var(--green);border-radius:8px;padding:8px 11px;font-size:.82rem;color:var(--ink);margin:2px 0 8px;line-height:1.55}
+.lab-tip b{color:var(--green-d)}
 .prompt-ex{background:#4a0d1c;color:#fbe4ea;font-family:var(--mono);font-size:.78rem;border-radius:8px;padding:10px 12px;margin:6px 0;line-height:1.6;position:relative}
 .prompt-ex .copy{position:absolute;top:7px;right:7px;background:rgba(255,255,255,.15);color:#fff;border:none;border-radius:6px;padding:3px 8px;font-size:.7rem;cursor:pointer}
 .lab-form label{display:block;font-size:.8rem;font-weight:700;color:var(--green-d);margin:9px 0 3px}
@@ -202,7 +204,7 @@ footer.site strong{color:#fff;font-family:var(--serif)}
     <div class="sec-head">
       <span class="kick">Explore &amp; Practice</span>
       <h2>① 카테고리별 서비스 탐색 &amp; 직접 실습</h2>
-      <p>카테고리 탭으로 서비스를 분류해 보고, 각 카드의 <strong>실습하기</strong>를 눌러 검증된 프롬프트로 직접 실습한 뒤 결과를 기록하세요. 기록은 이 브라우저(localStorage)에 자동 저장됩니다.</p>
+      <p>카테고리 탭으로 서비스를 분류해 보고, 각 카드의 <strong>실습예제</strong>를 눌러 학습 포인트와 예제 프롬프트로 직접 실습한 뒤 결과를 기록하세요. 기록은 이 브라우저(localStorage)에 자동 저장됩니다.</p>
     </div>
     <div class="tabs" id="tabs" role="tablist"></div>
     <div class="cards" id="cards"></div>
@@ -877,6 +879,72 @@ const SERVICES=[
    url:'https://clovadubbing.naver.com'},
 ];
 
+const TIPS={
+  chungam:'교내 통합검색→상호대차 순서를 익히세요. 먼저 교내 구독 DB로 원문 유무를 확인하고, 없으면 상호대차(ILL)로 신청하는 흐름이 핵심.',
+  riss:'통합검색 후 자료유형(학위/학술지)·발행연도 필터로 좁히는 연습. 국내 문헌 탐색의 1차 관문으로 활용.',
+  kiss:'학회지명과 등재 여부를 함께 확인하며 국내 간호학회지 원문을 찾는 연습.',
+  dbpia:'관련도순 정렬과 인용·참고문헌 추적으로 핵심 논문 군집을 빠르게 파악.',
+  earticle:'RISS·KISS에서 놓친 국내 논문을 보완 검색하는 교차 활용에 익숙해지기.',
+  scienceon:'무료 원문과 국가 R&D·연구데이터 연계를 함께 확인하는 연습.',
+  nl:'단행본·학위논문 검색 후 디지털 원문 열람 가능 여부와 경로를 확인.',
+  nanet:'학위논문 검색에 강함 — 주제별 학위논문을 빠르게 모으는 연습.',
+  koreamed:'영문 키워드로 국내 의학·간호 학술지를 검색해 국제 색인 논문을 확인.',
+  pubmed:'MeSH 용어와 Article type 필터로 정밀 검색하는 법을 반드시 익히기 — 근거검색의 표준.',
+  gscholar:'피인용수와 Cited by로 핵심 논문과 후속 연구를 추적하는 연습.',
+  sciencedirect:'교내 인증으로 전문 접근 → 인용 내보내기(RefWorks 연동)까지 흐름 익히기.',
+  proquest:'해외 학위논문 검색과 전문(full-text) 제공 여부 확인에 집중.',
+  jstor:'인문사회·과거호 아카이브 특성을 살려 배경·이론 문헌을 찾는 연습.',
+  fric:'교내 미구독 해외 논문을 신청하는 절차를 익히기 — 분담관 소장 확인이 핵심.',
+  refworks:'DB 검색 결과를 RefWorks로 내보내 폴더 정리 → 워드 인용 삽입까지 한 번에 해보기.',
+  jenni:'AI가 넣은 인용을 반드시 원문에서 검증하는 습관을 함께 익히기.',
+  chatgpt:'공부모드로 가르쳐 달라고 요청해 단계적 설명과 자가점검을 받는 법 익히기.',
+  claude:'긴 PDF를 붙여 구조화 요약을 받고, 출처·수치는 별도로 검증하는 흐름.',
+  gemini:'여러 파일을 한 번에 넣어 비교표를 받는 초장문 컨텍스트 활용을 연습.',
+  copilot:'Word/PowerPoint 안에서 초안을 만든 뒤 직접 다듬는 사용법을 익히기.',
+  grok:'실시간 동향 탐색용으로만 쓰고, 의학 사실은 반드시 교차검증.',
+  wrtn:'무료로 여러 모델을 바꿔가며 같은 질문의 답 차이를 비교해 보기.',
+  adot:'한국어 일상·통화 요약 보조로 가볍게 활용해 보기.',
+  aistudio:'시스템 프롬프트로 튜터 역할을 지정하고 temperature를 바꿔 응답 변화를 관찰.',
+  perplexity:'답변마다 달린 출처를 클릭해 1차 원문까지 따라가는 습관 들이기.',
+  liner:'학술 모드를 켜고 PubMed 등 출처·인용을 함께 확인(.ac.kr 메일은 1개월 무료).',
+  felo:'외국어 자료를 한국어로 교차검색·요약하는 다국어 강점을 활용.',
+  consensus:'Consensus Meter로 합의도를 본 뒤 반드시 핵심 논문 원문을 확인.',
+  scinapse:'분야 내 영향력과 핵심 저자(h-index)로 꼭 읽을 논문을 식별.',
+  answerthis:'문장 단위 인용을 하나씩 따라가며 문헌고찰 초안을 검증하는 연습.',
+  elicit:'PICO로 질문을 정리한 뒤 RCT 비교표를 추출하고 셀마다 원문 대조.',
+  researchrabbit:'핵심 논문 1편을 시드로 관련 연구 네트워크를 확장하는 발견 연습.',
+  scite:'Supporting/Contrasting 탭을 비교해 근거 강도를 판단하는 연습.',
+  scispace:'PDF에 직접 질문해 연구설계·방법·결과를 표로 추출.',
+  paperdigest:'주제 문헌검토 보고서를 받고 관심 분야 신규논문 알림을 설정.',
+  ponder:'여러 자료를 캔버스에 모아 모순과 연결을 시각적으로 종합.',
+  moonlight:'영어 논문을 번역·해설하며 Smart Citations로 인용을 즉시 확인.',
+  deepscholar:'사양이 미확정이므로 보조용으로만 — 모든 인용을 원문에서 검증.',
+  scholargpt:'ChatGPT 안에서 논문을 찾되 DOI·출처를 표로 정리해 직접 검증.',
+  notebooklm:'강의 PDF로 플래시카드·퀴즈·오디오 개요를 만들어 반복 복습.',
+  chatpdf:'PDF에 질문하고 인용 페이지로 근거 위치를 확인하는 연습.',
+  chatdoc:'표·수식이 많은 문서에서 데이터 추출과 출처 하이라이트를 확인.',
+  explainpaper:'어려운 단락을 선택해 쉬운 설명으로 이해 장벽을 낮추기.',
+  scholarcy:'논문을 섹션별 카드와 참고문헌으로 빠르게 구조화.',
+  popai:'문서를 발표 슬라이드·마인드맵으로 변환하는 흐름을 익히기.',
+  lilys:'해외 강의 영상을 한국어 노트·퀴즈로 만들어 학습에 활용.',
+  livewiki:'긴 영상을 핵심·타임라인·아티클로 빠르게 파악.',
+  ytsummary:'영상 자막을 ChatGPT/Claude로 보내 요약하는 확장 사용법.',
+  gamma:'주제를 입력해 슬라이드 초안을 받고 내용을 직접 사실 검증·수정.',
+  canva:'건강교육 포스터·인포그래픽을 템플릿으로 빠르게 디자인.',
+  napkin:'작성한 글을 다이어그램·흐름도로 자동 시각화.',
+  whimsical:'간호과정 의사결정 흐름도와 마인드맵을 작성.',
+  genspark:'리서치→발표자료까지 위임하되 산출물과 인용을 반드시 검증.',
+  manus:'다단계 과제를 위임하고 결과를 원문과 대조하는 연습.',
+  skywork:'보고서·시트·슬라이드 자동 생성 후 인용을 검증.',
+  gptimage:'교육용 픽토그램을 프롬프트로 생성(의학적 정확성은 검수 필수).',
+  msdesigner:'무료 크레딧으로 교육 포스터·배너 이미지를 생성.',
+  whisk:'참고 이미지를 결합·리믹스해 교육 비주얼을 변주.',
+  suno:'건강 캠페인송·암기송을 만들어 학습 활동에 활용.',
+  kling:'교육용 짧은 시연/인트로 영상을 생성(정확성은 검수).',
+  clovanote:'강의·회의 녹음을 전사·요약(실제 환자·민감정보 입력 금지).',
+  clovadubbing:'교육 영상에 자연스러운 한국어 내레이션을 입히기.',
+};
+
 /* 8개 비교 축 정의 */
 const AXES=[
   {k:'providerLine',label:'제공사'},
@@ -938,11 +1006,12 @@ function renderCards(){
       </div>
       <div style="font-size:.8rem;margin-bottom:6px">🔗 ${urlHtml(s)}</div>
       <div class="card-actions">
-        <button class="btn btn-sm" data-lab="${s.id}">🧪 실습하기${r.ts?' ✓':''}</button>
+        <button class="btn btn-sm" data-lab="${s.id}">📝 실습예제${r.ts?' ✓':''}</button>
         ${s.url?`<a class="btn btn-ghost btn-sm" href="${s.url}" target="_blank" rel="noopener">공식 사이트 열기 ↗</a>`:''}
       </div>
       <div class="lab" id="lab_${s.id}">
-        <h4>📋 검증된 실습 프롬프트 (간호정보학 맥락)</h4>
+        <h4>📝 실습예제 — 효율적으로 익히기</h4>
+        ${TIPS[s.id]?`<div class="lab-tip">💡 <b>학습 포인트</b> · ${TIPS[s.id]}</div>`:''}
         ${s.prompts.map((p,i)=>`<div class="prompt-ex">${esc(p)}<button class="copy" data-copy="${s.id}_${i}">복사</button></div>`).join('')}
         <form class="lab-form" data-form="${s.id}">
           <label>① 내가 입력한 프롬프트</label>
@@ -1048,7 +1117,7 @@ function renderDashboard(){
   const rec=store.get(LS_REC,{});
   const ids=Object.keys(rec).filter(id=>svc(id));
   const t=document.getElementById('dashTable');
-  if(!ids.length){t.innerHTML=`<tbody><tr><td class="dash-empty">아직 저장된 실습 기록이 없습니다. 위에서 서비스의 <strong>실습하기</strong>를 눌러 기록을 남겨보세요.</td></tr></tbody>`;return;}
+  if(!ids.length){t.innerHTML=`<tbody><tr><td class="dash-empty">아직 저장된 실습 기록이 없습니다. 위에서 서비스의 <strong>실습예제</strong>를 눌러 기록을 남겨보세요.</td></tr></tbody>`;return;}
   t.innerHTML='<thead><tr><th>서비스</th><th>유용성</th><th>출처</th><th>환각</th><th>소감</th><th>저장 일시</th></tr></thead><tbody>'+
     ids.map(id=>{const r=rec[id];const s=svc(id);
       const srcPill=r.source==='예'?'<span class="pill y">예</span>':r.source==='아니오'?'<span class="pill n">아니오</span>':'-';
