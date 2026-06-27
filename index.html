@@ -113,8 +113,10 @@ section.block{padding:38px 0 14px}
 .scn-prog{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:.8rem;color:var(--ink-soft)}
 .scn-bar{flex:1;height:7px;background:#eadbe0;border-radius:999px;overflow:hidden}
 .scn-bar>span{display:block;height:100%;width:0;background:var(--green);transition:.3s}
-.prompt-ex{background:#4a0d1c;color:#fbe4ea;font-family:var(--mono);font-size:.78rem;border-radius:8px;padding:10px 12px;margin:6px 0;line-height:1.6;position:relative}
-.prompt-ex .copy{position:absolute;top:7px;right:7px;background:rgba(255,255,255,.15);color:#fff;border:none;border-radius:6px;padding:3px 8px;font-size:.7rem;cursor:pointer}
+.prompt-ex{background:#4a0d1c;color:#fbe4ea;font-family:var(--mono);font-size:.78rem;border-radius:8px;padding:10px 12px;margin:6px 0;line-height:1.6;display:flex;gap:10px;align-items:flex-start}
+.prompt-ex span{flex:1;min-width:0;word-break:break-word}
+.prompt-ex .copy{flex:0 0 auto;align-self:flex-start;background:rgba(255,255,255,.2);color:#fff;border:none;border-radius:6px;padding:4px 9px;font-size:.7rem;cursor:pointer}
+.prompt-ex .copy:hover{background:rgba(255,255,255,.32)}
 
 /* ===== 비교 모드 ===== */
 .cmp-pick{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
@@ -159,7 +161,7 @@ footer.site strong{color:#fff;font-family:var(--serif)}
   <div class="wrap">
     <span class="chip">청암대학교 간호학과 · 3학년 · AI융합 간호정보학</span>
     <h1>연구·학습 지원 AI · 학술정보 비교·실습 랩</h1>
-    <p class="sub">학술 DB·전자정보원과 생성형 AI 등 8개 카테고리 53개 서비스를 비교 학습하고, 직접 실습한 뒤 결과를 기록·성찰합니다.</p>
+    <p class="sub">학술 DB·전자정보원과 생성형 AI 등 8개 카테고리 53개 서비스를 비교 학습하고, 단계별 시나리오로 직접 실습합니다.</p>
     <div class="goals" aria-label="학습 목표">
       <div class="goal"><div class="lvl">이해 · Understand</div><div class="txt">① 생성형 AI 서비스를 용도별로 <b>분류</b>한다</div></div>
       <div class="goal"><div class="lvl">분석 · Analyze</div><div class="txt">② 8개 축으로 서비스를 <b>비교</b>한다</div></div>
@@ -933,7 +935,7 @@ function renderCards(){
         <h4>📝 실습예제 — 효율적으로 익히기</h4>
         ${TIPS[s.id]?`<div class="lab-tip">💡 <b>학습 포인트</b> · ${TIPS[s.id]}</div>`:''}
         <div class="ex-label">예제 프롬프트 · 검색어</div>
-        ${s.prompts.map((p,i)=>`<div class="prompt-ex">${esc(p)}<button class="copy" data-copy="${s.id}_${i}">복사</button></div>`).join('')}
+        ${s.prompts.map((p,i)=>`<div class="prompt-ex"><span>${esc(p)}</span><button class="copy" data-copy="${s.id}_${i}">복사</button></div>`).join('')}
         <div class="ex-label">실습 시나리오 · 따라 하며 익히기</div>
         <ul class="scn-steps">
           ${(STEPS[s.id]||[]).map((st,i)=>`<li><label><input type="checkbox" data-step="${s.id}|${i}"> ${esc(st)}</label></li>`).join('')}
