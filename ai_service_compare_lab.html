@@ -106,6 +106,14 @@ section.block{padding:38px 0 14px}
 .lab h4{font-size:.92rem;margin-bottom:6px}
 .lab-tip{background:var(--green-bg);border:1px solid var(--line);border-left:3px solid var(--green);border-radius:8px;padding:8px 11px;font-size:.82rem;color:var(--ink);margin:2px 0 8px;line-height:1.55}
 .lab-tip b{color:var(--green-d)}
+.ex-label{font-size:.74rem;font-weight:700;color:var(--green-d);margin:11px 0 4px;letter-spacing:.02em}
+.scn-steps{margin:2px 0 0;padding:0;list-style:none}
+.scn-steps li{margin:5px 0}
+.scn-steps label{display:flex;gap:8px;align-items:flex-start;font-size:.86rem;cursor:pointer;line-height:1.5}
+.scn-steps input{margin-top:3px;accent-color:var(--green);flex:0 0 auto;width:16px;height:16px}
+.scn-prog{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:.8rem;color:var(--ink-soft)}
+.scn-bar{flex:1;height:7px;background:#eadbe0;border-radius:999px;overflow:hidden}
+.scn-bar>span{display:block;height:100%;width:0;background:var(--green);transition:.3s}
 .prompt-ex{background:#4a0d1c;color:#fbe4ea;font-family:var(--mono);font-size:.78rem;border-radius:8px;padding:10px 12px;margin:6px 0;line-height:1.6;position:relative}
 .prompt-ex .copy{position:absolute;top:7px;right:7px;background:rgba(255,255,255,.15);color:#fff;border:none;border-radius:6px;padding:3px 8px;font-size:.7rem;cursor:pointer}
 .lab-form label{display:block;font-size:.8rem;font-weight:700;color:var(--green-d);margin:9px 0 3px}
@@ -204,7 +212,7 @@ footer.site strong{color:#fff;font-family:var(--serif)}
     <div class="sec-head">
       <span class="kick">Explore &amp; Practice</span>
       <h2>① 카테고리별 서비스 탐색 &amp; 직접 실습</h2>
-      <p>카테고리 탭으로 서비스를 분류해 보고, 각 카드의 <strong>실습예제</strong>를 눌러 학습 포인트와 예제 프롬프트로 직접 실습한 뒤 결과를 기록하세요. 기록은 이 브라우저(localStorage)에 자동 저장됩니다.</p>
+      <p>카테고리 탭으로 서비스를 분류해 보고, 각 카드의 <strong>실습예제</strong>를 눌러 학습 포인트·예제 프롬프트·단계별 시나리오로 직접 실습하세요. 시나리오 진행은 이 브라우저(localStorage)에 자동 저장됩니다.</p>
     </div>
     <div class="tabs" id="tabs" role="tablist"></div>
     <div class="cards" id="cards"></div>
@@ -230,7 +238,7 @@ footer.site strong{color:#fff;font-family:var(--serif)}
     <div class="sec-head">
       <span class="kick">My Records</span>
       <h2>③ 내 실습 기록 모아보기</h2>
-      <p>저장된 모든 실습 기록을 한눈에 보고 CSV로 내보낼 수 있습니다.</p>
+      <p>각 서비스의 실습 시나리오 진행 상황을 한눈에 보고 CSV로 내보낼 수 있습니다.</p>
     </div>
     <div class="dash-wrap"><table class="dash" id="dashTable"></table></div>
     <div class="btn-row">
@@ -945,6 +953,72 @@ const TIPS={
   clovadubbing:'교육 영상에 자연스러운 한국어 내레이션을 입히기.',
 };
 
+const STEPS={
+  chungam:['도서관 홈에서 간호 주제어로 통합검색을 실행한다','교내 구독 DB·전자저널의 원문 제공 여부를 확인한다','원문이 없으면 상호대차(ILL)를 신청하고 수령 경로를 확인한다'],
+  riss:['RISS에서 주제를 한국어로 통합검색한다','자료유형(학위/학술지)·발행연도 필터로 결과를 좁힌다','핵심 논문의 원문 제공처 또는 상호대차 경로를 확인한다'],
+  kiss:['KISS에서 간호 주제어로 학회지 논문을 검색한다','발행 학회와 등재지 여부를 확인한다','원문을 내려받아 인용 정보를 정리한다'],
+  dbpia:['DBpia에서 주제어 검색 후 관련도순으로 정렬한다','핵심 논문의 인용·참고문헌을 추적해 군집을 파악한다','국내 임상·정책 맥락 논문을 선별해 저장한다'],
+  earticle:['RISS·KISS에서 못 찾은 국내 논문을 e-Article에서 재검색한다','발행 학회·연도로 신뢰성을 확인한다','원문을 확보해 서지에 추가한다'],
+  scienceon:['ScienceON에서 보건의료 주제로 통합검색한다','무료 원문과 국가 R&D·연구데이터 연계를 확인한다','관련 보고서·논문을 선별해 정리한다'],
+  nl:['국립중앙도서관에서 단행본·학위논문을 검색한다','디지털 원문 열람 가능 여부와 경로를 확인한다','관내/협약 열람이 필요한 자료를 구분해 메모한다'],
+  nanet:['국회도서관에서 주제별 학위논문을 검색한다','정책·법령 관련 자료를 함께 확인한다','디지털 원문 열람 경로를 정리한다'],
+  koreamed:['KoreaMed에서 영문 키워드로 국내 의학·간호 학술지를 검색한다','관심 논문의 발행 학술지와 원문 링크를 확인한다','KoMCI로 피인용을 확인한다'],
+  pubmed:['PubMed에서 MeSH 용어로 주제를 검색한다','Article type을 RCT·Systematic Review로 한정한다','핵심 논문의 초록·PMC 원문을 확인하고 서지를 저장한다'],
+  gscholar:['Google Scholar에서 주제어로 검색한다','피인용수와 Cited by로 핵심·후속 논문을 추적한다','도서관 링크로 원문에 접근한다'],
+  sciencedirect:['교내 인증으로 ScienceDirect에 접속해 해외 저널을 검색한다','핵심 논문 전문(PDF)을 확인한다','인용을 RefWorks로 내보낸다'],
+  proquest:['ProQuest에서 해외 학위논문을 주제어로 검색한다','전문(full-text) 제공 여부를 확인한다','관련 학위논문의 서지·초록을 정리한다'],
+  jstor:['JSTOR에서 간호의 사회·인문학적 배경 주제를 검색한다','과거호 핵심 논문을 확인한다','무료 열람 가능 항목을 구분한다'],
+  fric:['교내 미구독 해외 논문을 확인한다','FRIC 분담관 소장 여부를 확인한다','소속기관을 경유해 원문 복사를 신청한다'],
+  refworks:['DB 검색 결과를 RefWorks로 내보내 폴더로 정리한다','워드에서 인용을 삽입한다','APA 7판 참고문헌 목록을 생성하고 오류를 점검한다'],
+  jenni:['개요를 입력해 서론 초안 문장을 자동완성한다','삽입된 인용을 원문에서 하나씩 검증한다','검증된 문장만 남기고 표절·진실성을 점검한다'],
+  chatgpt:['공부모드로 학습 주제를 가르쳐 달라고 요청한다','핵심 개념을 자가점검 문제로 만들어 풀어본다','핵심 수치·근거를 1차 출처로 교차검증한다'],
+  claude:['긴 강의/논문 PDF를 붙여 구조화 요약을 요청한다','핵심 개념을 PICO·표로 정리하게 한다','제시된 출처·수치를 별도로 검증한다'],
+  gemini:['여러 PDF를 한 번에 업로드한다','파일들을 한 표로 비교 요약하게 한다','Deep Research로 출처를 확인하고 교차검증한다'],
+  copilot:['Word/PowerPoint에서 Copilot으로 초안을 생성한다','각주 출처를 확인한다','내용을 직접 다듬고 사실을 검증한다'],
+  grok:['주제의 최근 공개 동향을 요청한다','제시된 출처의 신뢰성을 확인한다','의학 사실은 PubMed 등으로 교차검증한다'],
+  wrtn:['같은 질문을 여러 모델로 실행해 본다','답변 차이와 출처 유무를 비교한다','사실 여부를 1차 자료로 검증한다'],
+  adot:['한국어로 개념을 간단히 질문한다','통화/음성 요약 기능을 시험한다','요약 내용을 원자료와 대조한다'],
+  aistudio:['시스템 프롬프트로 간호 튜터 역할을 설정한다','temperature를 바꿔 같은 질문의 응답 변화를 관찰한다','데이터 처리 정책을 확인하고 민감정보 입력을 피한다'],
+  perplexity:['주제를 질문하고 답변에 달린 출처를 연다','출처를 클릭해 1차 원문까지 따라간다','Academic/Deep Research로 근거를 보강한다'],
+  liner:['학술 모드를 켜고 주제를 검색한다','논문 출처·피인용·연도를 확인한다','APA 형식 인용을 생성하고 점검한다'],
+  felo:['외국어 자료까지 교차검색을 실행한다','결과를 한국어로 요약하게 한다','필요하면 AI PPT로 개요를 만든다'],
+  consensus:['임상 질문을 영어로 입력한다','Consensus Meter로 합의도를 확인한다','핵심 논문 원문으로 근거를 검증한다'],
+  scinapse:['주제 분야를 검색한다','분야 내 영향력 높은 논문·핵심 저자를 식별한다','핵심 논문을 선별해 서지에 저장한다'],
+  answerthis:['주제로 문헌고찰 초안을 생성한다','문장 단위 인용을 하나씩 원문과 대조한다','연구 공백을 확인해 정리한다'],
+  elicit:['PICO로 질문을 구조화한다','RCT의 개입·대조·표본·결과를 비교표로 추출한다','각 셀의 값을 원문 PDF와 대조한다'],
+  researchrabbit:['핵심 논문 1편을 시드로 추가한다','관련·인용 네트워크를 확장해 후보 논문을 모은다','관심 저자를 추적해 알림을 설정한다'],
+  scite:['핵심 RCT를 검색한다','Supporting/Contrasting 인용 맥락을 비교한다','철회·정정 여부를 확인해 근거 강도를 판단한다'],
+  scispace:['논문 PDF를 업로드한다','연구설계·방법·결과를 질문해 표로 추출한다','난해한 구절을 쉬운 설명으로 확인하고 원문과 대조한다'],
+  paperdigest:['주제로 문헌검토 보고서를 생성한다','요약된 핵심 논문을 원문과 대조한다','관심 분야 신규논문 일일 알림을 설정한다'],
+  ponder:['여러 논문·노트를 캔버스에 올린다','AI로 모순·연결을 시각적으로 종합한다','초안 문단을 만들고 인용을 검증한다'],
+  moonlight:['영어 논문을 열고 어려운 단락을 번역·해설받는다','Smart Citations로 인용 논문 정보를 확인한다','핵심 문장을 하이라이트로 정리한다'],
+  deepscholar:['보조용으로 자료 기반 초안을 생성한다','모든 인용을 원문에서 검증한다','산출물은 참고로만 쓰고 직접 재작성한다'],
+  scholargpt:['Scholar GPT로 주제 논문을 검색한다','찾은 논문의 DOI·출처를 표로 정리한다','DOI를 조회해 실재와 내용을 검증한다'],
+  notebooklm:['강의 PDF를 소스로 업로드한다','학습가이드·플래시카드·퀴즈를 생성한다','오디오 개요로 복습하고 인용 위치를 원문에서 확인한다'],
+  chatpdf:['논문 PDF를 업로드한다','연구목적·결론을 질문한다','답변의 인용 페이지를 열어 근거를 확인한다'],
+  chatdoc:['표·수식이 있는 문서를 업로드한다','핵심 표·수치를 추출하게 한다','근거 하이라이트로 출처를 확인한다'],
+  explainpaper:['논문을 업로드한다','어려운 단락을 선택해 쉬운 설명을 받는다','설명을 원문과 대조해 정확성을 확인한다'],
+  scholarcy:['논문을 업로드한다','섹션별 요약 카드와 참고문헌을 생성한다','핵심 수치를 원문과 대조해 정리한다'],
+  popai:['보고서/PDF를 업로드한다','발표 슬라이드 또는 마인드맵으로 변환한다','내용 사실성을 직접 검증·수정한다'],
+  lilys:['해외 강의 영상 URL을 입력한다','한국어 핵심 노트·마인드맵으로 요약한다','요약을 퀴즈로 만들어 자가점검한다'],
+  livewiki:['유튜브 영상을 입력한다','핵심·타임라인·아티클로 정리한다','원본과 대조해 누락을 보완한다'],
+  ytsummary:['확장을 설치하고 강의 영상을 연다','자막을 ChatGPT/Claude로 보내 요약을 받는다','핵심 용어를 학습노트로 정리한다'],
+  gamma:['발표 주제를 입력해 슬라이드 초안을 생성한다','구조·디자인을 다듬는다','각 슬라이드의 사실·수치를 검증·수정한다'],
+  canva:['교육 주제로 포스터/인포그래픽 템플릿을 고른다','Magic Design·Magic Write로 초안을 만든다','문구·이미지의 사실성과 저작권을 확인한다'],
+  napkin:['설명 텍스트를 입력한다','다이어그램·흐름도로 자동 시각화한다','PPT·PNG로 내보내 발표에 활용한다'],
+  whimsical:['간호과정 의사결정 흐름을 노드로 구성한다','AI로 마인드맵 초안을 생성한다','팀과 공유해 피드백을 반영한다'],
+  genspark:['주제 리서치를 Super Agent에 위임한다','산출된 발표자료·리서치를 받는다','모든 인용·산출물을 원문과 대조해 검증한다'],
+  manus:['다단계 과제를 한 프롬프트로 위임한다','진행 단계를 확인한다','결과를 원문과 대조해 검증한다'],
+  skywork:['문서/슬라이드 에이전트로 보고서를 생성한다','DeepResearch 인용을 확인한다','인용·수치를 원문과 대조해 검증한다'],
+  gptimage:['교육용 픽토그램을 프롬프트로 생성한다','스타일·구도를 조정해 재생성한다','의학적 정확성을 전문 자료로 검수한다'],
+  msdesigner:['교육 포스터 주제를 텍스트로 입력한다','생성된 이미지 4종에서 선택한다','사실성·저작권을 확인하고 활용한다'],
+  whisk:['참고 이미지를 주제·스타일로 올린다','결합·리믹스로 새 비주얼을 생성한다','사실성·저작권을 확인한다'],
+  suno:['건강 캠페인 주제로 가사·곡을 생성한다','스타일을 조정해 재생성한다','상업/공유 라이선스를 확인한다'],
+  kling:['교육용 짧은 영상을 텍스트/이미지로 생성한다','길이·구도를 조정한다','의학 시연의 정확성을 검수한다'],
+  clovanote:['강의/회의 녹음을 업로드한다(민감정보 금지)','전사와 AI 요약을 생성한다','핵심 결정사항을 항목화해 정리한다'],
+  clovadubbing:['교육 스크립트를 입력한다','어울리는 한국어 음성으로 더빙한다','영상에 입히고 라이선스를 확인한다'],
+};
+
 /* 8개 비교 축 정의 */
 const AXES=[
   {k:'providerLine',label:'제공사'},
@@ -1006,45 +1080,19 @@ function renderCards(){
       </div>
       <div style="font-size:.8rem;margin-bottom:6px">🔗 ${urlHtml(s)}</div>
       <div class="card-actions">
-        <button class="btn btn-sm" data-lab="${s.id}">📝 실습예제${r.ts?' ✓':''}</button>
+        <button class="btn btn-sm" data-lab="${s.id}">📝 실습예제${(r.steps&&r.steps.some(Boolean))?' ✓':''}</button>
         ${s.url?`<a class="btn btn-ghost btn-sm" href="${s.url}" target="_blank" rel="noopener">공식 사이트 열기 ↗</a>`:''}
       </div>
       <div class="lab" id="lab_${s.id}">
         <h4>📝 실습예제 — 효율적으로 익히기</h4>
         ${TIPS[s.id]?`<div class="lab-tip">💡 <b>학습 포인트</b> · ${TIPS[s.id]}</div>`:''}
+        <div class="ex-label">예제 프롬프트 · 검색어</div>
         ${s.prompts.map((p,i)=>`<div class="prompt-ex">${esc(p)}<button class="copy" data-copy="${s.id}_${i}">복사</button></div>`).join('')}
-        <form class="lab-form" data-form="${s.id}">
-          <label>① 내가 입력한 프롬프트</label>
-          <textarea name="prompt" rows="2" placeholder="실제 입력한 프롬프트를 적어주세요">${esc(r.prompt||'')}</textarea>
-          <div class="row">
-            <div>
-              <label>② 응답 유용성 (5점)</label>
-              <select name="usefulness">
-                ${[['','선택'],['5','5 매우 유용'],['4','4 유용'],['3','3 보통'],['2','2 미흡'],['1','1 매우 미흡']].map(([v,t])=>`<option value="${v}" ${r.usefulness==v?'selected':''}>${t}</option>`).join('')}
-              </select>
-            </div>
-            <div>
-              <label>③ 출처 제시 여부</label>
-              <div class="radiogrp">
-                <label><input type="radio" name="source" value="예" ${r.source==='예'?'checked':''}>예</label>
-                <label><input type="radio" name="source" value="아니오" ${r.source==='아니오'?'checked':''}>아니오</label>
-              </div>
-            </div>
-          </div>
-          <label>④ 환각·오류 발견 여부</label>
-          <div class="radiogrp">
-            <label><input type="radio" name="halluc" value="발견" ${r.halluc==='발견'?'checked':''}>발견함</label>
-            <label><input type="radio" name="halluc" value="미발견" ${r.halluc==='미발견'?'checked':''}>발견 못함</label>
-          </div>
-          <label>　└ 환각·오류 메모</label>
-          <input type="text" name="hallucMemo" placeholder="예: 존재하지 않는 DOI를 인용함" value="${esc(r.hallucMemo||'')}">
-          <label>⑤ 종합 소감</label>
-          <textarea name="reflection" rows="2" placeholder="이 도구의 유용성·한계·다음에 쓸 상황 등">${esc(r.reflection||'')}</textarea>
-          <div class="btn-row" style="margin-top:10px">
-            <button type="submit" class="btn btn-sm">💾 실습 기록 저장</button>
-            <span class="saved-note" id="note_${s.id}">저장되었습니다 ✓</span>
-          </div>
-        </form>
+        <div class="ex-label">실습 시나리오 · 따라 하며 익히기</div>
+        <ul class="scn-steps">
+          ${(STEPS[s.id]||[]).map((st,i)=>`<li><label><input type="checkbox" data-step="${s.id}|${i}" ${(r.steps&&r.steps[i])?'checked':''}> ${esc(st)}</label></li>`).join('')}
+        </ul>
+        <div class="scn-prog"><span>진행</span><div class="scn-bar"><span id="sbar_${s.id}"></span></div><span class="mono" id="scnt_${s.id}">0/0</span></div>
       </div>
     </div>`;
   }).join('');
@@ -1057,24 +1105,33 @@ function renderCards(){
     const [id,i]=b.dataset.copy.split('_');const p=svc(id).prompts[+i];
     navigator.clipboard?.writeText(p).then(()=>toast('프롬프트를 복사했습니다'),()=>toast('복사 실패 — 직접 선택하세요'));
   }));
-  document.querySelectorAll('[data-form]').forEach(f=>f.addEventListener('submit',e=>{
-    e.preventDefault();saveRecord(f.dataset.form,f);
+  document.querySelectorAll('[data-step]').forEach(cb=>cb.addEventListener('change',()=>{
+    const a=cb.dataset.step.split('|');toggleStep(a[0],+a[1],cb.checked);
   }));
+  list.forEach(x=>updateScnProg(x.id));
 }
-function saveRecord(id,form){
-  const fd=new FormData(form);
+function toggleStep(id,i,on){
   const rec=store.get(LS_REC,{});
-  rec[id]={
-    prompt:fd.get('prompt')||'', usefulness:fd.get('usefulness')||'',
-    source:fd.get('source')||'', halluc:fd.get('halluc')||'',
-    hallucMemo:fd.get('hallucMemo')||'', reflection:fd.get('reflection')||'',
-    ts:new Date().toISOString()
-  };
+  const total=(STEPS[id]||[]).length;
+  if(!rec[id]||!rec[id].steps) rec[id]={steps:new Array(total).fill(false)};
+  rec[id].steps[i]=on;
+  rec[id].ts=new Date().toISOString();
   store.set(LS_REC,rec);
-  const note=document.getElementById('note_'+id);
-  if(note){note.classList.add('show');setTimeout(()=>note.classList.remove('show'),2000);}
-  toast(svc(id).name+' 실습 기록 저장됨');
+  updateScnProg(id);
   renderDashboard();
+}
+function scnDone(id){
+  const r=store.get(LS_REC,{})[id];
+  const total=(STEPS[id]||[]).length;
+  const done=(r&&r.steps)?r.steps.filter(Boolean).length:0;
+  return {done,total};
+}
+function updateScnProg(id){
+  const o=scnDone(id);
+  const bar=document.getElementById('sbar_'+id);
+  if(bar) bar.style.width=(o.total?Math.round(o.done/o.total*100):0)+'%';
+  const c=document.getElementById('scnt_'+id);
+  if(c) c.textContent=o.done+'/'+o.total;
 }
 
 /* ===== 비교 모드 ===== */
@@ -1115,29 +1172,27 @@ function renderCmp(){
 /* ===== 대시보드 ===== */
 function renderDashboard(){
   const rec=store.get(LS_REC,{});
-  const ids=Object.keys(rec).filter(id=>svc(id));
+  const ids=Object.keys(rec).filter(id=>svc(id)&&rec[id].steps&&rec[id].steps.some(Boolean));
   const t=document.getElementById('dashTable');
-  if(!ids.length){t.innerHTML=`<tbody><tr><td class="dash-empty">아직 저장된 실습 기록이 없습니다. 위에서 서비스의 <strong>실습예제</strong>를 눌러 기록을 남겨보세요.</td></tr></tbody>`;return;}
-  t.innerHTML='<thead><tr><th>서비스</th><th>유용성</th><th>출처</th><th>환각</th><th>소감</th><th>저장 일시</th></tr></thead><tbody>'+
-    ids.map(id=>{const r=rec[id];const s=svc(id);
-      const srcPill=r.source==='예'?'<span class="pill y">예</span>':r.source==='아니오'?'<span class="pill n">아니오</span>':'-';
-      const halPill=r.halluc==='발견'?'<span class="pill warn">발견</span>':r.halluc==='미발견'?'<span class="pill y">미발견</span>':'-';
-      const refl=(r.reflection||'').slice(0,40)+((r.reflection||'').length>40?'…':'');
-      return `<tr><td><strong>${esc(s.name)}</strong></td><td>${r.usefulness?esc(r.usefulness)+'/5':'-'}</td><td>${srcPill}</td><td>${halPill}${r.hallucMemo?' <span class="muted" style="font-size:.74rem">('+esc(r.hallucMemo.slice(0,20))+')</span>':''}</td><td>${esc(refl)||'-'}</td><td class="mono" style="font-size:.74rem">${new Date(r.ts).toLocaleString('ko-KR')}</td></tr>`;
+  if(!ids.length){t.innerHTML=`<tbody><tr><td class="dash-empty">아직 진행한 실습 시나리오가 없습니다. 위에서 서비스의 <strong>실습예제</strong>를 열어 시나리오 단계를 체크해 보세요.</td></tr></tbody>`;return;}
+  ids.sort((a,b)=>new Date(rec[b].ts)-new Date(rec[a].ts));
+  t.innerHTML='<thead><tr><th>서비스</th><th>카테고리</th><th>시나리오 진행</th><th>완료율</th><th>마지막 활동</th></tr></thead><tbody>'+
+    ids.map(id=>{const s=svc(id);const o=scnDone(id);const pct=o.total?Math.round(o.done/o.total*100):0;const cls=pct===100?'y':(pct>0?'warn':'n');
+      return `<tr><td><strong>${esc(s.name)}</strong></td><td class="muted" style="font-size:.78rem">${s.cats.map(k=>(CATS.find(c=>c.key===k)||{}).name).join(' · ')}</td><td>${o.done}/${o.total} 단계</td><td><span class="pill ${cls}">${pct}%</span></td><td class="mono" style="font-size:.74rem">${new Date(rec[id].ts).toLocaleString('ko-KR')}</td></tr>`;
     }).join('')+'</tbody>';
 }
 function exportCsv(){
   const rec=store.get(LS_REC,{});
-  const ids=Object.keys(rec).filter(id=>svc(id));
-  if(!ids.length){toast('내보낼 기록이 없습니다');return;}
-  const head=['서비스','제공사','카테고리','입력 프롬프트','유용성(5)','출처제시','환각발견','환각메모','종합소감','저장일시'];
-  const rows=ids.map(id=>{const r=rec[id],s=svc(id);
-    return [s.name,s.provider,s.cats.map(k=>(CATS.find(c=>c.key===k)||{}).name).join('|'),r.prompt,r.usefulness,r.source,r.halluc,r.hallucMemo,r.reflection,r.ts];});
+  const ids=Object.keys(rec).filter(id=>svc(id)&&rec[id].steps&&rec[id].steps.some(Boolean));
+  if(!ids.length){toast('내보낼 진행 기록이 없습니다');return;}
+  const head=['서비스','제공사','카테고리','완료 단계','전체 단계','완료율(%)','마지막 활동'];
+  const rows=ids.map(id=>{const s=svc(id);const o=scnDone(id);const pct=o.total?Math.round(o.done/o.total*100):0;
+    return [s.name,s.provider,s.cats.map(k=>(CATS.find(c=>c.key===k)||{}).name).join('|'),o.done,o.total,pct,rec[id].ts];});
   const csv=[head,...rows].map(row=>row.map(c=>`"${String(c==null?'':c).replace(/"/g,'""')}"`).join(',')).join('\r\n');
   const blob=new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8'});
   const a=document.createElement('a');
   a.href=URL.createObjectURL(blob);
-  a.download=`AI실습기록_${new Date().toISOString().slice(0,10)}.csv`;
+  a.download=`AI실습진행_${new Date().toISOString().slice(0,10)}.csv`;
   a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
   toast('CSV로 내보냈습니다');
 }
