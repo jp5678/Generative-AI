@@ -893,7 +893,7 @@ function urlHtml(s){
 }
 
 /* ===== 탭 + 카드 렌더 ===== */
-let activeCat='chat';
+let activeCat='all';
 function renderTabs(){
   const t=document.getElementById('tabs');
   t.innerHTML=`<button class="tab ${activeCat==='all'?'active':''}" data-cat="all" role="tab">전체</button>`+
