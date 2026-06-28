@@ -9,9 +9,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Noto+Serif+KR:wght@600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
-/* ===== 디자인 시스템 — Care Green ===== */
+/* ===== 디자인 시스템 — Clinical Blue/Indigo ===== */
 :root{
-  --green:#2563eb; --green-d:#1e3a8a; --green-l:#1d4ed8; --green-bg:#eef4ff;
+  --green:#1e3a8a; --green-d:#172b66; --green-l:#2563eb; --green-bg:#eef2fb;
   --ink:#1f2937; --ink-soft:#4b5563; --line:#d9e1ee; --bg:#f4f7fc; --card:#fff;
   --warn-bg:#fff4e5; --warn-line:#f59e0b; --warn-ink:#92400e;
   --good:#047857; --bad:#b91c1c; --mid:#b45309;
@@ -20,7 +20,7 @@
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{margin:0;font-family:var(--sans);color:var(--ink);background:var(--bg);line-height:1.65;font-size:16px;-webkit-text-size-adjust:100%}
+body{margin:0;font-family:var(--sans);color:var(--ink);background:var(--bg);line-height:1.55;font-size:16px;-webkit-text-size-adjust:100%}
 h1,h2,h3,h4{font-family:var(--serif);color:var(--green-d);line-height:1.35;margin:0 0 .4em}
 a{color:var(--green-l)}
 code,.mono{font-family:var(--mono)}
@@ -31,15 +31,15 @@ button{font-family:var(--sans);cursor:pointer}
 :focus-visible{outline:3px solid var(--green-l);outline-offset:2px;border-radius:5px}
 
 /* ===== 헤더 ===== */
-header.site{background:linear-gradient(135deg,var(--green),var(--green-d));color:#fff;padding:28px 0 24px}
-header.site h1{color:#fff;font-size:1.65rem;margin-bottom:.2em}
+header.site{background:linear-gradient(135deg,var(--green),var(--green-d));color:#fff;padding:18px 0 16px}
+header.site h1{color:#fff;font-size:1.45rem;margin-bottom:.2em}
 header.site .sub{color:#cdd9e6;font-size:.95rem;font-weight:500}
 .chip{display:inline-block;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.3);color:#e4eaf2;font-size:.75rem;padding:3px 11px;border-radius:999px;margin-bottom:10px;letter-spacing:.03em}
-.goals{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:18px}
-.goal{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:12px;padding:12px 14px}
+.goals{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:12px}
+.goal{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:12px;padding:9px 12px}
 .goal .lvl{font-family:var(--mono);font-size:.72rem;color:#b9c8da;letter-spacing:.05em;text-transform:uppercase}
 .goal .txt{color:#fff;font-weight:500;font-size:.92rem;margin-top:2px}
-.datestamp{margin-top:16px;font-size:.8rem;color:#c7d4e3}
+.datestamp{margin-top:10px;font-size:.8rem;color:#c7d4e3}
 
 /* ===== 네비 ===== */
 nav.toc{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:50;box-shadow:0 1px 4px rgba(0,0,0,.04)}
@@ -48,46 +48,46 @@ nav.toc a{white-space:nowrap;color:var(--ink-soft);text-decoration:none;font-wei
 nav.toc a:hover{background:var(--green-bg);color:var(--green-d)}
 
 /* ===== 경고 배너 ===== */
-.guard{background:var(--warn-bg);border:1px solid var(--warn-line);border-radius:10px;padding:11px 16px;margin:16px 0;display:flex;gap:11px;align-items:flex-start;font-size:.9rem;color:var(--warn-ink)}
+.guard{background:var(--warn-bg);border:1px solid var(--warn-line);border-radius:10px;padding:9px 14px;margin:12px 0;display:flex;gap:11px;align-items:flex-start;font-size:.88rem;color:var(--warn-ink)}
 .guard .ico{font-size:1.2rem;flex:0 0 auto}
 
 /* ===== 섹션 ===== */
-section.block{padding:38px 0 14px}
-.sec-head{margin-bottom:8px}
+section.block{padding:22px 0 8px}
+.sec-head{margin-bottom:6px}
 .sec-head .kick{font-family:var(--mono);font-size:.76rem;color:var(--green-l);font-weight:600;letter-spacing:.08em;text-transform:uppercase}
-.sec-head h2{font-size:1.45rem}
-.sec-head p{color:var(--ink-soft);margin:.2em 0 0;max-width:780px}
+.sec-head h2{font-size:1.28rem}
+.sec-head p{color:var(--ink-soft);margin:.2em 0 0;max-width:780px;font-size:.92rem}
 
 /* ===== 카테고리 탭 ===== */
-.tabs{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 6px}
-.tab{background:#fff;border:1.5px solid var(--line);color:var(--ink-soft);padding:9px 16px;border-radius:999px;font-weight:600;font-size:.88rem;transition:.15s}
+.tabs{display:flex;flex-wrap:wrap;gap:7px;margin:12px 0 4px}
+.tab{background:#fff;border:1.5px solid var(--line);color:var(--ink-soft);padding:7px 13px;border-radius:999px;font-weight:600;font-size:.86rem;transition:.15s}
 .tab:hover{border-color:var(--green-l)}
 .tab.active{background:var(--green);color:#fff;border-color:var(--green)}
 .tab .n{font-family:var(--mono);opacity:.7;font-size:.78rem;margin-left:4px}
 
 /* ===== 서비스 카드 ===== */
-.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px;margin-top:8px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);display:flex;flex-direction:column;border-top:4px solid var(--cc,var(--green))}
-.card h3{font-size:1.18rem;margin-bottom:0;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.card .provider{font-size:.8rem;color:var(--ink-soft);font-weight:500;margin-bottom:8px}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:13px;margin-top:6px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px;box-shadow:var(--shadow);display:flex;flex-direction:column;border-top:4px solid var(--cc,var(--green))}
+.card h3{font-size:1.08rem;margin-bottom:0;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.card .provider{font-size:.78rem;color:var(--ink-soft);font-weight:500;margin-bottom:6px}
 .tag{font-size:.66rem;font-family:var(--mono);padding:2px 8px;border-radius:999px;font-weight:600;white-space:nowrap}
 .tag-free{background:#dcfce7;color:#166534}
 .tag-paid{background:#fee2e2;color:#991b1b}
 .tag-freemium{background:#fef3c7;color:#92400e}
-.card .feat{font-size:.92rem;font-weight:500;margin:2px 0 12px}
-.meta{display:grid;grid-template-columns:auto 1fr;gap:5px 10px;font-size:.83rem;margin:0 0 10px}
+.card .feat{font-size:.9rem;font-weight:500;margin:2px 0 8px}
+.meta{display:grid;grid-template-columns:auto 1fr;gap:3px 9px;font-size:.82rem;margin:0 0 8px}
 .meta dt{font-weight:700;color:var(--green-d);font-size:.78rem}
 .meta dd{margin:0;color:var(--ink-soft)}
 .risk{font-family:var(--mono);font-weight:600;font-size:.78rem;padding:1px 7px;border-radius:5px}
 .risk.h{background:#fee2e2;color:#991b1b}
 .risk.m{background:#fef3c7;color:#92400e}
 .risk.l{background:#dcfce7;color:#166534}
-.sw{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:4px 0 10px}
+.sw{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:3px 0 8px}
 .sw div{font-size:.8rem}
 .sw h5{margin:0 0 3px;font-family:var(--sans);font-size:.76rem;letter-spacing:.02em}
 .sw .s h5{color:var(--good)} .sw .w h5{color:var(--bad)}
 .sw ul{margin:0;padding-left:1.1em;color:var(--ink-soft)}
-.scn{background:var(--green-bg);border-radius:9px;padding:9px 12px;font-size:.82rem;margin-bottom:10px}
+.scn{background:var(--green-bg);border-radius:9px;padding:7px 10px;font-size:.82rem;margin-bottom:8px}
 .scn b{color:var(--green-d)}
 .scn ul{margin:4px 0 0;padding-left:1.1em}
 .card-actions{margin-top:auto;display:flex;gap:8px;flex-wrap:wrap;padding-top:8px}
@@ -100,7 +100,7 @@ section.block{padding:38px 0 14px}
 .no-link{font-family:var(--mono);font-size:.76rem;color:var(--mid)}
 
 /* ===== 실습 영역(카드 내) ===== */
-.lab{margin-top:12px;border-top:1px dashed var(--line);padding-top:12px;display:none}
+.lab{margin-top:10px;border-top:1px dashed var(--line);padding-top:10px;display:none}
 .lab.open{display:block}
 .lab h4{font-size:.92rem;margin-bottom:6px}
 .lab-tip{background:var(--green-bg);border:1px solid var(--line);border-left:3px solid var(--green);border-radius:8px;padding:8px 11px;font-size:.82rem;color:var(--ink);margin:2px 0 8px;line-height:1.55}
@@ -133,13 +133,13 @@ table.cmp tbody th{background:var(--green-bg);color:var(--green-d);font-weight:7
 /* ===== 대시보드 ===== */
 
 /* ===== 유의사항 ===== */
-.notice-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:16px}
-.notice{background:#fff;border:1px solid var(--line);border-left:5px solid var(--warn-line);border-radius:12px;padding:15px 16px}
+.notice-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-top:12px}
+.notice{background:#fff;border:1px solid var(--line);border-left:5px solid var(--warn-line);border-radius:12px;padding:12px 14px}
 .notice h4{font-size:1rem;margin-bottom:5px}
 .notice p{font-size:.86rem;color:var(--ink-soft);margin:0}
 
 /* ===== 푸터 / 토스트 ===== */
-footer.site{background:var(--green-d);color:#d2dceb;text-align:center;padding:22px 18px;font-size:.88rem;margin-top:32px}
+footer.site{background:var(--green-d);color:#d2dceb;text-align:center;padding:16px 18px;font-size:.88rem;margin-top:22px}
 footer.site strong{color:#fff;font-family:var(--serif)}
 .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--green-d);color:#fff;padding:12px 20px;border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.3);opacity:0;transition:.25s;z-index:900;font-size:.9rem;max-width:90vw;pointer-events:none}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
@@ -314,7 +314,7 @@ const SERVICES=[
    weaknesses:['영문 문헌 중심','심층 분석 유료','요약 원문 대조 필요'],
    prompts:['fall prevention older adults nursing 검색 → 내 분야에서 영향력 높은 논문·핵심 저자 확인','diabetes self-management education 검색 후 최근 연구 동향과 h-index 상위 저자 파악'],
    url:'https://www.scinapse.io'},
-  {id:'answerthis',cats:['searchai'],name:'AnswerThis',provider:'AnswerThis (YC)',price:'freemium',
+  {id:'answerthis',cats:['litreview'],name:'AnswerThis',provider:'AnswerThis (YC)',price:'freemium',
    feat:'3억+ 논문 기반으로 문장 단위 인용이 달린 문헌고찰을 자동 작성하는 연구 어시스턴트.',
    scn:['주제의 문헌고찰 초안 자동 생성','연구 공백·키워드 분석'],
    ground:'주장-출처를 문장 단위로 연결(감사 추적)', risk:'m', ko:'중',
@@ -351,7 +351,7 @@ const SERVICES=[
    weaknesses:['유료 중심','영어 문헌 중심','분류도 사람 검토 필요'],
    prompts:['핵심 RCT 제목을 검색 → Supporting/Contrasting 인용 탭을 비교해 근거 강도 판단','인용 예정 논문을 검색해 retracted·has concerns 경고 여부 확인'],
    url:'https://scite.ai'},
-  {id:'scispace',cats:['litreview','pdf'],name:'SciSpace',provider:'SciSpace',price:'freemium',
+  {id:'scispace',cats:['pdf'],name:'SciSpace',provider:'SciSpace',price:'freemium',
    feat:'논문 PDF와 대화하며 방법·결과를 추출하는 Copilot, Deep Review, 4만+ 저널 템플릿.',
    scn:['논문 PDF의 방법·결과를 질문으로 추출','난해한 수식·용어 즉시 해설'],
    ground:'논문 색인·업로드 기반, 출처 인용 제공', risk:'m', ko:'중(한국어 UI)',
@@ -378,7 +378,7 @@ const SERVICES=[
    weaknesses:['학습 곡선','생성 요약 검증 필요','한국어는 영어보다 약함'],
    prompts:['(논문 3편 업로드) 세 연구의 핵심 주장을 비교하고 상충되는 결과를 표시해줘.','이 자료들로 "노인 낙상 예방" 주제의 지식맵을 만들고 연구 공백을 제안해줘.'],
    url:'https://ponder.ing/ko'},
-  {id:'moonlight',cats:['litreview','pdf'],name:'Moonlight (더 문라이트)',provider:'Moonlight',price:'freemium',
+  {id:'moonlight',cats:['pdf'],name:'Moonlight (더 문라이트)',provider:'Moonlight',price:'freemium',
    feat:'논문 정독 보조 도구. 구절 설명·요약·번역·Smart Citations를 브라우저에서 제공.',
    scn:['영어 논문을 번역·해설하며 정독','인용 논문 정보를 즉시 확인'],
    ground:'논문 기반 설명·인용(검증 필요)', risk:'m', ko:'상(번역)',
@@ -563,7 +563,7 @@ const AXES=[
 ];
 const RISK_TXT={h:'높음',m:'중간',l:'낮음'};
 function svc(id){return SERVICES.find(s=>s.id===id);}
-function catColor(k){return (CATS.find(c=>c.key===k)||{}).color||'#2563eb';}
+function catColor(k){return (CATS.find(c=>c.key===k)||{}).color||'#1e3a8a';}
 function priceTag(p){
   if(p==='free')return '<span class="tag tag-free">무료</span>';
   if(p==='paid')return '<span class="tag tag-paid">유료</span>';
